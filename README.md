@@ -4,6 +4,8 @@
 
 A tool for provisioning and maintaining WordPress sites and servers using Ansible and Laravel.
 
+![screenshot](screenshot.png)
+
 ## Requirements
 
 Ubuntu 18.04 is the only supported operating system (for the master and slave hosts). The CLI uses Ansible to provision servers, users and vhosts. To use the CLI you need to install the following packages on the master host:
