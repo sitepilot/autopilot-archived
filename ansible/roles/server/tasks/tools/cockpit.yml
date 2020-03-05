@@ -1,12 +1,11 @@
 ---
 - name: Install Cockpit dashboard.
   apt:
-    name: "{{ item }}"
+    name: >
+      cockpit,
+      cockpit-docker,
+      cockpit-pcp
     default_release: bionic-backports
-  loop:
-    - cockpit
-    - cockpit-docker
-    - cockpit-pcp
 
 - name: "Create Cockpit folders."
   file:

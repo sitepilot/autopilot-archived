@@ -15,20 +15,19 @@
 
 - name: Install OpenLitespeed web server and PHP packages.
   apt:
-    name: "{{ item }}"
+    name: >
+      openlitespeed,
+      lsphp74,
+      lsphp74-common,
+      lsphp74-json,
+      lsphp74-mysql,
+      lsphp74-opcache,
+      lsphp74-igbinary,
+      lsphp74-memcached,
+      lsphp74-redis,
+      lsphp74-imap,
+      lsphp74-curl
     state: present
-  loop:
-    - openlitespeed
-    - lsphp74
-    - lsphp74-common
-    - lsphp74-json
-    - lsphp74-mysql
-    - lsphp74-opcache
-    - lsphp74-igbinary
-    - lsphp74-memcached
-    - lsphp74-redis
-    - lsphp74-imap
-    - lsphp74-curl
   notify:
     - reload olsws
 

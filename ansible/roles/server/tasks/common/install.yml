@@ -24,15 +24,13 @@
 
 - name: Install packages.
   apt:
-    name: "{{ item }}"
+    name: "{{ packages|join(', ') }}"
     state: present
-  loop: "{{ packages }}"
 
 - name: Remove deprecated packages.
   apt:
-    name: "{{ item }}"
+    name: "{{ deprecated_packages|join(', ') }}"
     state: absent
-  loop: "{{ deprecated_packages }}"
 
 - name: Install pip packages.
   pip:

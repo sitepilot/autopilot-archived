@@ -22,30 +22,28 @@
 
     - name: Install required packages.
       apt:
-        name: "{{ item }}"
+        name: >
+          ansible,
+          php7.4-cli,
+          php7.4-mysql,
+          php7.4-mbstring,
+          php7.4-dom,
+          php7.4-zip,
+          unzip,
+          python3,
+          python3-pip,
+          python3-setuptools,
+          docker-ce
         state: present
         update_cache: true
-      loop:
-        - ansible
-        - php7.4-cli
-        - php7.4-mysql
-        - php7.4-mbstring
-        - php7.4-dom
-        - php7.4-zip
-        - unzip
-        - python3
-        - python3-pip
-        - python3-setuptools
-        - docker-ce
 
     - name: Install required pip packages.
       pip:
-        name: "{{ item }}"
+        name: >
+          yamllint,
+          ansible-lint,
+          docker-compose
         state: present
-      loop:
-        - yamllint
-        - ansible-lint
-        - docker-compose
 
     - name: Download Composer.
       get_url:
