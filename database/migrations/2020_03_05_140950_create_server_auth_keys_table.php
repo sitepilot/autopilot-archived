@@ -16,7 +16,7 @@ class CreateServerAuthKeysTable  extends Migration
         Schema::create('server_auth_keys', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->longText('vars')->nullable();
+            $table->mediumText('vars')->nullable();
             $table->timestamps();
         });
 

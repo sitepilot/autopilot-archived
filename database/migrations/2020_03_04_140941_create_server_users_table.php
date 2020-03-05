@@ -17,7 +17,7 @@ class CreateServerUsersTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->unsignedBigInteger('host_id')->nullable();
-            $table->longText('vars')->nullable();
+            $table->mediumText('vars')->nullable();
             $table->timestamps();
 
             $table->foreign('host_id')

@@ -16,7 +16,7 @@ class CreateServerGroupsTable extends Migration
         Schema::create('server_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->longText('vars')->nullable();
+            $table->mediumText('vars')->nullable();
             $table->timestamps();
         });
     }

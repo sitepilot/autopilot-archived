@@ -17,7 +17,7 @@ class CreateServerAppsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->longText('vars')->nullable();
+            $table->mediumText('vars')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')

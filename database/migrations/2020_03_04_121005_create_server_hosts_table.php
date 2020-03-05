@@ -17,7 +17,7 @@ class CreateServerHostsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->unsignedBigInteger('group_id')->nullable();
-            $table->longText('vars')->nullable();
+            $table->mediumText('vars')->nullable();
             $table->timestamps();
 
             $table->foreign('group_id')

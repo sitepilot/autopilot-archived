@@ -16,7 +16,7 @@ class CreateServerFirewallRulesTable  extends Migration
         Schema::create('server_firewall_rules', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->longText('vars')->nullable();
+            $table->mediumText('vars')->nullable();
             $table->timestamps();
         });
 
