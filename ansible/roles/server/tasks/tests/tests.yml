@@ -1,0 +1,83 @@
+---
+- meta: flush_handlers
+
+- name: "TEST: Copy private key."
+  copy:
+    src: ../../tests/test_key
+    dest: /root/.ssh/test_key
+    owner: root
+    group: root
+    mode: "0600"
+
+# SSH Tests (when test public key is used)
+- name: "TEST: Can login over SSH using a private key as admin ({{ admin }})."
+  command: "ssh -i /root/.ssh/test_key -o StrictHostKeyChecking=no {{ admin }}@127.0.0.1 'date'"
+  when:
+    - "auth_keys[0] is defined"
+    - '"test@server" in auth_keys[0]'
+
+- name: "TEST: Can login over SSH using a private key as root."
+  command: "ssh -i /root/.ssh/test_key -o StrictHostKeyChecking=no root@127.0.0.1 'date'"
+  when:
+    - "auth_keys[0] is defined"
+    - '"test@server" in auth_keys[0]'
+
+# MySQL Tests
+- name: "TEST: Connect to MySQL as admin."
+  command: "mysql -u {{ admin }} -p{{ admin_pass }} -h 127.0.0.1 -e 'show databases;'"
+  changed_when: false
+
+# HTTP Checks
+- name: "TEST: Web server is running (HTTP)."
+  uri:
+    url: http://127.0.0.1
+
+- name: "TEST: Web server is running (HTTPS)."
+  uri:
+    url: https://127.0.0.1
+    validate_certs: false
+
+- name: "TEST: Web server admin panel is running (HTTPS)."
+  uri:
+    url: https://127.0.0.1:2083
+    validate_certs: false
+
+- name: "TEST: Cockpit is running (HTTPS)."
+  uri:
+    url: https://127.0.0.1:2087
+    validate_certs: false
+
+- name: "TEST: phpMyAdmin is available."
+  uri:
+    url: https://127.0.0.1/.sitepilot/pma/
+    validate_certs: false
+
+- name: "TEST: Health check is available."
+  uri:
+    url: https://127.0.0.1/.sitepilot/pma/
+    validate_certs: false
+
+# Other Checks
+- name: "TEST: PHP is installed."
+  command: "php -v"
+  become: true
+  become_user: "{{ users[0].name }}"
+  changed_when: false
+
+- name: "TEST: WPCLI is installed."
+  command: "wp --version"
+  become: true
+  become_user: "{{ users[0].name }}"
+  changed_when: false
+
+- name: "TEST: Composer is installed."
+  command: "composer --version"
+  become: true
+  become_user: "{{ users[0].name }}"
+  changed_when: false
+
+# User Tests
+- include: user.yml
+  loop: "{{ users | list }}"
+  loop_control:
+    loop_var: user

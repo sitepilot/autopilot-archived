@@ -1,0 +1,46 @@
+---
+- name: Install Cockpit dashboard.
+  apt:
+    name: "{{ item }}"
+    default_release: bionic-backports
+  loop:
+    - cockpit
+    - cockpit-docker
+    - cockpit-pcp
+
+- name: "Create Cockpit folders."
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    recurse: "{{ item.recurse }}"
+  loop:
+    - path: /etc/systemd/system/cockpit.socket.d
+      recurse: false
+
+- name: Write Cockpit listen configuration.
+  template:
+    src: cockpit_listen.conf.j2
+    dest: /etc/systemd/system/cockpit.socket.d/listen.conf
+
+- name: Get the admin UID.
+  command: "id -u {{ admin }}"
+  register: cmd_admin_uid
+  changed_when: false
+
+- name: Only allow Cockpit login to admin user.
+  template:
+    src: pamd_cockpit.j2
+    dest: /etc/pam.d/cockpit
+
+- name: Restart and enable Cockpit.
+  systemd:
+    name: cockpit.socket
+    state: restarted
+    daemon_reload: true
+    enabled: true
+
+- name: Start NetworkManager service.
+  service:
+    name: NetworkManager
+    enabled: true
+    state: started

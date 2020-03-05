@@ -1,0 +1,16 @@
+---
+- name: "{{ site.name }}: Install WordPress."
+  command: "{{ wp_cli_path }} core install --url='{{ site.url }}' --title='{{ site.name }}' --admin_user='{{ site.admin.name }}' --admin_email='{{ site.admin.email }}' --path={{ site.path }}"
+  become: "{{ wp_become }}"
+  become_user: "{{ site.user }}"
+  when:
+    - site.url
+    - site.admin.name
+    - site.admin.email
+
+- name: "TEST {{ site.name }}: Domain is reachable."
+  uri:
+    url: "{{ site.url }}"
+    validate_certs: false
+  when:
+    - site.url is defined

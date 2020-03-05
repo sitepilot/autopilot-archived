@@ -1,0 +1,57 @@
+---
+# SSH Tests (when test public key is used)
+- name: "TEST {{ user.name }}: Can't login over SSH using a private key as an isolated user."
+  command: "ssh -i /root/.ssh/test_key -o StrictHostKeyChecking=no {{ user.name }}@127.0.0.1 'date'"
+  register: ssh_isolate_check
+  failed_when: not ssh_isolate_check.failed
+  when:
+    - "user.isolated is defined"
+    - "user.isolated | bool"
+    - "user.auth_keys[0] is defined"
+    - '"test@server" in user.auth_keys[0]'
+
+- name: "TEST {{ user.name }}: Can login over SSH using a private key as an unisolated user."
+  command: "ssh -i /root/.ssh/test_key -o StrictHostKeyChecking=no {{ user.name }}@127.0.0.1 'date'"
+  when:
+    - "user.isolated is defined"
+    - "not user.isolated | bool"
+    - "user.auth_keys[0] is defined"
+    - '"test@server" in user.auth_keys[0]'
+
+# MySQL Tests
+- name: "TEST {{ user.name }}: Connect to MySQL as user."
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'show databases;'"
+  changed_when: false
+  when:
+    - user.mysql_password is defined
+
+- name: "TEST {{ user.name }}: Databases exist."
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ user.name }}_{{ item.name }};'"
+  changed_when: false
+  loop: "{{ user.databases }}"
+  when:
+    - user.mysql_password is defined
+    - user.mysql_password is defined
+    - item.state is undefined or item.state == 'present'
+
+- name: "TEST {{ user.name }}: Databases don't exist."
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ user.name }}_{{ item.name }};'"
+  register: database_absent_check
+  changed_when: false
+  failed_when: not database_absent_check.failed
+  loop: "{{ user.databases }}"
+  when:
+    - user.mysql_password is defined
+    - user.mysql_password is defined
+    - item.state == 'absent'
+
+# HTTP Tests
+- name: "TEST {{ user.name }}: Domains are reachable."
+  uri:
+    url: https://{{ item.domain }}
+    validate_certs: false
+  loop: "{{ user.apps }}"
+  when:
+    - user.apps is defined
+    - item.domain is defined
+  tags: ["test", "test-domains"]

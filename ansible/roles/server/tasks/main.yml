@@ -1,0 +1,91 @@
+---
+# ================================
+# Variables
+# ================================
+
+- include: variables.yml
+  tags: "always"
+
+# ================================
+# Common
+# ================================
+
+- include: "common/swap.yml"
+  tags: ["common", "swap"]
+
+- include: "common/upgrade.yml"
+  tags: ["common", "upgrade"]
+
+- include: common/install.yml
+  tags: ["common", "install"]
+
+- include: common/admin.yml
+  tags: ["common", "admin"]
+
+- include: common/filesystem.yml
+  tags: ["common", "filesystem"]
+
+- include: common/config.yml
+  tags: ["common", "config"]
+
+- include: common/firewall.yml
+  tags: ["common", "firewall"]
+
+# ================================
+# Docker
+# ================================
+
+- include: docker/docker.yml
+  tags: ["docker", "install"]
+
+- include: docker/services.yml
+  tags: ["docker", "services"]
+
+- include: docker/mysql.yml
+  tags: ["docker", "mysql"]
+
+# ================================
+# OpenLitespeed
+# ================================
+
+- include: olsws/olsws.yml
+  tags: "olsws"
+
+# ================================
+# Tools
+# ================================
+
+- include: tools/php.yml
+  tags: "php"
+
+- include: tools/composer.yml
+  tags: "composer"
+
+- include: tools/wpcli.yml
+  tags: "wpcli"
+
+- include: tools/pma.yml
+  tags: "pma"
+
+- include: tools/cockpit.yml
+  tags: "cockpit"
+
+- include: tools/health.yml
+  tags: "health"
+
+- include: tools/fail2ban.yml
+  tags: "fail2ban"
+
+# ================================
+# Users
+# ================================
+
+- include: users/users.yml
+  tags: "users"
+
+# ================================
+# Tests
+# ================================
+
+- include: tests/tests.yml
+  tags: ["never", "test"]

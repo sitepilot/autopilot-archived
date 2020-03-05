@@ -1,0 +1,48 @@
+---
+- name: Include role variables.
+  include_vars: "main.yml"
+
+- name: Define Sitepilot managed.
+  set_fact:
+    sitepilot_managed: "{{ __sitepilot_managed }}"
+  when: sitepilot_managed is not defined
+
+- name: Define GPG keys.
+  set_fact:
+    gpg_keys: "{{ __gpg_keys | list }}"
+  when: gpg_keys is not defined
+
+- name: Define deprecated GPG keys.
+  set_fact:
+    deprecated_gpg_keys: "{{ __deprecated_gpg_keys | list }}"
+  when: deprecated_gpg_keys is not defined
+
+- name: Define repositories.
+  set_fact:
+    repositories: "{{ __repositories | list }}"
+  when: repositories is not defined
+
+- name: Define deprecated repositories.
+  set_fact:
+    deprecated_repositories: "{{ __deprecated_repositories | list }}"
+  when: deprecated_repositories is not defined
+
+- name: Define packages.
+  set_fact:
+    packages: "{{ __packages | list }}"
+  when: packages is not defined
+
+- name: Define deprecated packages.
+  set_fact:
+    deprecated_packages: "{{ __deprecated_packages | list }}"
+  when: deprecated_packages is not defined
+
+- name: Define pip packages.
+  set_fact:
+    pip_packages: "{{ __pip_packages | list }}"
+  when: pip_packages is not defined
+
+- name: Define deprecated pip packages.
+  set_fact:
+    deprecated_pip_packages: "{{ __deprecated_pip_packages | list }}"
+  when: deprecated_pip_packages is not defined

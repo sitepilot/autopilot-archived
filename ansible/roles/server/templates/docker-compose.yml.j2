@@ -1,0 +1,35 @@
+# {{ sitepilot_managed }}
+
+version: '3.3'
+
+services:
+
+  mysql-1:
+    image: mysql:8
+    container_name: mysql-1
+    restart: always
+    environment:
+      MYSQL_USER: "{{ admin }}"
+      MYSQL_PASSWORD: "{{ admin_pass }}"
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_pass }}"
+    user: '{{ cmd_admin_uid.stdout }}:{{ cmd_admin_gid.stdout }}'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - /opt/sitepilot/services/mysql/data/:/var/lib/mysql
+      - /opt/sitepilot/services/mysql/logs:/var/log/mysql
+      - /opt/sitepilot/services/mysql/conf/service.cnf:/etc/mysql/conf.d/service.cnf
+
+  redis-1:
+    image: redis:5
+    container_name: redis-1
+    restart: always
+    ports:
+      - '6379:6379'
+    expose:
+      - '6379'
+    user: '{{ cmd_admin_uid.stdout }}:{{ cmd_admin_gid.stdout }}'
+    volumes:
+      - /opt/sitepilot/services/redis/data/:/data

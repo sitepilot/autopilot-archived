@@ -1,0 +1,15 @@
+---
+- include: download/download.yml
+  tags: "download"
+
+- include: config/config.yml
+  tags: "config"
+
+- include: install/install.yml
+  tags: "install"
+
+- include: update/update.yml
+  tags: "update"
+
+- include: export/export.yml
+  tags: "export"

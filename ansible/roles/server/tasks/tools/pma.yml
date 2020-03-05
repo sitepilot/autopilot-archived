@@ -1,0 +1,45 @@
+---
+- name: Remove phpMyAdmin service folders.
+  file:
+    path: "/opt/sitepilot/services/phpmyadmin/"
+    state: absent
+  when:
+    - pma_update_version is defined
+    - pma_update_version|bool
+
+- name: "Create phpMyAdmin service folders."
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ admin }}"
+    group: "{{ admin }}"
+    state: directory
+    recurse: "{{ item.recurse }}"
+  loop:
+    - {path: /opt/sitepilot/services/phpmyadmin/public, recurse: true}
+
+- name: Check if phpMyAdmin is installed.
+  stat:
+    path: "/opt/sitepilot/services/phpmyadmin/public/index.php"
+  register: pma_index
+
+- name: Download phpMyAdmin v{{ pma_version }} archive.
+  get_url:
+    url: "https://files.phpmyadmin.net/phpMyAdmin/{{ pma_version }}/phpMyAdmin-{{ pma_version }}-all-languages.tar.gz"
+    dest: "/tmp/phpmyadmin.zip"
+  when: not pma_index.stat.exists
+
+- name: Extract phpMyAdmin archive.
+  unarchive:
+    src: /tmp/phpmyadmin.zip
+    dest: /opt/sitepilot/services/phpmyadmin/public
+    remote_src: true
+    extra_opts: [--strip-components=1]
+  when: not pma_index.stat.exists
+
+- name: Write phpMyAdmin configuration.
+  template:
+    src: pma_config.php.j2
+    dest: /opt/sitepilot/services/phpmyadmin/public/config.inc.php
+  when: not pma_index.stat.exists
+  notify:
+    - reload olsws

@@ -1,0 +1,40 @@
+---
+- name: Set the hostname.
+  hostname:
+    name: "{{ hostname }}"
+  when:
+    - hostname_update is defined
+    - hostname_update|bool
+
+- name: "Set the timezone to '{{ timezone }}'."
+  timezone:
+    name: "{{ timezone }}"
+  when:
+    - timezone_update is defined
+    - timezone_update|bool
+
+- name: Configure root authorized keys.
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ item.key }}"
+  loop: "{{ auth_keys }}"
+
+- name: Remove deprecated root authorized keys.
+  authorized_key:
+    user: root
+    state: absent
+    key: "{{ item.key }}"
+  loop: "{{ auth_keys_deprecated }}"
+
+- name: Configure SSH server.
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  notify:
+    - restart ssh server
+
+- name: Configure smtp relay.
+  template:
+    src: ssmtp.conf.j2
+    dest: /etc/ssmtp/ssmtp.conf

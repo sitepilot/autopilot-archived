@@ -1,0 +1,29 @@
+---
+- name: "{{ app.name }}: Create app folders."
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: "0755"
+  loop:
+    - "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}"
+    - "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/public"
+    - "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/logs"
+
+- name: "{{ app.name }}: Generate vhost configuration."
+  template:
+    src: vhost_app.conf.j2
+    dest: "/usr/local/lsws/conf/vhosts/{{ app.name }}.conf"
+  when:
+    - app.domain is defined
+    - app.domain | length > 0
+  notify:
+    - reload olsws
+    - reload fail2ban
+
+- name: "{{ app.name }}: Set folder / file permissions."
+  command: "{{ item }}"
+  loop:
+    - "find /opt/sitepilot/users/{{ user.name }}/{{ app.name }} -type f -exec chmod 644 {} +"
+    - "find /opt/sitepilot/users/{{ user.name }}/{{ app.name }} -type d -exec chmod 755 {} +"

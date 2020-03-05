@@ -1,0 +1,51 @@
+---
+- name: "Ensure group '{{ admin }}' exists."
+  group:
+    name: "{{ admin }}"
+    state: present
+
+- name: "Ensure user '{{ admin }}' exists."
+  user:
+    name: "{{ admin }}"
+    password: "{{ admin_pass | password_hash('sha512') }}"
+    group: "{{ admin }}"
+    groups: sudo
+
+- name: "Setup bash for '{{ admin }}'."
+  command: "chsh -s /bin/bash {{ admin }}"
+  changed_when: false
+
+- name: Add admin authorized keys.
+  authorized_key:
+    user: "{{ admin }}"
+    state: present
+    key: "{{ item.key }}"
+  loop: "{{ auth_keys }}"
+
+- name: Remove deprecated admin authorized keys.
+  authorized_key:
+    user: "{{ admin }}"
+    state: absent
+    key: "{{ item.key }}"
+  loop: "{{ auth_keys_deprecated }}"
+
+- name: "Create admin owned folders."
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ admin }}"
+    group: "{{ admin }}"
+    state: directory
+    recurse: "{{ item.recurse }}"
+  loop:
+    - path: "/home/{{ admin }}/.ssh"
+      recurse: false
+
+- name: "Check if SSH keypair exists for '{{ admin }}'."
+  stat:
+    path: "/home/{{ admin }}/.ssh/id_rsa"
+  register: ssh_keypair
+
+- name: "Generate SSH keypair for '{{ admin }}'."
+  openssh_keypair:
+    path: /home/{{ admin }}/.ssh/id_rsa
+  when: not ssh_keypair.stat.exists

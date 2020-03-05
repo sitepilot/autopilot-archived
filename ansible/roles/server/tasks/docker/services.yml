@@ -1,0 +1,50 @@
+---
+- name: Install Docker python packages.
+  pip:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - docker
+    - docker-compose
+
+- name: "Create Docker service folders."
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ admin }}"
+    group: "{{ admin }}"
+    state: directory
+    recurse: "{{ item.recurse }}"
+  loop:
+    # MySQL
+    - {path: /opt/sitepilot/services/mysql, recurse: false}
+    - {path: /opt/sitepilot/services/mysql/logs/, recurse: false}
+    - {path: /opt/sitepilot/services/mysql/data/, recurse: false}
+    - {path: /opt/sitepilot/services/mysql/conf/, recurse: false}
+
+    # Redis
+    - {path: /opt/sitepilot/services/redis/, recurse: false}
+    - {path: /opt/sitepilot/services/redis/data/, recurse: false}
+
+- name: Get the admin UID.
+  command: "id -u {{ admin }}"
+  register: cmd_admin_uid
+  changed_when: false
+
+- name: Get the admin GID.
+  command: "id -g {{ admin }}"
+  register: cmd_admin_gid
+  changed_when: false
+
+- name: Write MySQL service configuration.
+  template:
+    src: mysql-service.cnf.j2
+    dest: /opt/sitepilot/services/mysql/conf/service.cnf
+
+- name: Write Docker containers configuration.
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/sitepilot/services/docker-compose.yml
+
+- name: Start Docker containers.
+  docker_compose:
+    project_src: /opt/sitepilot/services

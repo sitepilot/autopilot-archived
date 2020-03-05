@@ -1,0 +1,47 @@
+---
+- name: Add signing keys.
+  apt_key:
+    url: "{{ item }}"
+    state: present
+  loop: "{{ gpg_keys }}"
+
+- name: Remove deprecated signing keys.
+  apt_key:
+    url: "{{ item }}"
+    state: absent
+  loop: "{{ deprecated_gpg_keys }}"
+
+- name: Install required repositories.
+  apt_repository:
+    repo: "{{ item }}"
+  loop: "{{ repositories }}"
+
+- name: Remove deprecated repositories.
+  apt_repository:
+    repo: "{{ item }}"
+    state: absent
+  loop: "{{ deprecated_repositories }}"
+
+- name: Install packages.
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ packages }}"
+
+- name: Remove deprecated packages.
+  apt:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ deprecated_packages }}"
+
+- name: Install pip packages.
+  pip:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pip_packages }}"
+
+- name: Remove deprecated pip packages.
+  pip:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ deprecated_pip_packages }}"

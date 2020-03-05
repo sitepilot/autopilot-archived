@@ -1,0 +1,73 @@
+---
+- name: "{{ user.name }}: Install required pip packages."
+  pip:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - PyMySQL
+
+- name: "{{ user.name }}: Ensure user group '{{ user.name }}' exists."
+  group:
+    name: "{{ user.name }}"
+    state: present
+
+- name: "{{ user.name }}: Create user folder."
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  loop:
+    - "/opt/sitepilot/users/{{ user.name }}"
+
+- name: "{{ user.name }}: Ensure user exists."
+  user:
+    name: "{{ user.name }}"
+    group: "{{ user.name }}"
+    groups: "isolated"
+    shell: "/bin/bash"
+    password: "{{ user.password | password_hash('sha512') }}"
+
+- name: "{{ user.name }}: Remove isolated group."
+  user:
+    name: "{{ user.name }}"
+    groups: ""
+  when:
+    - user.isolated is defined
+    - not user.isolated
+
+- name: "{{ user.name }}: Add authorized keys."
+  authorized_key:
+    user: "{{ user.name }}"
+    state: present
+    key: "{{ item }}"
+  loop: "{{ user.auth_keys }}"
+  when: user.auth_keys is defined
+
+- name: "{{ user.name }}: Create database user."
+  mysql_user:
+    name: "{{ user.name }}"
+    password: "{{ user.mysql_password }}"
+    priv: "{{ user.name }}_%.*:ALL"
+    state: present
+    host: "%"
+    config_file: "/root/.my.cnf"
+  when:
+    - user.mysql_password is defined
+    - user.mysql_password | length > 0
+
+- name: "{{ user.name }}: Create databases."
+  mysql_db:
+    name: "{{ user.name }}_{{ item.name }}"
+    state: "{{ item.state | default('present', true) }}"
+    config_file: "/root/.my.cnf"
+  loop: "{{ user.databases }}"
+  when:
+    - user.databases is defined
+
+- name: "{{ user.name }}: Provision apps."
+  include: app.yml
+  loop: "{{ user.apps if app_filter is not defined else user.apps | selectattr('name', 'match', app_filter) | list }}"
+  loop_control:
+    loop_var: app

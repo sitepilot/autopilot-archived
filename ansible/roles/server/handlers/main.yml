@@ -1,0 +1,20 @@
+---
+- name: reload olsws
+  service:
+    name: lsws
+    state: reloaded
+
+- name: restart ssh server
+  service:
+    name: sshd
+    state: restarted
+
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
+
+- name: reload fail2ban
+  service:
+    name: fail2ban
+    state: reloaded

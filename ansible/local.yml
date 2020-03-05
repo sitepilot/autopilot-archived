@@ -1,0 +1,73 @@
+---
+- hosts: "{{ host | default('localhost') }}"
+  become: true
+  become_user: root
+  connection: "{{ connection | default('local') }}"
+
+  tasks:
+    - name: Add Docker signing keys.
+      apt_key:
+        url: "{{ item }}"
+        state: present
+      loop:
+        - https://download.docker.com/linux/ubuntu/gpg
+    
+    - name: Install required repositories.
+      apt_repository:
+        repo: "{{ item }}"
+      loop:
+        - "ppa:ondrej/php"
+        - "ppa:ansible/ansible"
+        - "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+
+    - name: Install required packages.
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop:
+        - ansible
+        - php7.4-cli
+        - php7.4-mysql
+        - php7.4-mbstring
+        - php7.4-dom
+        - php7.4-zip
+        - unzip
+        - python3
+        - python3-pip
+        - python3-setuptools
+        - docker-ce
+
+    - name: Install required pip packages.
+      pip:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - yamllint
+        - ansible-lint
+        - docker-compose
+
+    - name: Download Composer.
+      get_url:
+        url: https://getcomposer.org/installer
+        dest: /tmp/installer
+      tags: composer
+
+    - name: Install Composer.
+      shell: cat /tmp/installer | php -- --install-dir=/usr/local/bin
+      args:
+        creates: /usr/local/bin/composer
+      tags: composer
+
+    - name: Rename composer.phar to composer.
+      shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer
+      args:
+        creates: /usr/local/bin/composer
+      tags: composer
+
+    - name: Make composer executable.
+      file:
+        path: /usr/local/bin/composer
+        mode: a+x
+        state: file
+      tags: composer

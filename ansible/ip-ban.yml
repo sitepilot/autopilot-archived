@@ -1,0 +1,15 @@
+---
+- hosts: "{{ host }}"
+  become: true
+
+  vars_prompt:
+    - name: jail
+      prompt: "Jail name"
+      private: false
+
+    - name: ip
+      prompt: "IP address"
+      private: false
+
+  tasks:
+    - command: "fail2ban-client set {{ jail }} banip {{ ip }}"
