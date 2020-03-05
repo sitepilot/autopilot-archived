@@ -31,7 +31,7 @@ class ServerApp extends Model
 
         return [
             'name' => $name,
-            'domain' => $name . '.sitepilot.io',
+            'domain' => $name . '.' . env('APP_DEFAULT_DOMAIN'),
             'aliases' => []
         ];
     }
