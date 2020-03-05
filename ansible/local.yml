@@ -11,7 +11,7 @@
         state: present
       loop:
         - https://download.docker.com/linux/ubuntu/gpg
-    
+
     - name: Install required repositories.
       apt_repository:
         repo: "{{ item }}"
