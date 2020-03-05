@@ -70,7 +70,7 @@ class ServerDatabase extends Resource
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->searchable(),
 
-            Code::make('App Configuration', 'vars')
+            Code::make('Database Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
                 ->hideWhenCreating(),

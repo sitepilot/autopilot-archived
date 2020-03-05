@@ -67,7 +67,12 @@ class ServerFirewallRule extends Resource
                 ->readonly()
                 ->hideWhenCreating(),
 
-            Code::make('Group Configuration', 'vars')
+            Text::make('Name', 'name')
+                ->sortable()
+                ->onlyOnForms()
+                ->hideWhenUpdating(),
+
+            Code::make('Rule Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
                 ->hideWhenCreating(),

@@ -40,7 +40,7 @@ class ServerGroup extends Resource
     public static $search = [
         'name',
     ];
-    
+
     /**
      * Returns the menu label.
      *
@@ -63,9 +63,7 @@ class ServerGroup extends Resource
             ID::make()->sortable(),
 
             Text::make('Name', 'name')
-                ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->sortable(),
 
             Code::make('Group Configuration', 'vars')
                 ->rules(['required', 'json'])

@@ -68,7 +68,12 @@ class ServerAuthKey extends Resource
                 ->readonly()
                 ->hideWhenCreating(),
 
-            Code::make('Group Configuration', 'vars')
+            Text::make('Name', 'name')
+                ->sortable()
+                ->onlyOnForms()
+                ->hideWhenUpdating(),
+
+            Code::make('Key Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
                 ->hideWhenCreating(),

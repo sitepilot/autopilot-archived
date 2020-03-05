@@ -72,7 +72,7 @@ class ServerUser extends Resource
             BelongsTo::make('Host', 'host', ServerHost::class)
                 ->searchable(),
 
-            Code::make('Group Configuration', 'vars')
+            Code::make('User Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
                 ->hideWhenCreating(),
@@ -85,7 +85,7 @@ class ServerUser extends Resource
 
             HasMany::make('Apps', 'apps', ServerApp::class),
 
-            HasMany::make('Databases', 'databases', ServerDatabase::class), 
+            HasMany::make('Databases', 'databases', ServerDatabase::class),
 
             MorphToMany::make('Auth Keys', 'authKeys', ServerAuthKey::class)
                 ->searchable(),
