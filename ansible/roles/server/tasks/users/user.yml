@@ -41,7 +41,7 @@
   authorized_key:
     user: "{{ user.name }}"
     state: present
-    key: "{{ item }}"
+    key: "{{ item.key }}"
   loop: "{{ user.auth_keys }}"
   when: user.auth_keys is defined
 

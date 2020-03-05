@@ -7,16 +7,16 @@
   when:
     - "user.isolated is defined"
     - "user.isolated | bool"
-    - "user.auth_keys[0] is defined"
-    - '"test@server" in user.auth_keys[0]'
+    - "user.auth_keys[0].key is defined"
+    - '"test@server" in user.auth_keys[0].key'
 
 - name: "TEST {{ user.name }}: Can login over SSH using a private key as an unisolated user."
   command: "ssh -i /root/.ssh/test_key -o StrictHostKeyChecking=no {{ user.name }}@127.0.0.1 'date'"
   when:
     - "user.isolated is defined"
     - "not user.isolated | bool"
-    - "user.auth_keys[0] is defined"
-    - '"test@server" in user.auth_keys[0]'
+    - "user.auth_keys[0].key is defined"
+    - '"test@server" in user.auth_keys[0].key'
 
 # MySQL Tests
 - name: "TEST {{ user.name }}: Connect to MySQL as user."
