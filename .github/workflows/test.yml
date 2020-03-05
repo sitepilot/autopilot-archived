@@ -30,6 +30,9 @@ jobs:
       - name: Run Ansible lint on ansible folder.
         run: sudo ansible-lint -v --force-color ansible/
 
+      - name: Authorize composer to install Nova.
+        run: sudo composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+
       - name: Install composer packages.
         run: sudo composer install --no-dev
 
