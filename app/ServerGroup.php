@@ -40,10 +40,7 @@ class ServerGroup extends Model
             'smtp_relay_host' => 'smtp.eu.mailgun.org',
             'smtp_relay_domain' => 'mg.example.com',
             'smtp_relay_user' => 'postmaster@mg.example.com',
-            'smtp_relay_password' => Str::random(12),
-            'swap_path' => '/swapfile',
-            'swap_size' => '1024',
-            'swap_swappiness' => '60',
+            'smtp_relay_password' => Str::random(12)
         ];
     }
 
