@@ -42,5 +42,5 @@ jobs:
       - name: Migrate the database.
         run: sudo php artisan migrate --seed
 
-      - name: Test server:provision command.
+      - name: Test sp:server:provision command.
         run: "sudo php artisan sp:server:provision --host=all --disable-tty"
