@@ -15,6 +15,9 @@ jobs:
       - name: Stop MySQL server.
         run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
 
+      - name: Create environment file.
+        run: sudo cp .env.example .env
+
       - name: Start Autopilot containers.
         run: sudo docker-compose up -d
 
@@ -26,9 +29,6 @@ jobs:
 
       - name: Run Ansible lint on ansible folder.
         run: sudo ansible-lint -v --force-color ansible/
-
-      - name: Create environment file.
-        run: sudo cp .env.example .env
 
       - name: Install composer packages.
         run: sudo composer install --no-dev
