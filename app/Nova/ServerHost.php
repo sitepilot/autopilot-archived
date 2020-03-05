@@ -8,11 +8,10 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\MorphMany;
 use Laravel\Nova\Fields\MorphToMany;
 use Laravel\Nova\Fields\BelongsToMany;
-use App\Nova\Actions\EditConfiguration;
 
 class ServerHost extends Resource
 {
@@ -88,7 +87,7 @@ class ServerHost extends Resource
 
             HasMany::make('Users', 'users', ServerUser::class),
 
-            MorphToMany::make('Firewall Rules', 'firewallRules', ServerFirewallRule::class)
+            BelongsToMany::make('Firewall Rules', 'firewallRules', ServerFirewallRule::class)
                 ->searchable(),
 
             MorphToMany::make('Auth Keys', 'authKeys', ServerAuthKey::class)
