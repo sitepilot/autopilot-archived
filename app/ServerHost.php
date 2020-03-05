@@ -73,6 +73,10 @@ class ServerHost extends Model
             'autopilot_path' => null,
             'admin_pass' => Str::random(12),
             'mysql_root_pass' => Str::random(12),
+            'pma_blowfish_secret' => Str::random(32),
+            'swap_path' => '/swapfile',
+            'swap_size' => '1024',
+            'swap_swappiness' => '60',
             'users' => [],
             'firewall' => [],
             'auth_keys' => []
