@@ -29,6 +29,13 @@
   notify:
     - restart docker
 
+- name: Configure Docker daemon to preserve UFW rules.
+  template:
+    src: docker_daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify:
+    - restart docker
+
 - name: "Add user '{{ admin }}' to Docker group."
   user:
     name: "{{ admin }}"
