@@ -34,3 +34,4 @@
   retries: 6
   delay: 10
   until: result is not failed
+  no_log: true
