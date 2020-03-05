@@ -43,4 +43,4 @@ jobs:
         run: sudo php artisan migrate --seed
 
       - name: Test server:provision command.
-        run: "sudo ./sitepilot server:provision --host=localhost --disable-tty"
+        run: "sudo php artisan sp:server:provision --host=all --disable-tty"
