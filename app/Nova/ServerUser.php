@@ -85,6 +85,8 @@ class ServerUser extends Resource
 
             HasMany::make('Apps', 'apps', ServerApp::class),
 
+            HasMany::make('Databases', 'databases', ServerDatabase::class), 
+
             MorphToMany::make('Auth Keys', 'authKeys', ServerAuthKey::class)
                 ->searchable(),
         ];
