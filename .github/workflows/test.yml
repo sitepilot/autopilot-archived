@@ -44,3 +44,6 @@ jobs:
 
       - name: Test sp:server:provision command.
         run: "sudo php artisan sp:server:provision --host=all --disable-tty"
+
+      - name: Test sp:server:test command.
+        run: "sudo php artisan sp:server:test --host=all --skip-tags=test-domains --disable-tty"
