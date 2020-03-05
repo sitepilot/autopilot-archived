@@ -57,7 +57,7 @@
     - user.mysql_password is defined
     - user.mysql_password | length > 0
   no_log: true
-  
+
 - name: "{{ user.name }}: Create databases."
   mysql_db:
     name: "{{ user.name }}_{{ item.name }}"
