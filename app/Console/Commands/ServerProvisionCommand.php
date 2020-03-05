@@ -44,9 +44,9 @@ class ServerProvisionCommand extends Command
     {
         $this->askHost();
 
-        if($this->host) {
+        if ($this->host) {
             $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook(), '--extra-vars', "host=$this->host"];
-            
+
             if ($this->option('tags')) {
                 $cmd = array_merge($cmd, ["--tags", $this->option('tags')]);
             }
@@ -58,7 +58,7 @@ class ServerProvisionCommand extends Command
             $process->run(function ($type, $buffer) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer)) {
                     echo $buffer;
-                    throw new Exception("Failed to provision the host!");
+                    throw new Exception("Failed to provision the server!");
                 } else {
                     echo $buffer;
                 }
