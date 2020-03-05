@@ -53,12 +53,20 @@ virtualHostConfig  {
     location              /opt/sitepilot/services/phpmyadmin/public/
     allowBrowse           1
     addDefaultCharset     off
+    rewrite  {
+      enable              1
+      inherit             0
+    }
   }
 
   context /.sitepilot/health/ {
     location              /opt/sitepilot/services/health/public/
     allowBrowse           1
     addDefaultCharset     off
+    rewrite  {
+      enable              1
+      inherit             0
+    }
   }
 
   rewrite  {
