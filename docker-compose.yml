@@ -27,7 +27,7 @@ services:
       WEBSERVER_CACHE: "on"
       WEBSERVER_USER_ID: 1000
       WEBSERVER_USER_GID: 1000
-      SET_VHOST_FILE_PERMISSIONS: "no"
+      # SET_VHOST_FILE_PERMISSIONS: "yes"
     volumes:
       - type: bind
         source: "./"
