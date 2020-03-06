@@ -1,4 +1,4 @@
-FROM sitepilot/autopilot:latest
+FROM sitepilot/autopilot-web:latest
 MAINTAINER Sitepilot <support@sitepilot.io>
 
 LABEL org.label-schema.vendor="Sitepilot" \
