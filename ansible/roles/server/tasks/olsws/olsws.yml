@@ -92,7 +92,7 @@
   openssl_csr:
     path: /usr/local/lsws/conf/cert/server.csr
     privatekey_path: /usr/local/lsws/conf/cert/server.key
-    common_name: "{{ hostname }}"
+    common_name: "{{ name }}"
 
 - name: Generate a self signed OpenSSL certificate.
   openssl_certificate:

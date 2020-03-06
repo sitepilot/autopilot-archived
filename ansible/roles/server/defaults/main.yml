@@ -1,5 +1,5 @@
 ---
-hostname: undefined
+name: undefined
 hostname_update: false
 timezone: Europe/Amsterdam
 timezone_update: true

@@ -1,7 +1,7 @@
 ---
 - name: Set the hostname.
   hostname:
-    name: "{{ hostname }}"
+    name: "{{ name }}"
   when:
     - hostname_update is defined
     - hostname_update|bool
