@@ -63,7 +63,7 @@ class ServerHost extends Model
         $name = $this->getNextInGroupName($this->group->name);
 
         return [
-            'name' => $name,
+            'hostname' => $name,
             'ansible_connection' => 'ssh',
             'ansible_ssh_host' => '0.0.0.0',
             'ansible_ssh_port' => '22',
