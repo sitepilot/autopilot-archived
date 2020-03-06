@@ -12,6 +12,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Debug ip.
+        run: sudo ip addr
+
+      - name: Install pip packages.
+        run: sudo pip install ansible-lint && sudo pip install yamllint
+
+      - name: Run Yaml lint on ansible folder.
+        run: sudo yamllint -c tests/yamllint.yml ansible/
+
+      - name: Run Ansible lint on ansible folder.
+        run: sudo ansible-lint -v --force-color ansible/
+
       - name: Stop MySQL server.
         run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
 
@@ -26,15 +38,6 @@ jobs:
 
       - name: Start Autopilot containers.
         run: sudo docker-compose -f docker-compose.test.yml up -d
-
-      - name: Install pip packages.
-        run: sudo pip install ansible-lint && sudo pip install yamllint
-
-      - name: Run Yaml lint on ansible folder.
-        run: sudo yamllint -c tests/yamllint.yml ansible/
-
-      - name: Run Ansible lint on ansible folder.
-        run: sudo ansible-lint -v --force-color ansible/
 
       - name: Authorize composer to install Nova.
         run: docker exec -w /var/www/html autopilot-web composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
