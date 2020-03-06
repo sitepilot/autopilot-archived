@@ -5,19 +5,19 @@
     state: present
   loop:
     - https://download.docker.com/linux/ubuntu/gpg
-  when: ansible_host != 172.17.0.1
+  when: ansible_host != "172.17.0.1"
 
 - name: Install Docker repositories.
   apt_repository:
     repo: "{{ item }}"
   loop:
     - "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-  when: ansible_host != 172.17.0.1
+  when: ansible_host != "172.17.0.1"
 
 - name: Install Docker CE.
   apt:
     name: docker-ce
-  when: ansible_host != 172.17.0.1
+  when: ansible_host != "172.17.0.1"
 
 - name: Enable Docker on startup.
   service:
