@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM sitepilot/autopilot:latest
 MAINTAINER Sitepilot <support@sitepilot.io>
 
 LABEL org.label-schema.vendor="Sitepilot" \
@@ -7,5 +7,3 @@ LABEL org.label-schema.vendor="Sitepilot" \
     org.label-schema.url="https://sitepilot.io"
 
 ADD . /var/www/html
-
-WORKDIR /var/www/html
