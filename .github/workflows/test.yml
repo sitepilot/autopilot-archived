@@ -34,10 +34,6 @@ jobs:
         run: |
           sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
           sudo chmod 600 /root/.ssh/authorized_keys
-          sudo cat /root/.ssh/authorized_keys
-          sudo cat /etc/ssh/sshd_config
-          sudo service sshd status
-          sudo service sshd start
 
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:test
@@ -56,6 +52,9 @@ jobs:
 
       - name: Migrate the database.
         run: docker exec -w /var/www/html autopilot-web php artisan migrate --seed
+
+      - name: Set private key permission.
+        run: docker exec -w /var/www/html autopilot-web chmod 600 /var/www/tests/test_key
 
       - name: Test sp:server:provision command.
         run: docker exec -w /var/www/html autopilot-web php artisan sp:server:provision --host=all --disable-tty
