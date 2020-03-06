@@ -98,7 +98,7 @@ class ServerInventoryCommand extends Command
                 $meta['hostvars'][$host->name] = $hostvars;
             }
 
-            $output[Str::snake($group->name)] = $groupOutput;
+            $output[Str::camel($group->name)] = $groupOutput;
         }
 
         $output['_meta'] = $meta;
