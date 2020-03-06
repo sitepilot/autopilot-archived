@@ -58,6 +58,10 @@ Users are isolated and allowed to use SFTP with password authentication (chroot 
 * phpMyAdmin: `http://example.com/.sitepilot/pma/`.
 * Health check: `http://example.com/.sitepilot/health/`.
 
+## Development
+
+* Coming soon...
+
 ## License
 
 MIT / BSD
