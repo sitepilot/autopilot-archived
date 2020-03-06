@@ -31,11 +31,13 @@ jobs:
         run: sudo sed 's/TEST_IP=192.168.25.100/TEST_IP=172.17.0.1/' .env.example > .env
 
       - name: Copy authorized keys file.
-        run: | 
+        run: |
           sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
           sudo chmod 600 /root/.ssh/authorized_keys
           sudo cat /root/.ssh/authorized_keys
           sudo cat /etc/ssh/sshd_config
+          sudo service sshd status
+          sudo service sshd start
 
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:test
