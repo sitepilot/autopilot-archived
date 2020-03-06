@@ -45,7 +45,7 @@ class ServerProvisionCommand extends Command
         $this->askHost();
 
         if ($this->host) {
-            $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook(), '--extra-vars', "host=$this->host"];
+            $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook(), '--extra-vars', "host=$this->host", "-v"];
 
             if ($this->option('tags')) {
                 $cmd = array_merge($cmd, ["--tags", $this->option('tags')]);
