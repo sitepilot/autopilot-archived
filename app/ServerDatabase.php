@@ -4,12 +4,14 @@ namespace App;
 
 use App\ServerUser;
 use App\Traits\HasVars;
+use App\Traits\UniqueName;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class ServerDatabase extends Model
 {
     use HasVars;
+    use UniqueName;
 
     /**
      * The attributes that should be cast to native types.
@@ -27,8 +29,13 @@ class ServerDatabase extends Model
      */
     public function getDefaultVars()
     {
+        $name = '';
+        while ($this->nameIsUsed($name)) {
+            $name =  $this->user->name . '_db' . ucfirst(Str::random('4'));
+        }
+
         return [
-            'name' => $this->user->name . '_' . Str::random(6),
+            'name' => $name,
             'state' => 'present'
         ];
     }

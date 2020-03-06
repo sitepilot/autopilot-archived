@@ -28,6 +28,7 @@ class ServerGroup extends Model
     public function getDefaultVars()
     {
         return [
+            'name' => $this->name,
             'admin' => 'sitepilot',
             'admin_email' => 'support@sitepilot.io',
             'timezone' => 'Europe/Amsterdam',

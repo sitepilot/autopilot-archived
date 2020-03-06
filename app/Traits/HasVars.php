@@ -16,13 +16,15 @@ trait HasVars
         parent::boot();
 
         self::updating(function (Model $model) {
-            $model->vars = $vars = array_merge($model->getDefaultVars(), is_array($model->vars) ? $model->vars : []);
-            $model->name = isset($vars['hostname']) ? $vars['hostname'] : (isset($vars['name']) ? $vars['name'] : $model->name);
+            $originalVars = $model->getOriginal('vars');
+            $updatedVars = array_merge($model->getDefaultVars(), is_array($model->vars) ? $model->vars : []);
+            if (isset($originalVars['name'])) $updatedVars['name'] = $originalVars['name'];
+            $model->vars = $updatedVars;
         });
 
         self::creating(function (Model $model) {
             $model->vars = $vars = array_merge($model->getDefaultVars(), is_array($model->vars) ? $model->vars : []);
-            $model->name = isset($vars['hostname']) ? $vars['hostname'] : (isset($vars['name']) ? $vars['name'] : $model->name);
+            $model->name = isset($vars['name']) ? $vars['name'] : $model->name;
         });
     }
 

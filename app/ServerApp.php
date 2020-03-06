@@ -4,11 +4,13 @@ namespace App;
 
 use App\ServerUser;
 use App\Traits\HasVars;
+use App\Traits\UniqueName;
 use Illuminate\Database\Eloquent\Model;
 
 class ServerApp extends Model
 {
     use HasVars;
+    use UniqueName;
 
     /**
      * The attributes that should be cast to native types.
@@ -26,8 +28,7 @@ class ServerApp extends Model
      */
     public function getDefaultVars()
     {
-        $faker = \Faker\Factory::create('en_GB');
-        $name = 'app-' . $faker->domainWord;
+        $name = !empty($this->name) ? $this->name : $this->getRandomName();
 
         return [
             'name' => $name,

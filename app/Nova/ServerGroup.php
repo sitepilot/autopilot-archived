@@ -63,7 +63,14 @@ class ServerGroup extends Resource
             ID::make()->sortable(),
 
             Text::make('Name', 'name')
-                ->sortable(),
+                ->sortable()
+                ->readonly()
+                ->hideWhenCreating(),
+
+            Text::make('Name', 'name')
+                ->sortable()
+                ->rules(['required', 'min:4'])
+                ->hideWhenUpdating(),
 
             Code::make('Group Configuration', 'vars')
                 ->rules(['required', 'json'])

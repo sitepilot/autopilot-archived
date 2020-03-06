@@ -64,6 +64,10 @@ class ServerApp extends Resource
 
             Text::make('Name', 'name')
                 ->sortable()
+                ->hideWhenUpdating(),
+
+            Text::make('Name', 'name')
+                ->sortable()
                 ->readonly()
                 ->hideWhenCreating(),
 

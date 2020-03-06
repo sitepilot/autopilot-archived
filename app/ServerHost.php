@@ -4,6 +4,7 @@ namespace App;
 
 use Exception;
 use App\Traits\HasVars;
+use App\Traits\UniqueName;
 use phpseclib\Crypt\RSA;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class ServerHost extends Model
     use HasVars {
         boot as hasVarsBoot;
     }
+    use UniqueName;
 
     /**
      * The attributes that should be cast to native types.
@@ -58,11 +60,10 @@ class ServerHost extends Model
      */
     public function getDefaultVars()
     {
-        $faker = \Faker\Factory::create('en_GB');
-        $name = 'srv-' . $faker->domainWord;
+        $name = $this->getNextInGroupName($this->group->name);
 
         return [
-            'hostname' => $name,
+            'name' => $name,
             'ansible_connection' => 'ssh',
             'ansible_ssh_host' => '0.0.0.0',
             'ansible_ssh_port' => '22',

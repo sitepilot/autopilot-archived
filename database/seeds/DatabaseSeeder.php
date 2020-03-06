@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         if (!ServerGroup::count()) {
             // Create server group
             $serverGroup = new ServerGroup;
-            $serverGroup->name  = 'nl-ams1';
+            $serverGroup->name  = 'ams-web';
             $serverGroup->save();
 
             // Create firewall rules
