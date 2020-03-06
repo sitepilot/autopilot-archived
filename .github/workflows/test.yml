@@ -31,19 +31,19 @@ jobs:
         run: sudo ansible-lint -v --force-color ansible/
 
       - name: Authorize composer to install Nova.
-        run: docker exec autopilot-web composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+        run: docker exec autopilot-web cd ./html && composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Install composer packages.
-        run: docker exec autopilot-web composer install --no-dev
+        run: docker exec autopilot-web cd ./html && composer install --no-dev
 
       - name: Generate application key.
-        run: docker exec autopilot-web ./html/artisan key:generate
+        run: docker exec autopilot-web cd ./html && php artisan key:generate
 
       - name: Migrate the database.
-        run: docker exec autopilot-web ./html/artisan migrate --seed
+        run: docker exec autopilot-web cd ./html && php artisan migrate --seed
 
       - name: Test sp:server:provision command.
-        run: "sdocker exec autopilot-web ./html/artisan sp:server:provision --host=all --disable-tty"
+        run: "sdocker exec autopilot-web cd ./html && php artisan sp:server:provision --host=all --disable-tty"
 
       - name: Test sp:server:test command.
-        run: "docker exec autopilot-web ./html/artisan sp:server:test --host=all --skip-tags=test-domains --disable-tty"
+        run: "docker exec autopilot-web cd ./html && php artisan sp:server:test --host=all --skip-tags=test-domains --disable-tty"
