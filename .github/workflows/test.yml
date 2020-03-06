@@ -34,8 +34,8 @@ jobs:
         run: | 
           sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
           sudo chmod 600 /root/.ssh/authorized_keys
-          cat /root/.ssh/authorized_keys
-          cat /etc/ssh/sshd_config
+          sudo cat /root/.ssh/authorized_keys
+          sudo cat /etc/ssh/sshd_config
 
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:test
