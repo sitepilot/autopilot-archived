@@ -12,3 +12,7 @@ npm-debug.log
 yarn-error.log
 .vagrant
 *.log
+.vscode-server
+.sudo_as_admin_successful
+.docker
+.DS_Store

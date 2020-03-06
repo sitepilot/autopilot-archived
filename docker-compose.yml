@@ -6,7 +6,7 @@ services:
     container_name: autopilot-mysql
     restart: always
     ports:
-      - "${DB_PORT}:3306"
+      - "${DB_HOST_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -15,14 +15,24 @@ services:
     volumes:
       - "mysql_data:/var/lib/mysql"
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: autopilot-pma
-    environment:
-      - PMA_ARBITRARY=1
-    restart: always
+  web:
+    image: sitepilot/autopilot-web:latest
+    container_name: autopilot-web
     ports:
-      - 8080:80
+      - "${HTTP_HOST_PORT}:80"
+      - "${HTTPS_HOST_PORT}:443"
+      #- "7080:7080"
+    restart: always
+    environment:
+      WEBSERVER_CACHE: "on"
+      WEBSERVER_USER_ID: 1000
+      WEBSERVER_USER_GID: 1000
+      SET_VHOST_FILE_PERMISSIONS: "no"
+    volumes:
+      - type: bind
+        source: "./"
+        target: "/var/www/html"
+        consistency: cached
 
 volumes:
   mysql_data:

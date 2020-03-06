@@ -66,7 +66,6 @@
   template:
     src: index.php.j2
     dest: /opt/sitepilot/services/default/public/index.php
-  when: autopilot_path is undefined
 
 - name: Write default vhost configuration.
   template:
@@ -74,15 +73,6 @@
     dest: /usr/local/lsws/conf/vhosts/default.conf
   notify:
     - reload olsws
-  when: autopilot_path is undefined
-
-- name: Write Autopilot vhost configuration.
-  template:
-    src: vhost_autopilot.conf.j2
-    dest: /usr/local/lsws/conf/vhosts/autopilot.conf
-  notify:
-    - reload olsws
-  when: autopilot_path is defined
 
 - name: Generate an OpenSSL private key.
   openssl_privatekey:

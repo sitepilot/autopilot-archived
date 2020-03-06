@@ -74,8 +74,9 @@ class DatabaseSeeder extends Seeder
             $host = new ServerHost;
             $host->group_id = $serverGroup->id;
             $host->vars = [
-                'autopilot_path' => base_path(),
-                'ansible_connection' => 'local'
+                'ansible_ssh_host' => env('TEST_IP', '192.168.25.100'),
+                'ansible_ssh_private_key_file' => '/var/www/tests/test_key',
+                'ansible_ssh_public_key_file' => '/var/www/tests/test_key.pub'
             ];
             $host->save();
             $host->firewallRules()->attach([

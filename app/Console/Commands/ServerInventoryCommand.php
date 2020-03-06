@@ -57,11 +57,11 @@ class ServerInventoryCommand extends Command
 
                 $hostvars = $host->vars;
                 if (isset($hostvars['ansible_ssh_private_key_file'])) {
-                    $hostvars['ansible_ssh_private_key_file'] = storage_path($hostvars['ansible_ssh_private_key_file']);
+                    $hostvars['ansible_ssh_private_key_file'] = substr($hostvars['ansible_ssh_private_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_private_key_file'] : storage_path($hostvars['ansible_ssh_private_key_file']);
                 }
 
                 if (isset($hostvars['ansible_ssh_public_key_file'])) {
-                    $hostvars['ansible_ssh_public_key_file'] = storage_path($hostvars['ansible_ssh_public_key_file']);
+                    $hostvars['ansible_ssh_public_key_file'] = substr($hostvars['ansible_ssh_public_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_public_key_file'] : storage_path($hostvars['ansible_ssh_public_key_file']);
                 }
 
                 $hostvars['users'] = [];

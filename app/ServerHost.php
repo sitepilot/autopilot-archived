@@ -38,7 +38,7 @@ class ServerHost extends Model
         self::hasVarsBoot();
 
         self::created(function (ServerHost $host) {
-            if ($host->getVar('ansible_connection') == 'ssh') {
+            if ($host->getVar('ansible_connection') == 'ssh' && !$host->getVar('ansible_ssh_private_key_file')) {
                 $host->generatePrivatePublicKey();
             }
         });
@@ -118,9 +118,9 @@ class ServerHost extends Model
      */
     public function getPrivateKeyPath($relative = true)
     {
-        $path = "keys/" . md5("site-" . $this->id) . ".key";
+        $path = "app/keys/" . md5("site-" . $this->id) . ".key";
         if (!$relative) {
-            return storage_path("app/" . $path);
+            return storage_path($path);
         }
         return $path;
     }
@@ -132,9 +132,9 @@ class ServerHost extends Model
      */
     public function getPublicKeyPath($relative = true)
     {
-        $path = "keys/" . md5("site-" . $this->id) . ".pub";
+        $path = "app/keys/" . md5("site-" . $this->id) . ".pub";
         if (!$relative) {
-            return storage_path("app/" . $path);
+            return storage_path($path);
         }
         return $path;
     }
