@@ -18,8 +18,11 @@ jobs:
       - name: Create environment file.
         run: sudo sed 's/TEST_IP=192.168.25.100/TEST_IP=172.17.0.1/' .env.example > .env
 
+      - name: Build container.
+        run: docker build . --file Dockerfile --tag sitepilot/autopilot:test
+
       - name: Start Autopilot containers.
-        run: sudo docker-compose up -d
+        run: sudo docker-compose -f docker-compose.test.yml up -d
 
       - name: Install pip packages.
         run: sudo pip install ansible-lint && sudo pip install yamllint
@@ -43,7 +46,7 @@ jobs:
         run: docker exec -w /var/www/html autopilot-web php artisan migrate --seed
 
       - name: Test sp:server:provision command.
-        run: "sdocker exec -w /var/www/html autopilot-web php artisan sp:server:provision --host=all --disable-tty"
+        run: docker exec -w /var/www/html autopilot-web php artisan sp:server:provision --host=all --disable-tty
 
       - name: Test sp:server:test command.
-        run: "docker exec -w /var/www/html autopilot-web php artisan sp:server:test --host=all --skip-tags=test-domains --disable-tty"
+        run: docker exec -w /var/www/html autopilot-web php artisan sp:server:test --host=all --skip-tags=test-domains --disable-tty

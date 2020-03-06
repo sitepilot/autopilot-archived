@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: autopilot-mysql
+    restart: always
+    ports:
+      - "${DB_HOST_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - "mysql_data:/var/lib/mysql"
+
+  web:
+    image: sitepilot/autopilot:test
+    container_name: autopilot-web
+    ports:
+      - "${HTTP_HOST_PORT}:80"
+      - "${HTTPS_HOST_PORT}:443"
+    restart: always
+
+volumes:
+  mysql_data:
