@@ -37,6 +37,7 @@
 
 - include: docker/docker.yml
   tags: ["docker", "install"]
+  when: ansible_host != "172.17.0.1"
 
 - include: docker/services.yml
   tags: ["docker", "services"]
