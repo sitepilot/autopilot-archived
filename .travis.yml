@@ -6,10 +6,13 @@ env:
     - PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
 
 install:
+  - wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+  - wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
   - sudo apt-get update -q
-  - sudo apt-get install -q virtualbox --fix-missing
-  - sudo wget -nv https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
-  - sudo dpkg -i vagrant_1.7.2_x86_64.deb
+  - sudo apt-get install -q virtualbox-6.0 --fix-missing
+  - sudo wget -nv https://releases.hashicorp.com/vagrant/2.2.7/vagrant_2.2.7_x86_64.deb
+  - sudo dpkg -i vagrant_2.2.7_x86_64.deb
   - bundle install
 
 cache:
