@@ -64,7 +64,7 @@ jobs:
       - name: Test server:test command.
         run: ./autopilot server:test --host=all --skip-tags=test-domains --disable-tty
 
-      - name: Build and deploy the Docker image
+      - name: Deploy image to Docker hub.
         run: |
           if [[ ${GITHUB_REF##*/} = "master" ]]; then export DOCKER_TAG=latest; else export DOCKER_TAG=${GITHUB_REF##*/}; fi
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
