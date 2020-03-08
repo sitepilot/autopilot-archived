@@ -1,10 +1,4 @@
 ---
-- name: "Add user '{{ admin }}' to Docker group."
-  user:
-    name: "{{ admin }}"
-    groups: docker
-    append: true
-
 - name: Install Docker python packages.
   pip:
     name: "{{ item }}"

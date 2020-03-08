@@ -35,9 +35,15 @@
 # Docker
 # ================================
 
+# Only executed when the host isn't running Autopilot
 - include: docker/docker.yml
   tags: ["docker", "docker-install"]
-  when: "'docker' not in ansible_facts.packages"
+  when:
+    - autopilot_host is defined
+    - not autopilot_host|bool
+
+- include: docker/config.yml
+  tags: ["docker", "docker-config"]
 
 - include: docker/services.yml
   tags: ["docker", "docker-services"]

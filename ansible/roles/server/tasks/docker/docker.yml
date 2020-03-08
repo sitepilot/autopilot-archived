@@ -15,23 +15,3 @@
 - name: Install Docker CE.
   apt:
     name: docker-ce
-
-- name: Enable Docker on startup.
-  service:
-    name: docker
-    enabled: true
-
-- name: Configure Docker to preserve UFW rules.
-  lineinfile:
-    path: "/etc/default/docker"
-    regex: "^DOCKER_OPTS="
-    line: 'DOCKER_OPTS="--iptables=false"'
-  notify:
-    - restart docker
-
-- name: Configure Docker daemon to preserve UFW rules.
-  template:
-    src: docker_daemon.json.j2
-    dest: /etc/docker/daemon.json
-  notify:
-    - restart docker

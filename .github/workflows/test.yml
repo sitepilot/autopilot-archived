@@ -29,6 +29,7 @@ jobs:
           sudo cp .env.example .env
           sudo sed -i 's/APP_TEST_HOST=host.docker.internal/APP_TEST_HOST=172.17.0.1/' .env
           sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
+          sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
 
       - name: Copy authorized keys file.
         run: |
