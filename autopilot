@@ -8,7 +8,7 @@ fi
 case "$1" in
 'install'|'install-test')  echo "Installing Autopilot"
     if [ "$1" == 'install-test' ]; then
-        docker-compose up -f docker-compose.test.yml -d
+        docker-compose -f docker-compose.test.yml up -d
     else
         docker-compose up -d
     fi
