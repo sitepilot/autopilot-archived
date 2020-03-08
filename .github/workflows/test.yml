@@ -46,11 +46,11 @@ jobs:
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
-      - name: Give containers some time to start.
-        run: sleep 10
-
       - name: Start Autopilot containers.
         run: sudo docker-compose -f docker-compose.test.yml up -d
+
+      - name: Give containers some time to start.
+        run: sleep 10
 
       - name: Generate application key.
         run: ./autopilot key:generate
