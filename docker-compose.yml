@@ -14,7 +14,7 @@ services:
       - "db_data:/var/lib/mysql"
 
   autopilot:
-    image: sitepilot/autopilot-web:latest
+    image: sitepilot/autopilot-web:${APP_DOCKER_TAG}
     container_name: autopilot
     depends_on:
       - database
