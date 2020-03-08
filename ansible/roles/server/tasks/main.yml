@@ -37,6 +37,7 @@
 
 - include: docker/docker.yml
   tags: ["docker", "docker-install"]
+  when: "'docker' not in ansible_facts.packages"
 
 - include: docker/services.yml
   tags: ["docker", "docker-services"]

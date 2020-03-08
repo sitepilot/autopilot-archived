@@ -22,14 +22,20 @@
     recurse: "{{ item.recurse }}"
   loop:
     # MySQL
-    - { path: /opt/sitepilot/services/mysql, recurse: false }
-    - { path: /opt/sitepilot/services/mysql/logs/, recurse: false }
-    - { path: /opt/sitepilot/services/mysql/data/, recurse: false }
-    - { path: /opt/sitepilot/services/mysql/conf/, recurse: false }
+    - path: /opt/sitepilot/services/mysql
+      recurse: false
+    - path: /opt/sitepilot/services/mysql/logs/
+      recurse: false
+    - path: /opt/sitepilot/services/mysql/data/
+      recurse: false
+    - path: /opt/sitepilot/services/mysql/conf/
+      recurse: false
 
     # Redis
-    - { path: /opt/sitepilot/services/redis/, recurse: false }
-    - { path: /opt/sitepilot/services/redis/data/, recurse: false }
+    - path: /opt/sitepilot/services/redis/
+      recurse: false
+    - path: /opt/sitepilot/services/redis/data/
+      recurse: false
 
 - name: Get the admin UID.
   command: "id -u {{ admin }}"

@@ -54,7 +54,7 @@ jobs:
         run: ./autopilot migrate --seed
 
       - name: Test server:provision command.
-        run: ./autopilot server:provision --host=all --skip-tags=common-upgrade,docker-install --disable-tty
+        run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
 
       - name: Test server:test command.
         run: ./autopilot server:test --host=all --skip-tags=test-domains --disable-tty
