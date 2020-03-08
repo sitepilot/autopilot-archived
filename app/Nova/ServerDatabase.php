@@ -38,7 +38,7 @@ class ServerDatabase extends Resource
      * @var array
      */
     public static $search = [
-        'name'
+        'name', 'description'
     ];
 
     /**
@@ -49,6 +49,16 @@ class ServerDatabase extends Resource
     public static function label()
     {
         return 'Databases';
+    }
+
+    /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string|null
+     */
+    public function subtitle()
+    {
+        return $this->description;
     }
 
     /**
@@ -69,6 +79,9 @@ class ServerDatabase extends Resource
 
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->searchable(),
+
+            Text::make('Description', 'description')
+                ->sortable(),
 
             Code::make('Database Configuration', 'vars')
                 ->rules(['required', 'json'])

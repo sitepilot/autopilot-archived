@@ -33,14 +33,14 @@ class ServerUser extends Resource
      * @var string
      */
     public static $title = 'name';
-
+    
     /**
      * The columns that should be searched.
      *
      * @var array
      */
     public static $search = [
-        'name'
+        'name', 'description'
     ];
 
     /**
@@ -51,6 +51,16 @@ class ServerUser extends Resource
     public static function label()
     {
         return 'Users';
+    }
+
+    /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string|null
+     */
+    public function subtitle()
+    {
+        return $this->description;
     }
 
     /**
@@ -71,6 +81,9 @@ class ServerUser extends Resource
 
             BelongsTo::make('Host', 'host', ServerHost::class)
                 ->searchable(),
+
+            Text::make('Description', 'description')
+                ->sortable(),
 
             Code::make('User Configuration', 'vars')
                 ->rules(['required', 'json'])
