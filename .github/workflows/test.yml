@@ -12,17 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Stop MySQL server.
-        run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
-
-      - name: Create environment file.
-        run: sudo cp .env.example .env
-
-      - name: Start Autopilot containers.
-        run: sudo docker-compose up -d
-
-      - name: Provision required test packages.
-        run: sudo ansible-playbook ansible/local.yml --extra-vars "host=localhost connection=local"
+      - name: Install pip packages.
+        run: sudo pip install ansible-lint && sudo pip install yamllint
 
       - name: Run Yaml lint on ansible folder.
         run: sudo yamllint -c tests/yamllint.yml ansible/
@@ -30,20 +21,37 @@ jobs:
       - name: Run Ansible lint on ansible folder.
         run: sudo ansible-lint -v --force-color ansible/
 
-      - name: Authorize composer to install Nova.
-        run: sudo composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+      - name: Stop MySQL server.
+        run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
 
-      - name: Install composer packages.
-        run: sudo composer install --no-dev
+      - name: Copy authorized keys file.
+        run: |
+          sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
+          sudo chmod 600 /root/.ssh/authorized_keys
 
-      - name: Generate application key.
-        run: sudo php artisan key:generate
+      - name: Build container.
+        run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
-      - name: Migrate the database.
-        run: sudo php artisan migrate --seed
+      - name: Create environment file.
+        run: |
+          sudo cp .env.example .env
+          sudo sed -i "s/APP_DOCKER_TAG=latest/APP_DOCKER_TAG=$GITHUB_SHA/" .env  
+          sudo sed -i 's/APP_TEST_HOST=host.docker.internal/APP_TEST_HOST=172.17.0.1/' .env
+          sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
+          sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
 
-      - name: Test sp:server:provision command.
-        run: "sudo php artisan sp:server:provision --host=all --disable-tty"
+      - name: Run Autopilot installer.
+        run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
-      - name: Test sp:server:test command.
-        run: "sudo php artisan sp:server:test --host=all --skip-tags=test-domains --disable-tty"
+      - name: Test server:provision command.
+        run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
+
+      - name: Test server:test command.
+        run: ./autopilot server:test --host=all --skip-tags=test-domains --disable-tty
+
+      - name: Deploy image to Docker hub.
+        run: |
+          if [[ ${GITHUB_REF##*/} = "master" ]]; then export DOCKER_TAG=latest; else export DOCKER_TAG=${GITHUB_REF##*/}; fi
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker tag sitepilot/autopilot:${GITHUB_SHA} sitepilot/autopilot:$DOCKER_TAG
+          docker push sitepilot/autopilot:$DOCKER_TAG

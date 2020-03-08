@@ -14,7 +14,7 @@ class ServerInventoryCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'sp:server:inventory 
+    protected $signature = 'server:inventory 
         {--host= : The host name (optional)}
         {--list : Comma separated list of tags (optional)}';
 
@@ -57,11 +57,13 @@ class ServerInventoryCommand extends Command
 
                 $hostvars = $host->vars;
                 if (isset($hostvars['ansible_ssh_private_key_file'])) {
-                    $hostvars['ansible_ssh_private_key_file'] = storage_path($hostvars['ansible_ssh_private_key_file']);
+                    $hostvars['ansible_ssh_private_key_file'] = substr($hostvars['ansible_ssh_private_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_private_key_file'] : storage_path($hostvars['ansible_ssh_private_key_file']);
+                    chmod($hostvars['ansible_ssh_private_key_file'], 0600);
                 }
 
                 if (isset($hostvars['ansible_ssh_public_key_file'])) {
-                    $hostvars['ansible_ssh_public_key_file'] = storage_path($hostvars['ansible_ssh_public_key_file']);
+                    $hostvars['ansible_ssh_public_key_file'] = substr($hostvars['ansible_ssh_public_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_public_key_file'] : storage_path($hostvars['ansible_ssh_public_key_file']);
+                    chmod($hostvars['ansible_ssh_public_key_file'], 0600);
                 }
 
                 $hostvars['users'] = [];

@@ -1,0 +1,85 @@
+#!/bin/bash
+BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [ -t 1 ]; then
+    IT='-it'
+else
+    IT=''
+fi
+
+start() {
+    mkdir -p $BASE/data/app
+    mkdir -p $BASE/data/mysql
+    mkdir -p $BASE/data/vendor
+
+    docker-compose -f $BASE/docker-compose.yml --project-directory $BASE up -d
+}
+
+stop() {
+    docker-compose -f $BASE/docker-compose.yml --project-directory $BASE down
+}
+
+pull() {
+    docker-compose -f $BASE/docker-compose.yml --project-directory $BASE pull
+}
+
+case "$1" in
+'start') echo "Starting Autopilot"
+    start
+    echo "DONE!"
+    ;;
+'stop') echo "Stopping Autopilot"
+    stop
+    echo "DONE!"
+    ;;
+'install'|'install-test'|'install-dev') echo "Installing Autopilot"
+    if [ "$1" == 'install-test' ]; then
+        cp $BASE/docker-compose.prod.yml $BASE/docker-compose.yml
+    elif [ "$1" == 'install-dev' ]; then
+        cp $BASE/docker-compose.dev.yml $BASE/docker-compose.yml
+    else
+        curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/docker-compose.prod.yml
+    fi
+
+    start
+
+    echo "Waiting for containers..."
+    sleep 10
+
+    if [ ! -z "$2" ]; then
+        docker exec $IT -w /var/www/html autopilot composer config http-basic.nova.laravel.com $2 $3
+    fi
+
+    docker exec $IT -w /var/www/html autopilot composer install --no-dev
+    docker exec $IT -w /var/www/html autopilot php artisan key:generate
+    docker exec $IT -w /var/www/html autopilot php artisan migrate --seed
+
+    echo "DONE!"
+    ;;
+'update'|'update-test'|'update-dev') echo "Updating Autopilot"
+    if [ "$1" == 'update-test' ]; then
+        cp $BASE/docker-compose.prod.yml $BASE/docker-compose.yml
+    elif [ "$1" == 'update-dev' ]; then
+        cp $BASE/docker-compose.dev.yml $BASE/docker-compose.yml
+    else
+        curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/docker-compose.prod.yml
+    fi
+    
+    pull
+    start
+
+    echo "Waiting for containers..."
+    sleep 10
+
+    docker exec $IT -w /var/www/html autopilot composer install --no-dev
+    docker exec $IT -w /var/www/html autopilot php artisan migrate --seed
+
+    echo "DONE!"
+    ;;
+'exec')
+    docker exec $IT -w /var/www/html autopilot "${@:2}"
+    ;;
+*)
+    docker exec $IT -w /var/www/html autopilot php artisan $@
+    ;;
+esac

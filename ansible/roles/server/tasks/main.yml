@@ -11,38 +11,45 @@
 # ================================
 
 - include: "common/swap.yml"
-  tags: ["common", "swap"]
+  tags: ["common", "common-swap"]
 
 - include: "common/upgrade.yml"
-  tags: ["common", "upgrade"]
+  tags: ["common", "common-upgrade"]
 
 - include: common/install.yml
-  tags: ["common", "install"]
+  tags: ["common", "common-install"]
 
 - include: common/admin.yml
-  tags: ["common", "admin"]
+  tags: ["common", "common-admin"]
 
 - include: common/filesystem.yml
-  tags: ["common", "filesystem"]
+  tags: ["common", "common-filesystem"]
 
 - include: common/config.yml
-  tags: ["common", "config"]
+  tags: ["common", "common-config"]
 
 - include: common/firewall.yml
-  tags: ["common", "firewall"]
+  tags: ["common", "common-firewall"]
 
 # ================================
 # Docker
 # ================================
 
+# Only executed when the host isn't running Autopilot
 - include: docker/docker.yml
-  tags: ["docker", "install"]
+  tags: ["docker", "docker-install"]
+  when:
+    - autopilot_host is defined
+    - not autopilot_host|bool
+
+- include: docker/config.yml
+  tags: ["docker", "docker-config"]
 
 - include: docker/services.yml
-  tags: ["docker", "services"]
+  tags: ["docker", "docker-services"]
 
 - include: docker/mysql.yml
-  tags: ["docker", "mysql"]
+  tags: ["docker", "docker-mysql"]
 
 # ================================
 # OpenLitespeed

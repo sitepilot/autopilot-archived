@@ -38,7 +38,7 @@ class ServerHost extends Model
         self::hasVarsBoot();
 
         self::created(function (ServerHost $host) {
-            if ($host->getVar('ansible_connection') == 'ssh') {
+            if ($host->getVar('ansible_connection') == 'ssh' && !$host->getVar('ansible_ssh_private_key_file')) {
                 $host->generatePrivatePublicKey();
             }
         });
@@ -71,7 +71,7 @@ class ServerHost extends Model
             'ansible_ssh_private_key_file' => null,
             'ansible_ssh_public_key_file' => null,
             'ansible_python_interpreter' => '/usr/bin/python3',
-            'autopilot_path' => null,
+            'autopilot_host' => false,
             'admin_pass' => Str::random(12),
             'mysql_root_pass' => Str::random(12),
             'pma_blowfish_secret' => Str::random(32),

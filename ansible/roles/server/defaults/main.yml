@@ -3,6 +3,7 @@ hostname: undefined
 hostname_update: false
 timezone: Europe/Amsterdam
 timezone_update: true
+autopilot_host: false
 
 admin: sitepilot
 admin_pass: "supersecret"

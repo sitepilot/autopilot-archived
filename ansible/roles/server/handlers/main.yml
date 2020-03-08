@@ -13,6 +13,9 @@
   service:
     name: docker
     state: restarted
+  when:
+    - autopilot_host is defined
+    - not autopilot_host|bool
 
 - name: reload fail2ban
   service:

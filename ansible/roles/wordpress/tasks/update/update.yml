@@ -1,6 +1,0 @@
----
-- name: "Update WordPress tasks."
-  include_tasks: update-tasks.yml
-  loop: "{{ wp_sites if wp_site_filter is not defined else wp_sites | selectattr('name', 'match', wp_site_filter) | list }}"
-  loop_control:
-    loop_var: site
