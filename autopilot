@@ -6,8 +6,12 @@ else
 fi
 
 case "$1" in
-'install')  echo "Installing Autopilot"
-    docker-compose up -d 
+'install'|'install-test')  echo "Installing Autopilot"
+    if [ "$1" == 'install-test'] 
+        docker-compose up -f docker-compose.test.yml -d
+    else
+        docker-compose up -d
+    fi
 
     echo "Waiting for containers..."
     sleep 5

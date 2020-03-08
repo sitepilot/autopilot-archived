@@ -47,7 +47,7 @@ jobs:
         run: ./autopilot exec composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Run Autopilot installer.
-        run: ./autopilot install
+        run: ./autopilot install-test
 
       - name: Test server:provision command.
         run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
