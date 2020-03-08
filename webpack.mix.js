@@ -11,7 +11,5 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.setResourceRoot('/.sitepilot/autopilot/');
-
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css');
