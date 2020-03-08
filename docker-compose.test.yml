@@ -1,9 +1,9 @@
 version: "3.3"
 
 services:
-  database:
+  mysql:
     image: mariadb:10.4-bionic
-    container_name: autopilot-db
+    container_name: autopilot-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -11,7 +11,7 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - "db_data:/var/lib/mysql"
+      - "mysql_data:/var/lib/mysql"
 
   autopilot:
     image: sitepilot/autopilot:${APP_DOCKER_TAG}
@@ -23,9 +23,8 @@ services:
       - "${APP_HTTPS_PORT}:443"
     restart: always
     environment:
-      WEBSERVER_CACHE: "on"
-      WEBSERVER_USER_ID: 1000
-      WEBSERVER_USER_GID: 1000
+      WEBSERVER_USER_ID: ${APP_USER_ID}
+      WEBSERVER_USER_GID: ${APP_USER_GID}
     volumes:
       - type: bind
         source: "./"
@@ -33,4 +32,4 @@ services:
         consistency: cached
 
 volumes:
-  db_data:
+  mysql_data:
