@@ -18,17 +18,17 @@ The master host requires root access to the slave hosts.
 ## Installation
 
 * Install Docker and Docker Compose.
-* Create autopilot folder: `mkdir ~/autopilot`.
-* Download autopilot script: `wget -O ~/autopilot/autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot/autopilot`.
-* Download docker-compose.yml file: `wget -O ~/autopilot/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/docker-compose.prod.yml`.
-* Download .env file: `wget -O ~/autopilot/.env https://raw.githubusercontent.com/sitepilot/autopilot/.env.example`.
-* Run `~/autopilot/autopilot install` and wait a few seconds, this will prompt for Laravel Nova license username and password.
+* Create Autopilot folder: `mkdir ~/autopilot && cd ~/autopilot`.
+* Download Autopilot script: `curl -o ./autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot`.
+* Download environment file and modify it to your needs: `curl -o ./.env https://raw.githubusercontent.com/sitepilot/autopilot/.env.example && nano ./.env`.
+* Run `./autopilot install` to start the containers, install packages and migrate the database. *Note: this will prompt for your Laravel Nova username and password.*
 * Navigate to `https://<SERVER IP>:<APP_HTTPS_PORT>` and login (default user: `admin@sitepilot.io`, default pass: `supersecret`).
 
-## Update
+## Upgrade
 
-* Update autopilot script: `wget -O ~/autopilot/autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot/autopilot`.
-* Run `~/autopilot/autopilot update` to update the installation.
+* Navigate to the autopilot installation folder: `cd ~/autopilot`.
+* Update autopilot script: `curl -o ~/autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot`.
+* Run `./autopilot update` to update the installation.
 
 ## Commands
 
