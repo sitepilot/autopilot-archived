@@ -7,14 +7,14 @@ fi
 
 case "$1" in
 'install'|'install-test')  echo "Installing Autopilot"
-    if [ "$1" == 'install-test'] 
+    if [ "$1" == 'install-test' ]; then
         docker-compose up -f docker-compose.test.yml -d
     else
         docker-compose up -d
     fi
 
     echo "Waiting for containers..."
-    sleep 5
+    sleep 10
 
     docker exec $IT -w /var/www/html autopilot composer install --no-dev
     docker exec $IT -w /var/www/html autopilot php artisan key:generate
@@ -28,7 +28,7 @@ case "$1" in
     docker-compose up -d
 
     echo "Waiting for containers..."
-    sleep 5
+    sleep 10
 
     docker exec $IT -w /var/www/html autopilot composer install --no-dev
     docker exec $IT -w /var/www/html autopilot php artisan migrate --seed

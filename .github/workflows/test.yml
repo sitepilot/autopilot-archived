@@ -40,14 +40,11 @@ jobs:
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
-      - name: Start Autopilot containers.
-        run: sudo docker-compose -f docker-compose.test.yml up -d
+      - name: Run Autopilot installer.
+        run: ./autopilot install-test
 
       - name: Authorize composer to install Nova.
         run: ./autopilot exec composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
-
-      - name: Run Autopilot installer.
-        run: ./autopilot install-test
 
       - name: Test server:provision command.
         run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
