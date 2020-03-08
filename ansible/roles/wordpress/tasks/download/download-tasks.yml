@@ -1,5 +1,0 @@
----
-- name: "{{ site.name }}: Download WordPress core."
-  command: "{{ wp_cli_path }} core download --path={{ site.path }}"
-  become: "{{ wp_become }}"
-  become_user: "{{ site.user }}"
