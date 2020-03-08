@@ -56,7 +56,7 @@ class ServerProvisionCommand extends Command
             $process->setTimeout(3600);
 
             $process->run(function ($type, $buffer) {
-                if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer)) {
+                if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
                     echo $buffer;
                     throw new Exception("Failed to provision the server!");
                 } else {
