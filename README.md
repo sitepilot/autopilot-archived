@@ -18,15 +18,15 @@ Ubuntu 18.04 is the only supported operating system (for the master and slave ho
 ## Installation
 
 * Create a directory: `mkdir ~/autopilot && cd ~/autopilot`.
-* Download Autopilot script: `curl -o ./autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot`.
-* Download environment file and modify it to your needs: `curl -o ./.env https://raw.githubusercontent.com/sitepilot/autopilot/.env.example && nano ./.env`.
+* Download Autopilot script: `curl -o ./autopilot https://raw.githubusercontent.com/sitepilot/autopilot/master/autopilot && chmod +x ./autopilot`.
+* Download environment file and modify it to your needs: `curl -o ./.env https://raw.githubusercontent.com/sitepilot/autopilot/master/.env.example && nano ./.env`.
 * Run `./autopilot install` to start the containers, install packages and migrate the database. *NOTE: This will prompt for your Laravel Nova username and password.*
 * Navigate to `https://<SERVER IP>:<APP_HTTPS_PORT>` and login (default user: `admin@sitepilot.io`, default pass: `supersecret`).
 
 ## Update
 
 * Navigate to the Autopilot installation folder: `cd ~/autopilot`.
-* Update Autopilot script: `curl -o ~/autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot`.
+* Update Autopilot script: `curl -o ./autopilot https://raw.githubusercontent.com/sitepilot/autopilot/master/autopilot && chmod +x ./autopilot`.
 * Run `./autopilot update` to update the containers, packages and migrate the database.
 
 ## Commands

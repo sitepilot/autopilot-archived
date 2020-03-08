@@ -38,7 +38,7 @@ case "$1" in
     elif [ "$1" == 'install-dev' ]; then
         cp $BASE/docker-compose.dev.yml $BASE/docker-compose.yml
     else
-        curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/docker-compose.prod.yml
+        curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/master/docker-compose.prod.yml
     fi
 
     start
@@ -62,7 +62,7 @@ case "$1" in
     elif [ "$1" == 'update-dev' ]; then
         cp $BASE/docker-compose.dev.yml $BASE/docker-compose.yml
     else
-        curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/docker-compose.prod.yml
+        curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/master/docker-compose.prod.yml
     fi
     
     pull
