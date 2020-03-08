@@ -27,7 +27,7 @@ jobs:
       - name: Create environment file.
         run: |
           sudo cp .env.example .env
-          sudo sed -i "s/APP_DOCKER_TAG=latest/APP_DOCKER_TAG=$GITHUB_SHA/" .env
+          sudo sed -i "s/APP_DOCKER_TAG=latest/APP_DOCKER_TAG=$GITHUB_SHA/" .env  
           sudo sed -i 's/APP_TEST_HOST=host.docker.internal/APP_TEST_HOST=172.17.0.1/' .env
           sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
           sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
@@ -45,6 +45,9 @@ jobs:
 
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
+
+      - name: Give containers some time to start.
+        run: sleep 10
 
       - name: Start Autopilot containers.
         run: sudo docker-compose -f docker-compose.test.yml up -d
