@@ -10,12 +10,12 @@ fi
 case "$1" in
 'install'|'install-test')  echo "Installing Autopilot"
     if [ "$1" == 'install-test' ]; then
-        docker-compose -f $BASE/docker-compose.test.yml --env-file $BASE/.env up -d
+        docker-compose -f $BASE/docker-compose.test.yml --project-directory=$BASE up -d
     else
         mkdir -p $BASE/data/app
         mkdir -p $BASE/data/mysql
         mkdir -p $BASE/data/vendor
-        docker-compose -f $BASE/docker-compose.yml --env-file $BASE/.env up -d
+        docker-compose -f $BASE/docker-compose.yml --project-directory=$BASE up -d
     fi
 
     echo "Waiting for containers..."
