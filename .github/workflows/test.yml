@@ -25,7 +25,10 @@ jobs:
         run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
 
       - name: Create environment file.
-        run: sudo sed 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env.example > .env
+        run: |
+          sudo cp .env.example .env
+          sudo sed 's/APP_TEST_HOST=host.docker.internal/APP_TEST_HOST=172.17.0.1/' .env > .env
+          sudo sed 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env > .env
 
       - name: Copy authorized keys file.
         run: |
