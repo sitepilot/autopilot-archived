@@ -27,10 +27,14 @@ services:
       WEBSERVER_USER_GID: ${APP_USER_GID}
     volumes:
       - type: bind
+        source: "./.env"
+        target: "/var/www/html/.env"
+        consistency: cached
+      - type: bind
         source: "./data/app"
         target: "/var/www/html/storage/app"
         consistency: cached
       - type: bind
-        source: "./vendor"
+        source: "./data/vendor"
         target: "/var/www/html/vendor"
         consistency: cached
