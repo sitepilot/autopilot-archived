@@ -30,3 +30,7 @@ services:
         source: "./data/app"
         target: "/var/www/html/storage/app"
         consistency: cached
+      - type: bind
+        source: "./vendor"
+        target: "/var/www/html/vendor"
+        consistency: cached
