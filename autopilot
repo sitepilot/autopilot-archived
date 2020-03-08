@@ -12,8 +12,8 @@ case "$1" in
     echo "Waiting for containers..."
     sleep 5
 
-    docker exec $IT -w /var/www/html autopilot php artisan key:generate
     docker exec $IT -w /var/www/html autopilot composer install --no-dev
+    docker exec $IT -w /var/www/html autopilot php artisan key:generate
     docker exec $IT -w /var/www/html autopilot php artisan migrate --seed
 
     echo "DONE!"
