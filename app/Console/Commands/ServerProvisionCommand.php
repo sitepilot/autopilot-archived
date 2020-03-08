@@ -16,6 +16,7 @@ class ServerProvisionCommand extends Command
     protected $signature = 'server:provision 
         {--host= : The host name (optional)}
         {--tags= : Comma separated list of tags (optional)}
+        {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--disable-tty : Disable TTY}';
 
     /**
@@ -49,6 +50,10 @@ class ServerProvisionCommand extends Command
 
             if ($this->option('tags')) {
                 $cmd = array_merge($cmd, ["--tags", $this->option('tags')]);
+            }
+
+            if ($this->option('skip-tags')) {
+                $cmd = array_merge($cmd, ["--skip-tags", $this->option('skip-tags')]);
             }
 
             $process = new Process($cmd);
