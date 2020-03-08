@@ -24,14 +24,6 @@ jobs:
       - name: Stop MySQL server.
         run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
 
-      - name: Create environment file.
-        run: |
-          sudo cp .env.example .env
-          sudo sed -i "s/APP_DOCKER_TAG=latest/APP_DOCKER_TAG=$GITHUB_SHA/" .env  
-          sudo sed -i 's/APP_TEST_HOST=host.docker.internal/APP_TEST_HOST=172.17.0.1/' .env
-          sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
-          sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
-
       - name: Copy authorized keys file.
         run: |
           sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
@@ -40,8 +32,19 @@ jobs:
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
+      - name: Create environment file.
+        run: |
+          sudo cp .env.example .env
+          sudo sed -i "s/APP_DOCKER_TAG=latest/APP_DOCKER_TAG=$GITHUB_SHA/" .env  
+          sudo sed -i 's/APP_TEST_HOST=host.docker.internal/APP_TEST_HOST=172.17.0.1/' .env
+          sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
+          sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
+
       - name: Run Autopilot installer.
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+      
+      - name: Test Autopilot updater.
+        run: ./autopilot update-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
         run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
