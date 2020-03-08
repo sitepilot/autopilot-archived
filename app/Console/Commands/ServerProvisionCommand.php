@@ -13,7 +13,7 @@ class ServerProvisionCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'sp:server:provision 
+    protected $signature = 'server:provision 
         {--host= : The host name (optional)}
         {--tags= : Comma separated list of tags (optional)}
         {--disable-tty : Disable TTY}';

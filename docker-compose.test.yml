@@ -14,7 +14,7 @@ services:
       - "db_data:/var/lib/mysql"
 
   autopilot:
-    image: sitepilot/autopilot-web:latest
+    image: sitepilot/autopilot:build-test
     container_name: autopilot
     depends_on:
       - database
@@ -26,7 +26,6 @@ services:
       WEBSERVER_CACHE: "on"
       WEBSERVER_USER_ID: 1000
       WEBSERVER_USER_GID: 1000
-      SET_VHOST_FILE_PERMISSIONS: "no"
     volumes:
       - type: bind
         source: "./"

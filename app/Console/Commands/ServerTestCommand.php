@@ -13,7 +13,7 @@ class ServerTestCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'sp:server:test 
+    protected $signature = 'server:test 
         {--host= : The host name (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--disable-tty : Disable TTY}';

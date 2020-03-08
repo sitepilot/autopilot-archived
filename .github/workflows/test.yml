@@ -12,17 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Stop MySQL server.
-        run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
-
-      - name: Create environment file.
-        run: sudo cp .env.example .env
-
-      - name: Start Autopilot containers.
-        run: sudo docker-compose up -d
-
-      - name: Provision required test packages.
-        run: sudo ansible-playbook ansible/local.yml --extra-vars "host=localhost connection=local"
+      - name: Install pip packages.
+        run: sudo pip install ansible-lint && sudo pip install yamllint
 
       - name: Run Yaml lint on ansible folder.
         run: sudo yamllint -c tests/yamllint.yml ansible/
@@ -30,20 +21,37 @@ jobs:
       - name: Run Ansible lint on ansible folder.
         run: sudo ansible-lint -v --force-color ansible/
 
+      - name: Stop MySQL server.
+        run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
+
+      - name: Create environment file.
+        run: sudo sed 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env.example > .env
+
+      - name: Copy authorized keys file.
+        run: |
+          sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
+          sudo chmod 600 /root/.ssh/authorized_keys
+
+      - name: Build container.
+        run: docker build . --file Dockerfile --tag sitepilot/autopilot:build-test
+
+      - name: Start Autopilot containers.
+        run: sudo docker-compose -f docker-compose.test.yml up -d
+
       - name: Authorize composer to install Nova.
-        run: sudo composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+        run: ./autopilot-exec composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Install composer packages.
-        run: sudo composer install --no-dev
+        run: ./autopilot-exec  composer install --no-dev
 
       - name: Generate application key.
-        run: sudo php artisan key:generate
+        run: ./autopilot key:generate
 
       - name: Migrate the database.
-        run: sudo php artisan migrate --seed
+        run: ./autopilot migrate --seed
 
-      - name: Test sp:server:provision command.
-        run: "sudo php artisan sp:server:provision --host=all --disable-tty"
+      - name: Test server:provision command.
+        run: ./autopilot server:provision --host=all --disable-tty
 
-      - name: Test sp:server:test command.
-        run: "sudo php artisan sp:server:test --host=all --skip-tags=test-domains --disable-tty"
+      - name: Test server:test command.
+        run: ./autopilot server:test --host=all --skip-tags=test-domains --disable-tty

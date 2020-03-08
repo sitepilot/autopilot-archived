@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ -t 1 ]; then
+    docker exec -it -w /var/www/html autopilot php artisan $@
+else 
+    docker exec -w /var/www/html autopilot php artisan $@
+fi

@@ -38,7 +38,7 @@ class ServerHost extends Model
         self::hasVarsBoot();
 
         self::created(function (ServerHost $host) {
-            if ($host->getVar('ansible_connection') == 'ssh') {
+            if ($host->getVar('ansible_connection') == 'ssh' && !$host->getVar('ansible_ssh_private_key_file')) {
                 $host->generatePrivatePublicKey();
             }
         });

@@ -23,8 +23,7 @@
     - name: Install required packages.
       apt:
         name: >
-          ansible,
-          php7.4-cli,
+          php7.4-cli
           php7.4-mysql,
           php7.4-mbstring,
           php7.4-dom,
