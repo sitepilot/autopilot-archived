@@ -10,21 +10,25 @@ A tool for provisioning and maintaining WordPress sites and servers using Ansibl
 
 Ubuntu 18.04 is the only supported operating system (for the master and slave hosts). The CLI uses Ansible to provision servers, users and vhosts. To use the CLI you need to install the following packages on the master host:
 
-* Coming soon...
+* A Laravel Nova license.
+* ...
 
 The master host requires root access to the slave hosts.
 
 ## Installation
 
 * Install Docker and Docker Compose.
-* Create the following folders:
-  * Run `mkdir -p autopilot/data/app`.
-  * Run `mkdir -p autopilot/data/mysql`.
-* Copy the contents of `docker-compose.prod.yml` from this repository to `autopilot/docker-compose.yml`.
-* Copy the contents of `.env.example` from this repository to `autopilot/.env` and modify it to your needs.
-* Run `docker-compose up -d` and wait a few seconds.
-* Run the database migration `./autopilot migrate --seed`.
+* Create autopilot folder: `mkdir ~/autopilot`.
+* Download autopilot script: `wget -O ~/autopilot/autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot/autopilot`.
+* Download docker-compose.yml file: `wget -O ~/autopilot/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/docker-compose.prod.yml`.
+* Download .env file: `wget -O ~/autopilot/.env https://raw.githubusercontent.com/sitepilot/autopilot/.env.example`.
+* Run `~/autopilot/autopilot install` and wait a few seconds, this will prompt for Laravel Nova license username and password.
 * Navigate to `https://<SERVER IP>:<APP_HTTPS_PORT>` and login (default user: `admin@sitepilot.io`, default pass: `supersecret`).
+
+## Update
+
+* Update autopilot script: `wget -O ~/autopilot/autopilot https://raw.githubusercontent.com/sitepilot/autopilot/autopilot && chmod +x ~/autopilot/autopilot`.
+* Run `~/autopilot/autopilot update` to update the installation.
 
 ## Commands
 

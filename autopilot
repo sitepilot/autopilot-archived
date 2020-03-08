@@ -1,6 +1,40 @@
 #!/bin/bash
 if [ -t 1 ]; then
-    docker exec -it -w /var/www/html autopilot php artisan $@
-else 
-    docker exec -w /var/www/html autopilot php artisan $@
+    IT='-it'
+else
+    IT=''
 fi
+
+case "$1" in
+'install')  echo "Installing Autopilot"
+    docker-compose up -d 
+
+    echo "Waiting for containers..."
+    sleep 5
+
+    docker exec $IT -w /var/www/html autopilot php artisan key:generate
+    docker exec $IT -w /var/www/html autopilot composer install --no-dev
+    docker exec $IT -w /var/www/html autopilot php artisan migrate --seed
+
+    echo "DONE!"
+    ;;
+'update')  echo "Updating Autopilot"
+    docker pull sitepilot/autopilot:latest
+
+    docker-compose up -d
+
+    echo "Waiting for containers..."
+    sleep 5
+
+    docker exec $IT -w /var/www/html autopilot composer install --no-dev
+    docker exec $IT -w /var/www/html autopilot php artisan migrate --seed
+
+    echo "DONE!"
+    ;;
+'exec')
+    docker exec $IT -w /var/www/html autopilot ${@:2}
+    ;;
+*)
+    docker exec $IT -w /var/www/html autopilot php artisan ${@:2}
+    ;;
+esac

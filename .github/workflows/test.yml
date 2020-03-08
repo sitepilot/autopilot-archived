@@ -37,26 +37,17 @@ jobs:
           sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
           sudo chmod 600 /root/.ssh/authorized_keys
 
-      - name: Authorize composer to install Nova.
-        run: composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
-
-      - name: Install composer packages.
-        run: composer install --no-dev
-
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
       - name: Start Autopilot containers.
         run: sudo docker-compose -f docker-compose.test.yml up -d
 
-      - name: Give containers some time to start.
-        run: sleep 10
+      - name: Authorize composer to install Nova.
+        run: ./autopilot exec composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
-      - name: Generate application key.
-        run: ./autopilot key:generate
-
-      - name: Migrate the database.
-        run: ./autopilot migrate --seed
+      - name: Run Autopilot installer.
+        run: ./autopilot install
 
       - name: Test server:provision command.
         run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
