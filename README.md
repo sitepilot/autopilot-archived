@@ -16,12 +16,21 @@ The master host requires root access to the slave hosts.
 
 ## Installation
 
-* Coming soon...
+* Install Docker and Docker Compose.
+* Create the following folders:
+  * Run `mkdir -p autopilot/data/app`.
+  * Run `mkdir -p autopilot/data/mysql`.
+* Copy the contents of `docker-compose.prod.yml` from this repository to `autopilot/docker-compose.yml`.
+* Copy the contents of `.env.example` from this repository to `autopilot/.env` and modify it to your needs.
+* Run `docker-compose up -d` and wait a few seconds.
+* Run the database migration `./autopilot migrate --seed`.
+* Navigate to `https://<SERVER IP>:<APP_HTTPS_PORT>` and login (default user: `admin@sitepilot.io`, default pass: `supersecret`).
 
 ## Commands
 
-* `./php artisan sp:server:inventory`: Outputs the server inventory.
-* `./php artisan sp:server:provision`: Provision a server.
+* `./autopilot server:inventory`: Outputs the server inventory.
+* `./autopilot server:provision`: Provision a server.
+* `./autopilot server:test`: Test a server.
 
 ## Installed Software
 
