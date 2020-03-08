@@ -35,9 +35,3 @@
     dest: /etc/docker/daemon.json
   notify:
     - restart docker
-
-- name: "Add user '{{ admin }}' to Docker group."
-  user:
-    name: "{{ admin }}"
-    groups: docker
-    append: true
