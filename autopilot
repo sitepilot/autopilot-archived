@@ -40,9 +40,9 @@ case "$1" in
     echo "DONE!"
     ;;
 'exec')
-    docker exec $IT -w /var/www/html autopilot ${@:2}
+    docker exec $IT -w /var/www/html autopilot "${@:2}"
     ;;
 *)
-    docker exec $IT -w /var/www/html autopilot php artisan ${@:2}
+    docker exec $IT -w /var/www/html autopilot php artisan $@
     ;;
 esac
