@@ -41,10 +41,7 @@ jobs:
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
       - name: Run Autopilot installer.
-        run: ./autopilot install-test
-
-      - name: Authorize composer to install Nova.
-        run: ./autopilot exec composer config http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+        run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
         run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty

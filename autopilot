@@ -16,6 +16,10 @@ case "$1" in
     echo "Waiting for containers..."
     sleep 10
 
+    if [ ! -z "$2" && ! -z "$3" ]; then
+        docker exec $IT -w /var/www/html autopilot composer config http-basic.nova.laravel.com $2 $3
+    fi
+
     docker exec $IT -w /var/www/html autopilot composer install --no-dev
     docker exec $IT -w /var/www/html autopilot php artisan key:generate
     docker exec $IT -w /var/www/html autopilot php artisan migrate --seed
