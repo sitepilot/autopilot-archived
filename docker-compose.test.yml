@@ -25,11 +25,6 @@ services:
     environment:
       WEBSERVER_USER_ID: ${APP_USER_ID}
       WEBSERVER_USER_GID: ${APP_USER_GID}
-    volumes:
-      - type: bind
-        source: "./"
-        target: "/var/www/html"
-        consistency: cached
 
 volumes:
   mysql_data:
