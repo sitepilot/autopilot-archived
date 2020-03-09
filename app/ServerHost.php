@@ -4,9 +4,10 @@ namespace App;
 
 use Exception;
 use App\Traits\HasVars;
-use App\Traits\UniqueName;
 use phpseclib\Crypt\RSA;
+use App\Traits\UniqueName;
 use Illuminate\Support\Str;
+use Laravel\Nova\Actions\Actionable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,7 @@ class ServerHost extends Model
         boot as hasVarsBoot;
     }
     use UniqueName;
+    use Actionable;
 
     /**
      * The attributes that should be cast to native types.
