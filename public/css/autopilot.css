@@ -10,10 +10,12 @@
 
 /* ==== Responive Custom ==== */
 
-.h-header [type=button] {
-    width: 32px;
-}
-
-input[type="text"][disabled] {
-    color: #292a37;
+@media(max-width: 962px) {
+    .h-header [type=button] {
+        width: 32px;
+    }
+    
+    input[type="text"][disabled] {
+        color: #292a37;
+    }
 }
