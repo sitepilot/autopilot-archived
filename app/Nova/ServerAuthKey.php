@@ -80,7 +80,8 @@ class ServerAuthKey extends Resource
             Text::make('Name', 'name')
                 ->sortable()
                 ->onlyOnForms()
-                ->hideWhenUpdating(),
+                ->hideWhenUpdating()
+                ->rules(['required', 'min:4']),
 
             Text::make('Description', 'description')
                 ->sortable(),
