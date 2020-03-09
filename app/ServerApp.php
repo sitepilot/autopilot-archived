@@ -48,6 +48,16 @@ class ServerApp extends Model
     }
 
     /**
+     * Returns the app databases.
+     *
+     * @return HasMany
+     */
+    public function databases()
+    {
+        return $this->hasMany(ServerDatabase::class, 'app_id');
+    }
+
+    /**
      * Returns the domain variable.
      *
      * @return void

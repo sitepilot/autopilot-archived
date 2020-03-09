@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 
 class ServerApp extends Resource
@@ -64,15 +65,15 @@ class ServerApp extends Resource
 
             Text::make('Name', 'name')
                 ->sortable()
-                ->hideWhenUpdating(),
-
-            Text::make('Name', 'name')
-                ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             BelongsTo::make('User', 'user', ServerUser::class)
-                ->searchable(),
+                ->searchable()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Code::make('App Configuration', 'vars')
                 ->rules(['required', 'json'])
@@ -84,6 +85,8 @@ class ServerApp extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            HasMany::make('Databases', 'databases', ServerDatabase::class),
         ];
     }
 
