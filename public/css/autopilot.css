@@ -7,3 +7,13 @@
     background-image: linear-gradient(0deg, #283346 0%, #151b26 100%);
     background-attachment: fixed;
 }
+
+/* ==== Responive Custom ==== */
+
+.h-header [type=button] {
+    width: 32px;
+}
+
+input[type="text"][disabled] {
+    color: #292a37;
+}
