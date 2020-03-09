@@ -38,7 +38,7 @@ class ServerGroup extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'name', 'description'
     ];
 
     /**
@@ -49,6 +49,16 @@ class ServerGroup extends Resource
     public static function label()
     {
         return 'Groups';
+    }
+
+    /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string|null
+     */
+    public function subtitle()
+    {
+        return $this->description;
     }
 
     /**
@@ -68,6 +78,9 @@ class ServerGroup extends Resource
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+
+            Text::make('Description', 'description')
+                ->sortable(),
 
             Code::make('Group Configuration', 'vars')
                 ->rules(['required', 'json'])
