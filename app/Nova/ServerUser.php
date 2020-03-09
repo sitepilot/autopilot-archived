@@ -70,7 +70,10 @@ class ServerUser extends Resource
                 ->hideWhenCreating(),
 
             BelongsTo::make('Host', 'host', ServerHost::class)
-                ->searchable(),
+                ->searchable()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Code::make('User Configuration', 'vars')
                 ->rules(['required', 'json'])

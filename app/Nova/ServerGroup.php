@@ -61,16 +61,13 @@ class ServerGroup extends Resource
     {
         return [
             ID::make()->sortable(),
-
-            Text::make('Name', 'name')
-                ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
-
+            
             Text::make('Name', 'name')
                 ->sortable()
                 ->rules(['required', 'min:4'])
-                ->hideWhenUpdating(),
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Code::make('Group Configuration', 'vars')
                 ->rules(['required', 'json'])
