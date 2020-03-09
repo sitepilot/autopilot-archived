@@ -1,3 +1,3 @@
 #!/bin/bash
 BASEDIR=$(dirname "$0")
-$BASEDIR/artisan server:inventory $@
+/usr/local/bin/php $BASEDIR/artisan server:inventory $@
