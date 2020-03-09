@@ -27,7 +27,7 @@ services:
     container_name: redis-1
     restart: always
     ports:
-      - '6379:6379'
+      - '127.0.0.1:6379:6379'
     expose:
       - '6379'
     user: '{{ cmd_admin_uid.stdout }}:{{ cmd_admin_gid.stdout }}'
