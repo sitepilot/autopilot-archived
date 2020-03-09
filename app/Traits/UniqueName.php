@@ -57,11 +57,19 @@ trait UniqueName
         return Str::slug($name);
     }
 
+    /**
+     * Auto number next item in group (example: ams-web10).
+     * 
+     * @param string $prefix 
+     * @param string $column
+     * @param string $offset
+     * @return string $name
+     */
     public function getNextInGroupName($prefix = '', $column = 'group_id', $offset = 10)
     {
         $name = '';
         while ($this->nameIsUsed($name)) {
-            $name = $prefix . ($this->query($column, $this->$column)->count() + $offset);
+            $name = $prefix . ($this->where($column, $this->$column)->count() + $offset);
             $offset--;
         }
 

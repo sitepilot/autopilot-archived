@@ -41,7 +41,7 @@ class ServerHost extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'name', 'description'
     ];
 
     /**
@@ -52,6 +52,16 @@ class ServerHost extends Resource
     public static function label()
     {
         return 'Hosts';
+    }
+
+    /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string|null
+     */
+    public function subtitle()
+    {
+        return $this->description;
     }
 
     /**
@@ -72,6 +82,9 @@ class ServerHost extends Resource
 
             BelongsTo::make('Group', 'group', ServerGroup::class)
                 ->searchable(),
+
+            Text::make('Description', 'description')
+                ->sortable(),
 
             Code::make('Host Configuration', 'vars')
                 ->rules(['required', 'json'])

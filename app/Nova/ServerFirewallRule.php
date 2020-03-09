@@ -38,7 +38,7 @@ class ServerFirewallRule extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'name', 'description'
     ];
 
     /**
@@ -49,6 +49,16 @@ class ServerFirewallRule extends Resource
     public static function label()
     {
         return 'Firewall Rules';
+    }
+
+    /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string|null
+     */
+    public function subtitle()
+    {
+        return $this->description;
     }
 
     /**
@@ -71,6 +81,9 @@ class ServerFirewallRule extends Resource
                 ->sortable()
                 ->onlyOnForms()
                 ->hideWhenUpdating(),
+
+            Text::make('Description', 'description')
+                ->sortable(),
 
             Code::make('Rule Configuration', 'vars')
                 ->rules(['required', 'json'])

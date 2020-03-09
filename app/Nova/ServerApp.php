@@ -38,7 +38,7 @@ class ServerApp extends Resource
      * @var array
      */
     public static $search = [
-        'name'
+        'name', 'description'
     ];
 
     /**
@@ -49,6 +49,16 @@ class ServerApp extends Resource
     public static function label()
     {
         return 'Apps';
+    }
+
+    /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string|null
+     */
+    public function subtitle()
+    {
+        return $this->description;
     }
 
     /**
@@ -64,15 +74,26 @@ class ServerApp extends Resource
 
             Text::make('Name', 'name')
                 ->sortable()
-                ->hideWhenUpdating(),
+                ->hideFromIndex()
+                ->hideFromDetail()
+                ->hideWhenUpdating()
+                ->help("If the name is left blank Autopilot will generate a random name."),
 
             Text::make('Name', 'name')
                 ->sortable()
                 ->readonly()
                 ->hideWhenCreating(),
 
+            Text::make('Domain', 'domain')
+                ->sortable()
+                ->readonly()
+                ->hideWhenCreating(),
+
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->searchable(),
+
+            Text::make('Description', 'description')
+                ->sortable(),
 
             Code::make('App Configuration', 'vars')
                 ->rules(['required', 'json'])
