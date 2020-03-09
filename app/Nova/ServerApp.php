@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 
 class ServerApp extends Resource
@@ -74,15 +75,10 @@ class ServerApp extends Resource
 
             Text::make('Name', 'name')
                 ->sortable()
-                ->hideFromIndex()
-                ->hideFromDetail()
-                ->hideWhenUpdating()
-                ->help("If the name is left blank Autopilot will generate a random name."),
-
-            Text::make('Name', 'name')
-                ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->help("If the name is left blank Autopilot will generate a random name.")
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Text::make('Domain', 'domain')
                 ->sortable()
@@ -90,7 +86,10 @@ class ServerApp extends Resource
                 ->hideWhenCreating(),
 
             BelongsTo::make('User', 'user', ServerUser::class)
-                ->searchable(),
+                ->searchable()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Text::make('Description', 'description')
                 ->sortable(),
@@ -105,6 +104,8 @@ class ServerApp extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            HasMany::make('Databases', 'databases', ServerDatabase::class),
         ];
     }
 

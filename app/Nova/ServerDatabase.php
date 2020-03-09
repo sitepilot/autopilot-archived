@@ -77,8 +77,23 @@ class ServerDatabase extends Resource
                 ->readonly()
                 ->hideWhenCreating(),
 
+            BelongsTo::make('App', 'app', ServerApp::class)
+                ->help('User will be selected based on the App owner.')
+                ->searchable()
+                ->rules('required_without:user')
+                ->nullable()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
+
             BelongsTo::make('User', 'user', ServerUser::class)
-                ->searchable(),
+                ->help('This field will be ignored when an App is selected above.')
+                ->searchable()
+                ->nullable()
+                ->rules('required_without:app')
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Text::make('Description', 'description')
                 ->sortable(),

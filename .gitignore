@@ -13,3 +13,4 @@ yarn-error.log
 .vagrant
 *.log
 docker-compose.yml
+public/adminer.php

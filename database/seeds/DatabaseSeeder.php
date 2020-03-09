@@ -116,6 +116,7 @@ class DatabaseSeeder extends Seeder
             // Create server database
             $db = new ServerDatabase;
             $db->user_id = $user->id;
+            $db->app_id = $app->id;
             $db->save();
         }
     }

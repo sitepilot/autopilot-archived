@@ -81,7 +81,10 @@ class ServerHost extends Resource
                 ->hideWhenCreating(),
 
             BelongsTo::make('Group', 'group', ServerGroup::class)
-                ->searchable(),
+                ->searchable()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Text::make('Description', 'description')
                 ->sortable(),

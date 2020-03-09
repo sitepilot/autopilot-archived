@@ -29,6 +29,10 @@ class ServerDatabase extends Model
      */
     public function getDefaultVars()
     {
+        if (isset($this->app->user->id)) {
+            $this->user_id = $this->app->user->id;
+        }
+
         $name = '';
         while ($this->nameIsUsed($name)) {
             $name =  $this->user->name . '_db' . ucfirst(Str::random('4'));
@@ -48,5 +52,15 @@ class ServerDatabase extends Model
     public function user()
     {
         return $this->belongsTo(ServerUser::class, 'user_id');
+    }
+
+    /**
+     * Returns the app database.
+     *
+     * @return void
+     */
+    public function app()
+    {
+        return $this->belongsTo(ServerApp::class, 'app_id');
     }
 }

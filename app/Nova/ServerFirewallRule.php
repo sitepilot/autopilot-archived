@@ -75,12 +75,9 @@ class ServerFirewallRule extends Resource
             Text::make('Name', 'name')
                 ->sortable()
                 ->readonly()
-                ->hideWhenCreating(),
-
-            Text::make('Name', 'name')
-                ->sortable()
-                ->onlyOnForms()
-                ->hideWhenUpdating(),
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Text::make('Description', 'description')
                 ->sortable(),

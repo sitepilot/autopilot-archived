@@ -74,18 +74,11 @@ class ServerAuthKey extends Resource
 
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
-
-            Text::make('Name', 'name')
-                ->sortable()
-                ->onlyOnForms()
-                ->hideWhenUpdating()
                 ->rules(['required', 'min:4']),
-
+         
             Text::make('Description', 'description')
                 ->sortable(),
-
+  
             Code::make('Key Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
