@@ -76,7 +76,8 @@ class ServerApp extends Resource
                 ->sortable()
                 ->hideFromIndex()
                 ->hideFromDetail()
-                ->hideWhenUpdating(),
+                ->hideWhenUpdating()
+                ->help("If the name is left blank Autopilot will generate a random name."),
 
             Text::make('Name', 'name')
                 ->sortable()
