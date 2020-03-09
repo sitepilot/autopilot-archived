@@ -51,6 +51,20 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     }
 
     /**
+     * Configure the Nova authorization services.
+     *
+     * @return void
+     */
+    protected function authorization()
+    {
+        $this->gate();
+
+        Nova::auth(function ($request) {
+            return true;
+        });
+    }
+
+    /**
      * Get the cards that should be displayed on the default Nova dashboard.
      *
      * @return array
