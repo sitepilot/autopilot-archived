@@ -82,13 +82,13 @@ class ServerGroup extends Resource
                 ->rules(['required', 'min:4'])
                 ->hideWhenUpdating(),
 
+            Text::make('Description', 'description')
+                ->sortable(),
+
             Code::make('Group Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
                 ->hideWhenCreating(),
-
-            Text::make('Description', 'description')
-                ->sortable(),
 
             Code::make('Default Configuration', 'default_vars')
                 ->readonly()
