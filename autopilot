@@ -7,11 +7,14 @@ else
     IT=''
 fi
 
-start() {
+init() {
     mkdir -p $BASE/data/app
     mkdir -p $BASE/data/mysql
     mkdir -p $BASE/data/vendor
+}
 
+start() {
+    init
     docker-compose -f $BASE/docker-compose.yml --project-directory $BASE up -d
 }
 
@@ -19,17 +22,26 @@ stop() {
     docker-compose -f $BASE/docker-compose.yml --project-directory $BASE down
 }
 
+restart() {
+    init
+    docker-compose -f $BASE/docker-compose.yml --project-directory $BASE restart
+}
+
 pull() {
     docker-compose -f $BASE/docker-compose.yml --project-directory $BASE pull
 }
 
 case "$1" in
-'start') echo "Starting Autopilot"
+'start') echo "Starting Autopilot Containers"
     start
     echo "DONE!"
     ;;
-'stop') echo "Stopping Autopilot"
+'stop') echo "Stopping Autopilot Containers"
     stop
+    echo "DONE!"
+    ;;
+'restart') echo "Restarting Autopilot Containers"
+    restart
     echo "DONE!"
     ;;
 'install'|'install-test'|'install-dev') echo "Installing Autopilot"
@@ -66,7 +78,7 @@ case "$1" in
     fi
     
     pull
-    start
+    restart
 
     echo "Waiting for containers..."
     sleep 10
