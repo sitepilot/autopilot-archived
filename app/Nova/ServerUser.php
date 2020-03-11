@@ -33,7 +33,7 @@ class ServerUser extends Resource
      * @var string
      */
     public static $title = 'name';
-    
+
     /**
      * The columns that should be searched.
      *
@@ -84,6 +84,10 @@ class ServerUser extends Resource
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+
+            BelongsTo::make('Client', 'client', Client::class)
+                ->searchable()
+                ->nullable(),
 
             Text::make('Description', 'description')
                 ->sortable(),

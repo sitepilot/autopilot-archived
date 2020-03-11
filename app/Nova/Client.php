@@ -2,31 +2,27 @@
 
 namespace App\Nova;
 
-use App\Nova\ServerGroup;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\MorphToMany;
-use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\Markdown;
 
-class ServerHost extends Resource
+class Client extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\ServerHost';
+    public static $model = 'App\Client';
 
     /**
      * The logical group associated with the resource.
      *
      * @var string
      */
-    public static $group = 'Servers';
+    public static $group = 'Admin';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -41,7 +37,7 @@ class ServerHost extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'description'
+        'name', 'code', 'notes'
     ];
 
     /**
@@ -51,7 +47,7 @@ class ServerHost extends Resource
      */
     public static function label()
     {
-        return 'Hosts';
+        return 'Clients';
     }
 
     /**
@@ -61,7 +57,7 @@ class ServerHost extends Resource
      */
     public function subtitle()
     {
-        return $this->description;
+        return $this->code;
     }
 
     /**
@@ -77,40 +73,20 @@ class ServerHost extends Resource
 
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->rules(['required', 'min:4']),
 
-            BelongsTo::make('Group', 'group', ServerGroup::class)
-                ->searchable()
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                }),
+            Text::make('Code', 'code')
+                ->sortable()
+                ->rules(['unique:clients,code', 'nullable']),
 
-            BelongsTo::make('Client', 'client', Client::class)
-                ->searchable()
-                ->nullable(),
-
-            Text::make('Description', 'description')
+            Markdown::make('Notes', 'notes')
                 ->sortable(),
 
-            Code::make('Host Configuration', 'vars')
-                ->rules(['required', 'json'])
-                ->json()
-                ->hideWhenCreating(),
+            HasMany::make('Projects', 'projects', Project::class),
 
-            Code::make('Default Configuration', 'default_vars')
-                ->readonly()
-                ->json()
-                ->onlyOnForms()
-                ->hideWhenCreating(),
+            HasMany::make('Server Users', 'serverUsers', ServerUser::class),
 
-            HasMany::make('Users', 'users', ServerUser::class),
-
-            BelongsToMany::make('Firewall Rules', 'firewallRules', ServerFirewallRule::class)
-                ->searchable(),
-
-            MorphToMany::make('Auth Keys', 'authKeys', ServerAuthKey::class)
-                ->searchable()
+            HasMany::make('Server Hosts', 'serverHosts', ServerHost::class),
         ];
     }
 
