@@ -150,6 +150,16 @@ class ServerHost extends Model
     }
 
     /**
+     * Returns the client.
+     *
+     * @return BelongsTo
+     */
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    /**
      * Returns host users.
      *
      * @return BelongsTo

@@ -2,31 +2,29 @@
 
 namespace App\Nova;
 
-use App\Nova\ServerGroup;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\Currency;
+use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\MorphToMany;
-use Laravel\Nova\Fields\BelongsToMany;
 
-class ServerHost extends Resource
+class Project extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = 'App\ServerHost';
+    public static $model = 'App\Project';
 
     /**
      * The logical group associated with the resource.
      *
      * @var string
      */
-    public static $group = 'Servers';
+    public static $group = 'Admin';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -41,7 +39,7 @@ class ServerHost extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'description'
+        'name', 'code', 'notes'
     ];
 
     /**
@@ -51,7 +49,7 @@ class ServerHost extends Resource
      */
     public static function label()
     {
-        return 'Hosts';
+        return 'Projects';
     }
 
     /**
@@ -61,7 +59,7 @@ class ServerHost extends Resource
      */
     public function subtitle()
     {
-        return $this->description;
+        return $this->code;
     }
 
     /**
@@ -77,40 +75,26 @@ class ServerHost extends Resource
 
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
-
-            BelongsTo::make('Group', 'group', ServerGroup::class)
-                ->searchable()
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                }),
+                ->rules(['required', 'min:4']),
 
             BelongsTo::make('Client', 'client', Client::class)
-                ->searchable()
-                ->nullable(),
-
-            Text::make('Description', 'description')
-                ->sortable(),
-
-            Code::make('Host Configuration', 'vars')
-                ->rules(['required', 'json'])
-                ->json()
-                ->hideWhenCreating(),
-
-            Code::make('Default Configuration', 'default_vars')
-                ->readonly()
-                ->json()
-                ->onlyOnForms()
-                ->hideWhenCreating(),
-
-            HasMany::make('Users', 'users', ServerUser::class),
-
-            BelongsToMany::make('Firewall Rules', 'firewallRules', ServerFirewallRule::class)
                 ->searchable(),
 
-            MorphToMany::make('Auth Keys', 'authKeys', ServerAuthKey::class)
-                ->searchable()
+            Text::make('Code', 'code')
+                ->sortable()
+                ->rules(['unique:projects,code', 'nullable']),
+
+            Currency::make('Budget', 'budget')
+                ->sortable()
+                ->rules(['numeric', 'nullable']),
+
+            Currency::make('Hourly Rate', 'hourly_rate')
+                ->sortable()
+                ->rules(['numeric', 'nullable']),
+
+            Markdown::make('Notes', 'notes')->alwaysShow(),
+
+            HasMany::make('Time Registrations', 'hours', ProjectHour::class)
         ];
     }
 
@@ -122,7 +106,14 @@ class ServerHost extends Resource
      */
     public function cards(Request $request)
     {
-        return [];
+        return [
+            (new Metrics\ProjectTotalMetric)
+                ->help('The number of projects.'),
+            (new Metrics\ProjectBudgetTotalMetric)
+                ->help('The sum of all budgets for all projects.'),
+            (new Metrics\ProjectBillableHoursMetric)
+                ->help('The sum of all project hours which are billable and not invoiced.')
+        ];
     }
 
     /**
