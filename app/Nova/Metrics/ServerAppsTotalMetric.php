@@ -2,18 +2,18 @@
 
 namespace App\Nova\Metrics;
 
-use App\ProjectHour;
+use App\ServerApp;
 use Laravel\Nova\Metrics\Value;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class ProjectHoursTotalMetric extends Value
+class ServerAppsTotalMetric extends Value
 {
     /**
      * The displayable name of the metric.
      *
      * @var string
      */
-    public $name = 'Hours';
+    public $name = 'Apps';
 
     /**
      * Calculate the value of the metric.
@@ -23,7 +23,7 @@ class ProjectHoursTotalMetric extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, ProjectHour::class, 'hours')->suffix('hours');;
+        return $this->count($request, ServerApp::class)->suffix('apps');
     }
 
     /**
@@ -34,13 +34,12 @@ class ProjectHoursTotalMetric extends Value
     public function ranges()
     {
         return [
-            'TODAY' => 'Today',
+            'YTD' => 'Year To Date',
+            'MTD' => 'Month To Date',
+            'QTD' => 'Quarter To Date',
             30 => '30 Days',
             60 => '60 Days',
             365 => '365 Days',
-            'MTD' => 'Month To Date',
-            'QTD' => 'Quarter To Date',
-            'YTD' => 'Year To Date',
         ];
     }
 
@@ -61,6 +60,6 @@ class ProjectHoursTotalMetric extends Value
      */
     public function uriKey()
     {
-        return 'project-hours-total';
+        return 'apps-total';
     }
 }

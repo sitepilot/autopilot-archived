@@ -13,7 +13,7 @@ class ProjectTotalMetric extends Value
      *
      * @var string
      */
-    public $name = 'Total Projects';
+    public $name = 'Projects';
 
     /**
      * Calculate the value of the metric.

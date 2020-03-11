@@ -13,7 +13,7 @@ class ProjectHoursBillableMetric extends Value
      *
      * @var string
      */
-    public $name = 'Total Billable Hours';
+    public $name = 'Billable Hours';
 
     /**
      * Calculate the value of the metric.
