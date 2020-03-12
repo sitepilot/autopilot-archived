@@ -70,14 +70,17 @@ class ServerFirewallRule extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
                 ->readonly()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+                
+            Text::make('Refference', 'refid')
+                ->rules(['required', 'unique:server_hosts,refid,{{resourceId}}'])
+                ->sortable()
+                ->hideWhenCreating(),
 
             Text::make('Description', 'description')
                 ->sortable(),

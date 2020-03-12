@@ -39,7 +39,7 @@ class Project extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'code', 'notes'
+        'name', 'refid', 'notes'
     ];
 
     /**
@@ -71,18 +71,17 @@ class Project extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
                 ->rules(['required', 'min:4']),
 
+            Text::make('Refference', 'refid')
+                ->rules(['required', 'unique:projects,refid,{{resourceId}}'])
+                ->sortable()
+                ->hideWhenCreating(),
+
             BelongsTo::make('Client', 'client', Client::class)
                 ->searchable(),
-
-            Text::make('Code', 'code')
-                ->sortable()
-                ->rules(['unique:projects,code', 'nullable']),
 
             Currency::make('Budget', 'budget')
                 ->sortable()

@@ -70,15 +70,18 @@ class ServerAuthKey extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
                 ->rules(['required', 'min:4']),
-         
+
+            Text::make('Refference', 'refid')
+                ->rules(['required', 'unique:server_hosts,refid,{{resourceId}}'])
+                ->sortable()
+                ->hideWhenCreating(),
+
             Text::make('Description', 'description')
                 ->sortable(),
-  
+
             Code::make('Key Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()

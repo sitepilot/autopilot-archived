@@ -71,14 +71,17 @@ class ServerApp extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
                 ->help("If the name is left blank Autopilot will generate a random name.")
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+
+            Text::make('Refference', 'refid')
+                ->rules(['required', 'unique:server_apps,refid,{{resourceId}}'])
+                ->sortable()
+                ->hideWhenCreating(),
 
             Text::make('Domain', 'domain')
                 ->sortable()

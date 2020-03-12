@@ -72,11 +72,14 @@ class ServerUser extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
                 ->readonly()
+                ->hideWhenCreating(),
+
+            Text::make('Refference', 'refid')
+                ->rules(['required', 'unique:server_users,refid,{{resourceId}}'])
+                ->sortable()
                 ->hideWhenCreating(),
 
             BelongsTo::make('Host', 'host', ServerHost::class)
