@@ -40,7 +40,7 @@ class RefIdObserver
     private function getRefId(Model $item)
     {
         $prefix = '';
-        $nextRefId = 1000;
+        $nextRefId = env('APP_START_REFID', 1250);
 
         $lastItem = $item->where('refid', '<>', '')
             ->orderBy('refid', 'DESC')->first();
