@@ -55,11 +55,6 @@ class DatabaseSeeder extends Seeder
             $fwRuleLitespeed->vars = ['port' => '2083'];
             $fwRuleLitespeed->save();
 
-            $fwRuleCockpit = new ServerFirewallRule;
-            $fwRuleCockpit->name = 'cockpit';
-            $fwRuleCockpit->vars = ['port' => '2087'];
-            $fwRuleCockpit->save();
-
             $fwRuleMysql = new ServerFirewallRule;
             $fwRuleMysql->name = 'mysql';
             $fwRuleCockpit->vars = ['port' => '3306'];
