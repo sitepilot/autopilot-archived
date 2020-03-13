@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasOne;
 
 class ProjectHour extends Resource
 {
@@ -97,6 +98,8 @@ class ProjectHour extends Resource
             BelongsTo::make('Project', 'project', Project::class)
                 ->sortable()
                 ->searchable(),
+
+            HasOne::make('Client', 'client', Client::class),
 
             Markdown::make('Notes', 'notes')
                 ->alwaysShow(),

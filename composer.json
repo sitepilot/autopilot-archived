@@ -1,9 +1,11 @@
 {
-    "name": "laravel/laravel",
+    "name": "sitepilot/autopilot",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "A tool for provisioning servers, maintaining WordPress sites and managing clients / projects.",
     "keywords": [
-        "framework",
+        "autopilot",
+        "sitepilot",
+        "ansible",
         "laravel"
     ],
     "license": "MIT",

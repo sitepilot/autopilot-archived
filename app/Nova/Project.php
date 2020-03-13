@@ -93,7 +93,7 @@ class Project extends Resource
 
             Markdown::make('Notes', 'notes')->alwaysShow(),
 
-            HasMany::make('Time Registrations', 'hours', ProjectHour::class)
+            HasMany::make('Time Registrations', 'projectHours', ProjectHour::class)
         ];
     }
 
