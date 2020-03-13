@@ -3,10 +3,10 @@
 namespace App\Nova;
 
 use App\Nova\ServerUser;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\BelongsTo;
 
 class ServerDatabase extends Resource
@@ -110,6 +110,8 @@ class ServerDatabase extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            HasOne::make('Client', 'client', Client::class)
         ];
     }
 

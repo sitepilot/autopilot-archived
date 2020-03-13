@@ -17,16 +17,6 @@ class Client extends Model
     }
 
     /**
-     * Returns the client server hosts.
-     *
-     * @return HasMany
-     */
-    public function serverHosts()
-    {
-        return $this->hasMany(ServerHost::class, 'client_id');
-    }
-
-    /**
      * Returns the client server users.
      *
      * @return HasMany
@@ -37,12 +27,42 @@ class Client extends Model
     }
 
     /**
-     * Returns the refference ID.
+     * Returns the client server apps.
      *
-     * @return string
+     * @return HasManyThrough
      */
-    public function getRefferenceAttribute()
+    public function serverApps()
     {
-        return 'deb' . $this->id;
+        return $this->hasManyThrough(ServerApp::class, ServerUser::class, 'client_id', 'user_id', 'id');
+    }
+
+    /**
+     * Returns the client server databases.
+     *
+     * @return HasManyThrough
+     */
+    public function serverDatabases()
+    {
+        return $this->hasManyThrough(ServerDatabase::class, ServerUser::class, 'client_id', 'user_id', 'id');
+    }
+
+    /**
+     * Returns the client server hosts.
+     *
+     * @return HasMany
+     */
+    public function serverHosts()
+    {
+        return $this->hasMany(ServerHost::class, 'client_id');
+    }
+
+    /**
+     * Returns the client project hours.
+     *
+     * @return HasManyThrough
+     */
+    public function projectHours()
+    {
+        return $this->hasManyThrough(ProjectHour::class, Project::class, 'client_id', 'project_id', 'id');
     }
 }

@@ -55,6 +55,16 @@ class ServerApp extends Model
     }
 
     /**
+     * Returns the client.
+     *
+     * @return void
+     */
+    public function client()
+    {
+        return $this->hasOneThrough(Client::class, ServerUser::class, 'client_id', 'id', 'user_id');
+    }
+
+    /**
      * Returns the domain variable.
      *
      * @return void

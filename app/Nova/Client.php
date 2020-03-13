@@ -83,9 +83,15 @@ class Client extends Resource
 
             HasMany::make('Projects', 'projects', Project::class),
 
+            HasMany::make('Time Registrations', 'projectHours', ProjectHour::class),
+
             HasMany::make('Server Users', 'serverUsers', ServerUser::class),
 
             HasMany::make('Server Hosts', 'serverHosts', ServerHost::class),
+
+            HasMany::make('Server Apps', 'serverApps', ServerApp::class),
+
+            HasMany::make('Server Databases', 'serverDatabases', ServerDatabase::class),
         ];
     }
 

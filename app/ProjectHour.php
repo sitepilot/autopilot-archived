@@ -36,6 +36,16 @@ class ProjectHour extends Model
     }
 
     /**
+     * Returns the client.
+     *
+     * @return void
+     */
+    public function client()
+    {
+        return $this->hasOneThrough(Client::class, Project::class, 'client_id', 'id', 'project_id');
+    }
+
+    /**
      * Calculate hours based on minutes.
      *
      * @return float

@@ -23,7 +23,7 @@ class Project extends Model
      *
      * @return HasMany
      */
-    public function hours()
+    public function projectHours()
     {
         return $this->hasMany(ProjectHour::class, 'project_id');
     }

@@ -51,4 +51,14 @@ class ServerDatabase extends Model
     {
         return $this->belongsTo(ServerApp::class, 'app_id');
     }
+
+    /**
+     * Returns the client.
+     *
+     * @return void
+     */
+    public function client()
+    {
+        return $this->hasOneThrough(Client::class, ServerUser::class, 'client_id', 'id', 'user_id');
+    }
 }
