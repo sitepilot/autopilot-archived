@@ -23,7 +23,10 @@ class ProjectBudgetTotalMetric extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, Project::class, 'budget')->prefix('€');
+        $totalBudget = $this->sum($request, Project::where('state', 'in-progress'), 'budget');
+        $totalInvoiced = $this->sum($request, Project::where('state', 'in-progress'), 'invoiced');
+
+        return $this->result($totalBudget->value - $totalInvoiced->value)->previous($totalBudget->previous - $totalInvoiced->previous)->prefix('€');
     }
 
     /**

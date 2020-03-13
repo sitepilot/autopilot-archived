@@ -5,6 +5,8 @@ namespace App\Nova;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\Markdown;
@@ -83,13 +85,38 @@ class Project extends Resource
             BelongsTo::make('Client', 'client', Client::class)
                 ->searchable(),
 
+            Select::make('State', 'state')->options([
+                'offered' => 'Offered',
+                'in-progress' => 'In Progress',
+                'done' => 'Done',
+                'rejected' => 'Rejected'
+            ])
+                ->sortable()
+                ->rules(['required'])
+                ->displayUsingLabels(),
+
             Currency::make('Budget', 'budget')
                 ->sortable()
                 ->rules(['numeric', 'nullable']),
 
+            Currency::make('Invoiced', 'invoiced')
+                ->sortable()
+                ->rules(['numeric', 'nullable'])
+                ->hideFromIndex(),
+
+            Currency::make('Remaining Budget', 'remainingBudget')
+                ->sortable()
+                ->exceptOnForms(),
+
+            Number::make('Remaining Hours', 'remainingHours')
+                ->sortable()
+                ->exceptOnForms()
+                ->hideFromIndex(),
+
             Currency::make('Hourly Rate', 'hourly_rate')
                 ->sortable()
-                ->rules(['numeric', 'nullable']),
+                ->rules(['numeric', 'nullable'])
+                ->onlyOnDetail(),
 
             Markdown::make('Notes', 'notes')->alwaysShow(),
 

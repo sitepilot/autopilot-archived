@@ -43,6 +43,20 @@ class Project extends Model
     }
 
     /**
+     * Amount invoiced.
+     *
+     * @return float
+     */
+    public function getInvoicedAttribute($value)
+    {
+        if (is_null($value)) {
+            return 0.00;
+        } else {
+            return $value;
+        }
+    }
+
+    /**
      * Format hourly rate.
      *
      * @return float
@@ -54,5 +68,29 @@ class Project extends Model
         } else {
             return $value;
         }
+    }
+
+    /**
+     * Returns the remaining budget.
+     *
+     * @return float
+     */
+    public function getRemainingBudgetAttribute()
+    {
+        return $this->budget - $this->invoiced;
+    }
+
+    /**
+     * Returns the remaining hours.
+     *
+     * @return float
+     */
+    public function getRemainingHoursAttribute()
+    {
+        if ($this->hourly_rate) {
+            return round($this->remainingBudget / $this->hourly_rate, 1);
+        }
+
+        return 0;
     }
 }
