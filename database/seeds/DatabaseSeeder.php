@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
 
             $fwRuleMysql = new ServerFirewallRule;
             $fwRuleMysql->name = 'mysql';
-            $fwRuleCockpit->vars = ['port' => '3306'];
+            $fwRuleMysql->vars = ['port' => '3306'];
             $fwRuleMysql->save();
 
             $authKey = new ServerAuthKey;
