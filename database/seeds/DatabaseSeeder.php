@@ -82,7 +82,6 @@ class DatabaseSeeder extends Seeder
                 $fwRuleHttps->id,
                 $fwRuleSSH->id,
                 $fwRuleLitespeed->id,
-                $fwRuleCockpit->id,
                 $fwRuleMysql->id
             ]);
             $host->authKeys()->attach([
