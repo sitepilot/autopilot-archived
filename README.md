@@ -2,7 +2,7 @@
 
 ![Test](https://github.com/sitepilot/autopilot/workflows/Test/badge.svg?branch=master)
 
-A tool for provisioning and maintaining WordPress sites and servers using Ansible and Laravel.
+A tool for provisioning servers, maintaining WordPress sites and managing clients / projects.
 
 ![screenshot](screenshot.png)
 
