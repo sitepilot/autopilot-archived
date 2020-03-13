@@ -8,10 +8,10 @@ A tool for provisioning and maintaining WordPress sites and servers using Ansibl
 
 ## Requirements
 
-Ubuntu 18.04 is the only supported operating system (for the master and slave hosts). Autopilot uses Ansible to provision servers, users and vhosts. To use Autopilot you need to install the following packages on the master host:
+Ubuntu 18.04 is the only supported operating system (for the master and slave hosts). Autopilot uses Ansible to update WordPress sites and provision servers, users and vhosts. To use Autopilot you need:
 
-* A [Laravel Nova](https://nova.laravel.com/) license.
-* [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/).
+* A valid [Laravel Nova](https://nova.laravel.com/) license.
+* [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) installed on the master node.
 
 *NOTE: The master host requires root access to the slave hosts.*
 
