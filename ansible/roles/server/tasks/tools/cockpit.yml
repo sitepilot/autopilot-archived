@@ -1,5 +1,5 @@
 ---
-- name: Install Cockpit dashboard.
+- name: Uninstall Cockpit dashboard.
   apt:
     name: >
       cockpit,
@@ -10,9 +10,8 @@
 - name: "Create Cockpit folders."
   file:
     path: "{{ item.path }}"
-    state: directory
-    recurse: "{{ item.recurse }}"
     state: absent
+    recurse: "{{ item.recurse }}"
   loop:
     - path: /etc/systemd/system/cockpit.socket.d
       recurse: false
