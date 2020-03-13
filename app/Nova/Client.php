@@ -57,7 +57,7 @@ class Client extends Resource
      */
     public function subtitle()
     {
-        return $this->code;
+        return $this->refid;
     }
 
     /**
@@ -71,12 +71,12 @@ class Client extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:4']),
+                ->rules(['required', 'min:3', 'unique:clients,name,{{resourceId}}']),
 
             Text::make('Refference', 'refid')
-                ->rules(['required', 'unique:clients,refid,{{resourceId}}'])
                 ->sortable()
-                ->hideWhenCreating(),
+                ->hideWhenCreating()
+                ->rules(['required', 'unique:clients,refid,{{resourceId}}']),
 
             Markdown::make('Notes', 'notes')
                 ->sortable(),

@@ -2,33 +2,8 @@
 
 namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Model;
-
 trait HasVars
 {
-    /**
-     * Boot the model.
-     *
-     * @return void
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        self::updating(function (Model $model) {
-            $originalVars = $model->getOriginal('vars');
-            $updatedVars = array_merge($model->getDefaultVars(), is_array($model->vars) ? $model->vars : []);
-            if (isset($originalVars['name'])) $updatedVars['name'] = $originalVars['name'];
-            if (isset($originalVars['hostname'])) $updatedVars['hostname'] = $originalVars['hostname'];
-            $model->vars = $updatedVars;
-        });
-
-        self::creating(function (Model $model) {
-            $model->vars = $vars = array_merge($model->getDefaultVars(), is_array($model->vars) ? $model->vars : []);
-            $model->name = (isset($vars['name']) ? $vars['name'] : (isset($vars['hostname']) ? $vars['hostname'] : $model->name));
-        });
-    }
-
     /**
      * Set a variable.
      *

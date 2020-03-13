@@ -27,7 +27,7 @@ class ServerAuthKey extends Model
     public function getDefaultVars()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->refid,
             'key' => null
         ];
     }

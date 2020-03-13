@@ -59,7 +59,7 @@ class Project extends Resource
      */
     public function subtitle()
     {
-        return $this->code;
+        return $this->refid;
     }
 
     /**
@@ -73,12 +73,12 @@ class Project extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:4']),
+                ->rules(['required', 'min:3', 'unique:projects,name,{{resourceId}}']),
 
             Text::make('Refference', 'refid')
-                ->rules(['required', 'unique:projects,refid,{{resourceId}}'])
                 ->sortable()
-                ->hideWhenCreating(),
+                ->hideWhenCreating()
+                ->rules(['required', 'unique:projects,refid,{{resourceId}}']),
 
             BelongsTo::make('Client', 'client', Client::class)
                 ->searchable(),

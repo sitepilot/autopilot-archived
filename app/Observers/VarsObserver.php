@@ -1,19 +1,59 @@
 <?php
 
-namespace App\Traits;
+namespace App\Observers;
 
 use Faker\Factory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 
-trait UniqueName
+class VarsObserver
 {
+    /**
+     * Handle the "creating" event.
+     *
+     * @param  mixed $item
+     * @return void
+     */
+    public function creating(Model $item)
+    {
+        if (empty($item->name)) {
+            if ($item->getTable() == 'server_apps') {
+                $name = !empty($this->name) ? $this->name : $this->getRandomName($item);
+            } else {
+                $name = !empty($this->name) ? $this->name : $item->refid;
+            }
+
+            $item->name = $name;
+        }
+
+        $item->vars = array_merge($item->getDefaultVars(), is_array($item->vars) ? $item->vars : []);
+    }
+
+    /**
+     * Handle the "updating" event.
+     *
+     * @param  mixed $item
+     * @return void
+     */
+    public function updating(Model $item)
+    {
+        $originalVars = $item->getOriginal('vars');
+        $updatedVars = array_merge($item->getDefaultVars(), is_array($item->vars) ? $item->vars : []);
+
+        // Prevent name update
+        if (isset($originalVars['name'])) $updatedVars['name'] = $originalVars['name'];
+        if (isset($originalVars['hostname'])) $updatedVars['hostname'] = $originalVars['hostname'];
+
+        $item->vars = $updatedVars;
+    }
+
     /**
      * Returns a random name from space.
      * 
      * @return string $name
      */
-    function getRandomName($prefix = '', $column = 'name', $count = 2)
+    function getRandomName($item, $count = 2)
     {
         $faker = Factory::create();
 
@@ -29,64 +69,15 @@ trait UniqueName
         ];
 
         $name = '';
-        while ($this->nameIsUsed($name, $column)) {
-            $name = $prefix;
+        $unique = true;
+        while ($unique) {
             $names = $faker->unique()->randomElements($elements, $count);
             foreach ($names as $randomName) {
                 $name .= '-' . $randomName;
             }
+            $unique = $item->where('name', $name)->count();
         }
 
         return Str::slug($name);
-    }
-
-    /**
-     * Returns a random numeric name.
-     * 
-     * @return string $name
-     */
-    public function getRandomNumericName($prefix = '', $column = 'name')
-    {
-        $faker = Factory::create();
-
-        $name = '';
-        while ($this->nameIsUsed($name, $column)) {
-            $name = $prefix . $faker->numberBetween(10000, 99999);
-        }
-
-        return Str::slug($name);
-    }
-
-    /**
-     * Auto number next item in group (example: ams-web10).
-     * 
-     * @param string $prefix 
-     * @param string $column
-     * @param string $offset
-     * @return string $name
-     */
-    public function getNextInGroupName($prefix = '', $column = 'group_id', $offset = 10)
-    {
-        $name = '';
-        while ($this->nameIsUsed($name)) {
-            $name = $prefix . ($this->where($column, $this->$column)->count() + $offset);
-            $offset--;
-        }
-
-        return Str::slug($name);
-    }
-
-    /**
-     * Checks if a name is already used.
-     * 
-     * @return boolean
-     */
-    function nameIsUsed($name, $column = 'name')
-    {
-        if (!empty($name) && DB::table($this->getTable())->where($column, $name)->count() < 1) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }

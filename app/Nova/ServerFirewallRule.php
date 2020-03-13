@@ -38,7 +38,7 @@ class ServerFirewallRule extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'description'
+        'name', 'refid', 'description'
     ];
 
     /**
@@ -58,7 +58,7 @@ class ServerFirewallRule extends Resource
      */
     public function subtitle()
     {
-        return $this->description;
+        return $this->refid;
     }
 
     /**
@@ -72,15 +72,12 @@ class ServerFirewallRule extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                }),
-                
+                ->help("If the name is left blank Autopilot will assign the refference ID.")
+                ->rules(['min:3', 'unique:server_firewall_rules,name,{{resourceId}}', 'nullable']),
+
             Text::make('Refference', 'refid')
-                ->rules(['required', 'unique:server_hosts,refid,{{resourceId}}'])
                 ->sortable()
-                ->hideWhenCreating(),
+                ->exceptOnForms(),
 
             Text::make('Description', 'description')
                 ->sortable(),

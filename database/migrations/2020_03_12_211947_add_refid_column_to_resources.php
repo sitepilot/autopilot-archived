@@ -13,6 +13,10 @@ class AddRefidColumnToResources extends Migration
      */
     public function up()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('refid', 50)->after('id')->unique()->nullable()->index();
+        });
+
         Schema::table('clients', function (Blueprint $table) {
             $table->dropColumn(['code']);
             $table->string('refid', 50)->after('id')->unique()->nullable()->index();
@@ -55,6 +59,10 @@ class AddRefidColumnToResources extends Migration
      */
     public function down()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('refid');
+        });
+
         Schema::table('clients', function (Blueprint $table) {
             $table->dropColumn('refid');
         });

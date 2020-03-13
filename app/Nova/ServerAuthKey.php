@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -38,7 +37,7 @@ class ServerAuthKey extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'description'
+        'name', 'refid', 'description'
     ];
 
     /**
@@ -58,7 +57,7 @@ class ServerAuthKey extends Resource
      */
     public function subtitle()
     {
-        return $this->description;
+        return $this->refid;
     }
 
     /**
@@ -72,12 +71,12 @@ class ServerAuthKey extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:4']),
+                ->help("If the name is left blank Autopilot will assign the refference ID.")
+                ->rules(['min:3', 'unique:server_auth_keys,name,{{resourceId}}', 'nullable']),
 
             Text::make('Refference', 'refid')
-                ->rules(['required', 'unique:server_hosts,refid,{{resourceId}}'])
                 ->sortable()
-                ->hideWhenCreating(),
+                ->exceptOnForms(),
 
             Text::make('Description', 'description')
                 ->sortable(),
