@@ -88,7 +88,7 @@ class ProjectHour extends Resource
 
             Text::make('Title', 'title')
                 ->sortable()
-                ->rules(['required', 'min:4']),
+                ->rules(['required', 'min:3']),
 
             BelongsTo::make('User', 'user', User::class)
                 ->hideWhenCreating()

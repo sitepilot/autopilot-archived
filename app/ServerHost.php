@@ -4,7 +4,6 @@ namespace App;
 
 use Exception;
 use App\Traits\HasVars;
-use App\Traits\UniqueName;
 use phpseclib\Crypt\RSA;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ServerHost extends Model
 {
-    use HasVars {
-        boot as hasVarsBoot;
-    }
-    use UniqueName;
+    use HasVars;
 
     /**
      * The attributes that should be cast to native types.
@@ -35,7 +31,7 @@ class ServerHost extends Model
      */
     public static function boot()
     {
-        self::hasVarsBoot();
+        parent::boot();
 
         self::created(function (ServerHost $host) {
             if ($host->getVar('ansible_connection') == 'ssh' && !$host->getVar('ansible_ssh_private_key_file')) {
@@ -60,10 +56,8 @@ class ServerHost extends Model
      */
     public function getDefaultVars()
     {
-        $name = $this->getNextInGroupName($this->group->name);
-
         return [
-            'hostname' => $name,
+            'hostname' => $this->refid,
             'ansible_connection' => 'ssh',
             'ansible_ssh_host' => '0.0.0.0',
             'ansible_ssh_port' => '22',

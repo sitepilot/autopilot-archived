@@ -38,7 +38,7 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'name', 'email',
+        'name', 'refid', 'email',
     ];
 
     /**
@@ -50,13 +50,16 @@ class User extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Gravatar::make(),
 
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
+
+            Text::make('Refference', 'refid')
+                ->sortable()
+                ->hideWhenCreating()
+                ->rules(['required', 'unique:users,refid,{{resourceId}}']),
 
             Text::make('Email')
                 ->sortable()

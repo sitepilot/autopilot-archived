@@ -70,11 +70,9 @@ class ServerGroup extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-            
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:4'])
+                ->rules(['required', 'min:3', 'unique:server_groups,name,{{resourceId}}'])
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),

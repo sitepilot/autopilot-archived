@@ -23,7 +23,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
 
-        Nova::style('autopilot', public_path('css/autopilot.css'));
+        //
     }
 
     /**

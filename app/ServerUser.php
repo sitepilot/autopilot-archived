@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Traits\HasVars;
-use App\Traits\UniqueName;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class ServerUser extends Model
 {
     use HasVars;
-    use UniqueName;
 
     /**
      * The attributes that should be cast to native types.
@@ -31,10 +29,8 @@ class ServerUser extends Model
      */
     public function getDefaultVars()
     {
-        $name = $this->getRandomNumericName('user');
-
         return [
-            'name' => $name,
+            'name' => $this->refid,
             'isolated' => true,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),

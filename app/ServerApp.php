@@ -4,13 +4,12 @@ namespace App;
 
 use App\ServerUser;
 use App\Traits\HasVars;
-use App\Traits\UniqueName;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class ServerApp extends Model
 {
     use HasVars;
-    use UniqueName;
 
     /**
      * The attributes that should be cast to native types.
@@ -28,11 +27,9 @@ class ServerApp extends Model
      */
     public function getDefaultVars()
     {
-        $name = !empty($this->name) ? $this->name : $this->getRandomName();
-
         return [
-            'name' => $name,
-            'domain' => $name . '.' . env('APP_DEFAULT_DOMAIN'),
+            'name' => $this->refid,
+            'domain' => Str::slug($this->name) . '.' . env('APP_DEFAULT_DOMAIN'),
             'aliases' => []
         ];
     }

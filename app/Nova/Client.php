@@ -37,7 +37,7 @@ class Client extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'code', 'notes'
+        'name', 'refid', 'notes'
     ];
 
     /**
@@ -57,7 +57,7 @@ class Client extends Resource
      */
     public function subtitle()
     {
-        return $this->code;
+        return $this->refid;
     }
 
     /**
@@ -69,15 +69,14 @@ class Client extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:4']),
+                ->rules(['required', 'min:3', 'unique:clients,name,{{resourceId}}']),
 
-            Text::make('Code', 'code')
+            Text::make('Refference', 'refid')
                 ->sortable()
-                ->rules(['unique:clients,code', 'nullable']),
+                ->hideWhenCreating()
+                ->rules(['required', 'unique:clients,refid,{{resourceId}}']),
 
             Markdown::make('Notes', 'notes')
                 ->sortable(),

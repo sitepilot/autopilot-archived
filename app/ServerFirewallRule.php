@@ -27,7 +27,7 @@ class ServerFirewallRule extends Model
     public function getDefaultVars()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->refid,
             'port' => '22',
             'rule' => 'allow',
             'proto' => 'tcp',

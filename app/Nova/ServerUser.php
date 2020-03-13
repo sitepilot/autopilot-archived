@@ -40,7 +40,7 @@ class ServerUser extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'description'
+        'name', 'refid', 'description'
     ];
 
     /**
@@ -60,7 +60,7 @@ class ServerUser extends Resource
      */
     public function subtitle()
     {
-        return $this->description;
+        return $this->refid;
     }
 
     /**
@@ -72,12 +72,14 @@ class ServerUser extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->help("If the name is left blank Autopilot will assign the refference ID.")
+                ->rules(['min:3', 'unique:server_users,name,{{resourceId}}', 'nullable']),
+
+            Text::make('Refference', 'refid')
+                ->sortable()
+                ->exceptOnForms(),
 
             BelongsTo::make('Host', 'host', ServerHost::class)
                 ->searchable()

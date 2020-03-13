@@ -35,4 +35,14 @@ class Client extends Model
     {
         return $this->hasMany(ServerUser::class, 'client_id');
     }
+
+    /**
+     * Returns the refference ID.
+     *
+     * @return string
+     */
+    public function getRefferenceAttribute()
+    {
+        return 'deb' . $this->id;
+    }
 }
