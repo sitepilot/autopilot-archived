@@ -42,11 +42,6 @@
     url: https://127.0.0.1:2083
     validate_certs: false
 
-- name: "TEST: Cockpit is running (HTTPS)."
-  uri:
-    url: https://127.0.0.1:2087
-    validate_certs: false
-
 - name: "TEST: phpMyAdmin is available."
   uri:
     url: https://127.0.0.1/.sitepilot/pma/
