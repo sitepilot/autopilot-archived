@@ -87,7 +87,7 @@ class Project extends Model
      */
     public function getRemainingHoursAttribute()
     {
-        if ($this->offer > 0 && $this->hourly_rate > 0) {
+        if ($this->offer > 0 && $this->hourly_rate > 0 && $this->state == 'in-progress') {
             return round($this->offer / $this->hourly_rate - $this->projectHours->where('billable', false)->sum('hours'), 1);
         }
 
