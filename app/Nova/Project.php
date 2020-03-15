@@ -48,7 +48,7 @@ class Project extends Resource
      *
      * @var array
      */
-    public static $orderBy = ['state' => 'asc', 'refid' => 'asc'];
+    public static $orderBy = ['refid' => 'desc'];
 
     /**
      * Returns the menu label.
@@ -92,10 +92,10 @@ class Project extends Resource
                 ->searchable(),
 
             Select::make('State', 'state')->options([
-                '100-in-progress' => 'In Progress',
-                '200-offered' => 'Offered',
-                '300-done' => 'Done',
-                '400-rejected' => 'Rejected'
+                'offered' => 'Offered',
+                'in-progress' => 'In Progress',
+                'rejected' => 'Rejected',
+                'done' => 'Done',
             ])
                 ->sortable()
                 ->rules(['required'])
@@ -160,7 +160,9 @@ class Project extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new Filters\ProjectStateFilter
+        ];
     }
 
     /**
