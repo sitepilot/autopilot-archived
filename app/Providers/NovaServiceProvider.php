@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
-use App\Nova\Metrics\ProjectBillableHoursMetric;
-use App\Nova\Metrics\ProjectBudgetTotalMetric;
-use App\Nova\Metrics\ProjectHoursNonBillableMetric;
-use App\Nova\Metrics\ProjectHoursTotalMetric;
+use Laravel\Nova\Nova;
+use Illuminate\Support\Facades\Gate;
 use App\Nova\Metrics\ProjectTotalMetric;
 use App\Nova\Metrics\ServerAppsTotalMetric;
-use Illuminate\Support\Facades\Gate;
-use Laravel\Nova\Nova;
+use App\Nova\Metrics\ProjectHoursTotalMetric;
+use App\Nova\Metrics\ProjectBalanceTotalMetric;
+use App\Nova\Metrics\ProjectBillableHoursMetric;
 use Laravel\Nova\NovaApplicationServiceProvider;
+use App\Nova\Metrics\ProjectHoursNonBillableMetric;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -79,7 +79,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         return [
             new ServerAppsTotalMetric,
             new ProjectTotalMetric,
-            new ProjectBudgetTotalMetric,
+            new ProjectBalanceTotalMetric,
             new ProjectHoursTotalMetric,
             new ProjectBillableHoursMetric,
             new ProjectHoursNonBillableMetric

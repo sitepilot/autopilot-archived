@@ -6,14 +6,14 @@ use App\Project;
 use Laravel\Nova\Metrics\Value;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class ProjectBudgetTotalMetric extends Value
+class ProjectBalanceTotalMetric extends Value
 {
     /**
      * The displayable name of the metric.
      *
      * @var string
      */
-    public $name = 'Budget';
+    public $name = 'Project Balance';
 
     /**
      * Calculate the value of the metric.
@@ -23,7 +23,10 @@ class ProjectBudgetTotalMetric extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, Project::class, 'budget')->prefix('€');
+        $totalOffer = $this->sum($request, Project::where('state', 'in-progress'), 'offer');
+        $totalInvoiced = $this->sum($request, Project::where('state', 'in-progress'), 'invoiced');
+
+        return $this->result($totalOffer->value - $totalInvoiced->value)->previous($totalOffer->previous - $totalInvoiced->previous)->prefix('€');
     }
 
     /**

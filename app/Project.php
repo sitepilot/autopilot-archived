@@ -29,11 +29,25 @@ class Project extends Model
     }
 
     /**
-     * Format budget.
+     * Format offer.
      *
      * @return float
      */
-    public function getBudgetAttribute($value)
+    public function getOfferAttribute($value)
+    {
+        if (is_null($value)) {
+            return 0.00;
+        } else {
+            return $value;
+        }
+    }
+
+    /**
+     * Amount invoiced.
+     *
+     * @return float
+     */
+    public function getInvoicedAttribute($value)
     {
         if (is_null($value)) {
             return 0.00;
@@ -54,5 +68,29 @@ class Project extends Model
         } else {
             return $value;
         }
+    }
+
+    /**
+     * Returns the project balance (offer - invoiced).
+     *
+     * @return float
+     */
+    public function getBalanceAttribute()
+    {
+        return $this->offer - $this->invoiced;
+    }
+
+    /**
+     * Returns the remaining hours.
+     *
+     * @return float
+     */
+    public function getRemainingHoursAttribute()
+    {
+        if ($this->balance > 0 && $this->hourly_rate > 0) {
+            return round($this->balance / $this->hourly_rate - $this->projectHours->where('billable', false)->sum('hours'), 1);
+        }
+
+        return null;
     }
 }

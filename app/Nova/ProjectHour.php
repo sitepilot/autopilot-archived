@@ -111,7 +111,8 @@ class ProjectHour extends Resource
                 'general' => 'General'
             ])
                 ->sortable()
-                ->rules(['required']),
+                ->rules(['required'])
+                ->displayUsingLabels(),
 
             Number::make('Hours', 'hours')
                 ->min(0)->step(0.01)

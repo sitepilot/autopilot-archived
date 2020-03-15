@@ -2,9 +2,10 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\Markdown;
@@ -83,13 +84,38 @@ class Project extends Resource
             BelongsTo::make('Client', 'client', Client::class)
                 ->searchable(),
 
-            Currency::make('Budget', 'budget')
+            Select::make('State', 'state')->options([
+                'offered' => 'Offered',
+                'in-progress' => 'In Progress',
+                'done' => 'Done',
+                'rejected' => 'Rejected'
+            ])
+                ->sortable()
+                ->rules(['required'])
+                ->displayUsingLabels(),
+
+            Currency::make('Offer', 'offer')
                 ->sortable()
                 ->rules(['numeric', 'nullable']),
 
+            Currency::make('Invoiced', 'invoiced')
+                ->sortable()
+                ->rules(['numeric', 'nullable'])
+                ->hideFromIndex(),
+
+            Currency::make('Balance', 'balance')
+                ->sortable()
+                ->exceptOnForms(),
+
             Currency::make('Hourly Rate', 'hourly_rate')
                 ->sortable()
-                ->rules(['numeric', 'nullable']),
+                ->rules(['numeric', 'nullable'])
+                ->hideFromIndex(),
+
+            Number::make('Remaining Hours', 'remainingHours')
+                ->sortable()
+                ->exceptOnForms()
+                ->hideFromIndex(),
 
             Markdown::make('Notes', 'notes')->alwaysShow(),
 
@@ -108,8 +134,8 @@ class Project extends Resource
         return [
             (new Metrics\ProjectTotalMetric)
                 ->help('The number of projects.'),
-            (new Metrics\ProjectBudgetTotalMetric)
-                ->help('The sum of all budgets for all projects.'),
+            (new Metrics\ProjectBalanceTotalMetric)
+                ->help('The total remaining balance.'),
             (new Metrics\ProjectBillableHoursMetric)
                 ->help('The sum of all project hours which are billable and not invoiced.')
         ];
