@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Client;
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectHour extends Model
@@ -38,11 +39,11 @@ class ProjectHour extends Model
     /**
      * Returns the client.
      *
-     * @return void
+     * @return Client
      */
-    public function client()
+    public function getClientAttribute()
     {
-        return $this->hasOneThrough(Client::class, Project::class, 'client_id', 'id', 'project_id');
+        return $this->project->client;
     }
 
     /**

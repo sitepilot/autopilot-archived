@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Client;
 use App\ServerUser;
 use App\Traits\HasVars;
 use Illuminate\Database\Eloquent\Model;
@@ -55,10 +56,10 @@ class ServerDatabase extends Model
     /**
      * Returns the client.
      *
-     * @return void
+     * @return Client
      */
-    public function client()
+    public function getClientAttribute()
     {
-        return $this->hasOneThrough(Client::class, ServerUser::class, 'client_id', 'id', 'user_id');
+        return $this->user->client;
     }
 }
