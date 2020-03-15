@@ -115,7 +115,9 @@ class Project extends Resource
             Number::make('Remaining Hours', 'remainingHours')
                 ->sortable()
                 ->exceptOnForms()
-                ->hideFromIndex(),
+                ->resolveUsing(function ($hours) {
+                    return "$hours hours";
+                }),
 
             Markdown::make('Notes', 'notes')->alwaysShow(),
 
