@@ -44,6 +44,13 @@ class Project extends Resource
     ];
 
     /**
+     * The default sort order.
+     *
+     * @var array
+     */
+    public static $orderBy = ['state' => 'asc', 'refid' => 'asc'];
+
+    /**
      * Returns the menu label.
      *
      * @return string
@@ -85,10 +92,10 @@ class Project extends Resource
                 ->searchable(),
 
             Select::make('State', 'state')->options([
-                'offered' => 'Offered',
-                'in-progress' => 'In Progress',
-                'done' => 'Done',
-                'rejected' => 'Rejected'
+                '100-in-progress' => 'In Progress',
+                '200-offered' => 'Offered',
+                '300-done' => 'Done',
+                '400-rejected' => 'Rejected'
             ])
                 ->sortable()
                 ->rules(['required'])
@@ -116,7 +123,9 @@ class Project extends Resource
                 ->sortable()
                 ->exceptOnForms()
                 ->resolveUsing(function ($hours) {
-                    return "$hours hours";
+                    if ($hours > 0) {
+                        return "$hours hours";
+                    }
                 }),
 
             Markdown::make('Notes', 'notes')->alwaysShow(),

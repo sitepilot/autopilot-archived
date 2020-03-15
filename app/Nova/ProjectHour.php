@@ -45,6 +45,13 @@ class ProjectHour extends Resource
     ];
 
     /**
+     * The default sort order.
+     *
+     * @var array
+     */
+    public static $orderBy = ['created_at' => 'desc'];
+
+    /**
      * Returns the menu label.
      *
      * @return string
