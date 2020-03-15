@@ -94,12 +94,14 @@ class ServerHost extends Resource
 
             BelongsTo::make('Group', 'group', ServerGroup::class)
                 ->searchable()
+                ->sortable()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
 
             BelongsTo::make('Client', 'client', Client::class)
                 ->searchable()
+                ->sortable()
                 ->nullable(),
 
             Text::make('Description', 'description')

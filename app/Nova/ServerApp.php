@@ -90,6 +90,13 @@ class ServerApp extends Resource
                 ->sortable()
                 ->exceptOnForms(),
 
+            BelongsTo::make('User', 'user', ServerUser::class)
+                ->searchable()
+                ->sortable()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
+
             Text::make('Client', 'client')
                 ->exceptOnForms()
                 ->resolveUsing(function ($client) {
@@ -101,15 +108,8 @@ class ServerApp extends Resource
                 })->asHtml(),
 
             Text::make('Domain', 'domain')
-                ->sortable()
                 ->readonly()
                 ->hideWhenCreating(),
-
-            BelongsTo::make('User', 'user', ServerUser::class)
-                ->searchable()
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                }),
 
             Text::make('Description', 'description')
                 ->sortable()

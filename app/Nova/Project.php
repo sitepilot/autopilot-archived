@@ -99,6 +99,7 @@ class Project extends Resource
                 ->rules(['required', 'unique:projects,refid,{{resourceId}}']),
 
             BelongsTo::make('Client', 'client', Client::class)
+                ->sortable()
                 ->searchable(),
 
             Select::make('State', 'state')->options([
@@ -123,7 +124,6 @@ class Project extends Resource
                 ->hideFromIndex(),
 
             Currency::make('Balance', 'balance')
-                ->sortable()
                 ->exceptOnForms(),
 
             Currency::make('Hourly Rate', 'hourly_rate')
@@ -132,7 +132,6 @@ class Project extends Resource
                 ->hideFromIndex(),
 
             Number::make('Remaining Hours', 'remainingHours')
-                ->sortable()
                 ->exceptOnForms()
                 ->resolveUsing(function ($hours) {
                     if ($hours != null) {

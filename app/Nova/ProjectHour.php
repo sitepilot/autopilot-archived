@@ -108,6 +108,7 @@ class ProjectHour extends Resource
                 ->rules(['required', 'min:3']),
 
             BelongsTo::make('User', 'user', User::class)
+                ->sortable()
                 ->hideWhenCreating()
                 ->hideWhenUpdating(),
 
@@ -141,6 +142,7 @@ class ProjectHour extends Resource
 
             Number::make('Hours', 'hours')
                 ->min(0)->step(0.01)
+                ->sortable()
                 ->rules(['required_without:minutes', 'numeric', 'nullable']),
 
             Number::make('Time in minutes', 'minutes')

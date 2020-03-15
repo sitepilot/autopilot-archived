@@ -89,20 +89,11 @@ class ServerDatabase extends Resource
                 ->sortable()
                 ->exceptOnForms(),
 
-            Text::make('Client', 'client')
-                ->exceptOnForms()
-                ->resolveUsing(function ($client) {
-                    if (isset($client->name)) {
-                        return "<a href='" . url(config("nova.path") . "/resources/clients/" . $client->id) . "' 
-                            class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
-                    }
-                    return null;
-                })->asHtml(),
-
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->help('This field will be ignored when an App is selected above.')
                 ->searchable()
                 ->nullable()
+                ->sortable()
                 ->rules('required_without:app')
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
@@ -113,9 +104,20 @@ class ServerDatabase extends Resource
                 ->searchable()
                 ->rules('required_without:user')
                 ->nullable()
+                ->sortable()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+
+            Text::make('Client', 'client')
+                ->exceptOnForms()
+                ->resolveUsing(function ($client) {
+                    if (isset($client->name)) {
+                        return "<a href='" . url(config("nova.path") . "/resources/clients/" . $client->id) . "' 
+                            class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
+                    }
+                    return null;
+                })->asHtml(),
 
             Text::make('Description', 'description')
                 ->sortable()
