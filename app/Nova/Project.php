@@ -123,7 +123,7 @@ class Project extends Resource
                 ->sortable()
                 ->exceptOnForms()
                 ->resolveUsing(function ($hours) {
-                    if ($hours > 0) {
+                    if($hours != null) {
                         return "$hours hours";
                     }
                 }),
