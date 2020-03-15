@@ -2,7 +2,6 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
@@ -95,7 +94,7 @@ class Project extends Resource
                 ->rules(['required'])
                 ->displayUsingLabels(),
 
-            Currency::make('Budget', 'budget')
+            Currency::make('Offer', 'offer')
                 ->sortable()
                 ->rules(['numeric', 'nullable']),
 
@@ -104,19 +103,19 @@ class Project extends Resource
                 ->rules(['numeric', 'nullable'])
                 ->hideFromIndex(),
 
-            Currency::make('Remaining Budget', 'remainingBudget')
+            Currency::make('Balance', 'balance')
                 ->sortable()
                 ->exceptOnForms(),
+
+            Currency::make('Hourly Rate', 'hourly_rate')
+                ->sortable()
+                ->rules(['numeric', 'nullable'])
+                ->hideFromIndex(),
 
             Number::make('Remaining Hours', 'remainingHours')
                 ->sortable()
                 ->exceptOnForms()
                 ->hideFromIndex(),
-
-            Currency::make('Hourly Rate', 'hourly_rate')
-                ->sortable()
-                ->rules(['numeric', 'nullable'])
-                ->onlyOnDetail(),
 
             Markdown::make('Notes', 'notes')->alwaysShow(),
 
@@ -135,8 +134,8 @@ class Project extends Resource
         return [
             (new Metrics\ProjectTotalMetric)
                 ->help('The number of projects.'),
-            (new Metrics\ProjectBudgetTotalMetric)
-                ->help('The sum of all budgets for all projects.'),
+            (new Metrics\ProjectBalanceTotalMetric)
+                ->help('The total remaining balance.'),
             (new Metrics\ProjectBillableHoursMetric)
                 ->help('The sum of all project hours which are billable and not invoiced.')
         ];

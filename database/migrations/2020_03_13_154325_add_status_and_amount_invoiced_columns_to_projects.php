@@ -14,7 +14,11 @@ class AddStatusAndAmountInvoicedColumnsToProjects extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->float('invoiced')->nullable()->after('budget');
+            $table->renameColumn('budget', 'offer');
+        });
+
+        Schema::table('projects', function (Blueprint $table) {
+            $table->float('invoiced')->nullable()->after('offer');
             $table->string('state', 50)->after('name');
         });
     }
@@ -27,7 +31,8 @@ class AddStatusAndAmountInvoicedColumnsToProjects extends Migration
     public function down()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn('amount_invoiced');
+            $table->renameColumn('offer', 'budget');
+            $table->dropColumn('invoiced');
             $table->dropColumn('state');
         });
     }
