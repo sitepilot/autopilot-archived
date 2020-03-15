@@ -95,6 +95,7 @@ class Project extends Resource
                 'offered' => 'Offered',
                 'in-progress' => 'In Progress',
                 'rejected' => 'Rejected',
+                'maintenance' => 'Maintenance',
                 'done' => 'Done',
             ])
                 ->sortable()
@@ -123,7 +124,7 @@ class Project extends Resource
                 ->sortable()
                 ->exceptOnForms()
                 ->resolveUsing(function ($hours) {
-                    if($hours != null) {
+                    if ($hours != null) {
                         return "$hours hours";
                     }
                 }),

@@ -46,7 +46,8 @@ class ProjectStateFilter extends Filter
             'Offered' => 'offered',
             'In Progress' => 'in-progress',
             'Rejected' => 'rejected',
-            'Done' => 'done'
+            'Maintenance' => 'maintenance',
+            'Done' => 'done',
         ];
     }
 }
