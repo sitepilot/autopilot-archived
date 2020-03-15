@@ -10,7 +10,6 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\HasOne;
 
 class ProjectHour extends Resource
 {
@@ -124,7 +123,8 @@ class ProjectHour extends Resource
                             class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
                     }
                     return null;
-                })->asHtml(),
+                })->asHtml()
+                ->onlyOnDetail(),
 
             Markdown::make('Notes', 'notes')
                 ->alwaysShow(),
