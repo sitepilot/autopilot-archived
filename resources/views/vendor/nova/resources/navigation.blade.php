@@ -25,7 +25,19 @@
         @endif
 
         <ul class="list-reset mb-8">
-            @foreach($resources as $resource)
+            @php
+                $menu = [];
+                $noPosStartIndex = 1000;
+                foreach($resources as $resource):   
+                    if(method_exists($resource, 'menuPosition')):
+                        $menu[$resource::menuPosition()] = $resource;
+                    else:
+                        $menu[$noPosStartIndex++] = $resource;
+                    endif;
+                endforeach;
+                ksort($menu);
+            @endphp
+            @foreach($menu as $resource)
                 <li class="leading-tight mb-4 ml-8 text-sm">
                     <router-link :to="{
                         name: 'index',

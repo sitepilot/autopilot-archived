@@ -61,6 +61,16 @@ class Project extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 30;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -104,7 +114,8 @@ class Project extends Resource
 
             Currency::make('Offer', 'offer')
                 ->sortable()
-                ->rules(['numeric', 'nullable']),
+                ->rules(['numeric', 'nullable'])
+                ->hideFromIndex(),
 
             Currency::make('Invoiced', 'invoiced')
                 ->sortable()

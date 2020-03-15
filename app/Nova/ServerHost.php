@@ -55,6 +55,16 @@ class ServerHost extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 20;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -93,7 +103,8 @@ class ServerHost extends Resource
                 ->nullable(),
 
             Text::make('Description', 'description')
-                ->sortable(),
+                ->sortable()
+                ->hideFromIndex(),
 
             Code::make('Host Configuration', 'vars')
                 ->rules(['required', 'json'])

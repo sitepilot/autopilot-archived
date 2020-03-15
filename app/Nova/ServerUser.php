@@ -54,6 +54,16 @@ class ServerUser extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 30;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -92,7 +102,8 @@ class ServerUser extends Resource
                 ->nullable(),
 
             Text::make('Description', 'description')
-                ->sortable(),
+                ->sortable()
+                ->hideFromIndex(),
 
             Code::make('User Configuration', 'vars')
                 ->rules(['required', 'json'])

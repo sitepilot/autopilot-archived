@@ -80,7 +80,8 @@ class ServerFirewallRule extends Resource
                 ->exceptOnForms(),
 
             Text::make('Description', 'description')
-                ->sortable(),
+                ->sortable()
+                ->hideFromIndex(),
 
             Code::make('Rule Configuration', 'vars')
                 ->rules(['required', 'json'])

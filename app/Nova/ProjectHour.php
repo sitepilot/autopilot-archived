@@ -62,6 +62,16 @@ class ProjectHour extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 40;
+    }
+
+    /**
      * Returns the singular label.
      *
      * @return string
@@ -106,7 +116,15 @@ class ProjectHour extends Resource
                 ->sortable()
                 ->searchable(),
 
-            HasOne::make('Client', 'client', Client::class),
+            Text::make('Client', 'client')
+                ->exceptOnForms()
+                ->resolveUsing(function ($client) {
+                    if (isset($client->name)) {
+                        return "<a href='" . url(config("nova.path") . "/resources/clients/" . $client->id) . "' 
+                            class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
+                    }
+                    return null;
+                })->asHtml(),
 
             Markdown::make('Notes', 'notes')
                 ->alwaysShow(),

@@ -53,6 +53,16 @@ class ServerApp extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 40;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -80,6 +90,16 @@ class ServerApp extends Resource
                 ->sortable()
                 ->exceptOnForms(),
 
+            Text::make('Client', 'client')
+                ->exceptOnForms()
+                ->resolveUsing(function ($client) {
+                    if (isset($client->name)) {
+                        return "<a href='" . url(config("nova.path") . "/resources/clients/" . $client->id) . "' 
+                            class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
+                    }
+                    return null;
+                })->asHtml(),
+
             Text::make('Domain', 'domain')
                 ->sortable()
                 ->readonly()
@@ -92,7 +112,8 @@ class ServerApp extends Resource
                 }),
 
             Text::make('Description', 'description')
-                ->sortable(),
+                ->sortable()
+                ->hideFromIndex(),
 
             Code::make('App Configuration', 'vars')
                 ->rules(['required', 'json'])
@@ -104,8 +125,6 @@ class ServerApp extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
-
-            HasOne::make('Client', 'client', Client::class),
 
             HasMany::make('Databases', 'databases', ServerDatabase::class),
         ];

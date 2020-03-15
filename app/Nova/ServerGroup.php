@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -49,6 +48,16 @@ class ServerGroup extends Resource
     public static function label()
     {
         return 'Groups';
+    }
+
+    /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 10;
     }
 
     /**

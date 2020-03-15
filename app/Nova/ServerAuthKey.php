@@ -51,6 +51,16 @@ class ServerAuthKey extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 60;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -79,7 +89,8 @@ class ServerAuthKey extends Resource
                 ->exceptOnForms(),
 
             Text::make('Description', 'description')
-                ->sortable(),
+                ->sortable()
+                ->hideFromIndex(),
 
             Code::make('Key Configuration', 'vars')
                 ->rules(['required', 'json'])

@@ -52,6 +52,16 @@ class ServerDatabase extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 50;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -79,14 +89,15 @@ class ServerDatabase extends Resource
                 ->sortable()
                 ->exceptOnForms(),
 
-            BelongsTo::make('App', 'app', ServerApp::class)
-                ->help('User will be selected based on the App owner.')
-                ->searchable()
-                ->rules('required_without:user')
-                ->nullable()
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                }),
+            Text::make('Client', 'client')
+                ->exceptOnForms()
+                ->resolveUsing(function ($client) {
+                    if (isset($client->name)) {
+                        return "<a href='" . url(config("nova.path") . "/resources/clients/" . $client->id) . "' 
+                            class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
+                    }
+                    return null;
+                })->asHtml(),
 
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->help('This field will be ignored when an App is selected above.')
@@ -97,8 +108,18 @@ class ServerDatabase extends Resource
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
 
+            BelongsTo::make('App', 'app', ServerApp::class)
+                ->help('User will be selected based on the App owner.')
+                ->searchable()
+                ->rules('required_without:user')
+                ->nullable()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
+
             Text::make('Description', 'description')
-                ->sortable(),
+                ->sortable()
+                ->hideFromIndex(),
 
             Code::make('Database Configuration', 'vars')
                 ->rules(['required', 'json'])
@@ -110,8 +131,6 @@ class ServerDatabase extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
-
-            HasOne::make('Client', 'client', Client::class)
         ];
     }
 

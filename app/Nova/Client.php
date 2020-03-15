@@ -50,6 +50,16 @@ class Client extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 10;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -79,6 +89,46 @@ class Client extends Resource
 
             Markdown::make('Notes', 'notes')
                 ->sortable(),
+
+            Text::make('Projects', 'projects')
+                ->exceptOnForms()
+                ->resolveUsing(function ($projects) {
+                    if ($projects->count()) {
+                        $count = $projects->count();
+                        return $projects->count() . ' ' . ($count == 1 ? 'project' : 'projects');
+                    }
+                    return null;
+                }),
+
+            Text::make('Users', 'serverUsers')
+                ->exceptOnForms()
+                ->resolveUsing(function ($users) {
+                    if ($users->count()) {
+                        $count = $users->count();
+                        return $users->count() . ' ' . ($count == 1 ? 'user' : 'users');
+                    }
+                    return null;
+                }),
+
+            Text::make('Apps', 'serverApps')
+                ->exceptOnForms()
+                ->resolveUsing(function ($apps) {
+                    if ($apps->count()) {
+                        $count = $apps->count();
+                        return $apps->count() . ' ' . ($count == 1 ? 'app' : 'apps');
+                    }
+                    return null;
+                }),
+
+            Text::make('Databases', 'serverDatabases')
+                ->exceptOnForms()
+                ->resolveUsing(function ($databases) {
+                    if ($databases->count()) {
+                        $count = $databases->count();
+                        return $databases->count() . ' ' . ($count == 1 ? 'database' : 'databases');
+                    }
+                    return null;
+                }),
 
             HasMany::make('Projects', 'projects', Project::class),
 
