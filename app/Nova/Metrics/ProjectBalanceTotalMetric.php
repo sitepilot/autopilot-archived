@@ -23,8 +23,8 @@ class ProjectBalanceTotalMetric extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        $totalOffer = $this->sum($request, Project::where('state', 'in-progress'), 'offer');
-        $totalInvoiced = $this->sum($request, Project::where('state', 'in-progress'), 'invoiced');
+        $totalOffer = $this->sum($request, Project::where('state', 'in-progress')->orWhere('state', 'done'), 'offer');
+        $totalInvoiced = $this->sum($request, Project::where('state', 'in-progress')->orWhere('state', 'done'), 'invoiced');
 
         return $this->result($totalOffer->value - $totalInvoiced->value)->previous($totalOffer->previous - $totalInvoiced->previous)->prefix('€');
     }
