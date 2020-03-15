@@ -9,6 +9,10 @@
     background-attachment: fixed;
 }
 
+.table td {
+    white-space: nowrap;
+}
+
 /* ==== Responive Custom ==== */
 
 @media(max-width: 962px) {
