@@ -26,7 +26,7 @@
     - user.mysql_password is defined
 
 - name: "TEST {{ user.name }}: Databases exist."
-  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ user.name }}_{{ item.name }};'"
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ item.name }};'"
   changed_when: false
   loop: "{{ user.databases }}"
   when:

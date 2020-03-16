@@ -60,7 +60,7 @@
 
 - name: "{{ user.name }}: Create databases."
   mysql_db:
-    name: "{{ user.name }}_{{ item.name }}"
+    name: "{{ item.name }}"
     state: "{{ item.state | default('present', true) }}"
     config_file: "/root/.my.cnf"
   loop: "{{ user.databases }}"
