@@ -2,10 +2,27 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
+    /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (Client $item) {
+            $statement = DB::select("SHOW TABLE STATUS LIKE '" . $item->getTable() . "'");
+            $nextId = $statement[0]->Auto_increment;
+            $item->refid = "deb" . $nextId;
+        });
+    }
+
     /**
      * Returns the client projects.
      *

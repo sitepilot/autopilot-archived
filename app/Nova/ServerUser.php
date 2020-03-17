@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -40,7 +39,7 @@ class ServerUser extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'refid', 'description'
+        'name', 'description'
     ];
 
     /**
@@ -70,7 +69,7 @@ class ServerUser extends Resource
      */
     public function subtitle()
     {
-        return $this->refid;
+        return $this->description;
     }
 
     /**
@@ -84,12 +83,8 @@ class ServerUser extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->help("If the name is left blank Autopilot will assign the refference ID.")
-                ->rules(['min:3', 'unique:server_users,name,{{resourceId}}', 'nullable']),
-
-            Text::make('Refference', 'refid')
-                ->sortable()
-                ->exceptOnForms(),
+                ->hideWhenCreating()
+                ->readonly(),
 
             BelongsTo::make('Host', 'host', ServerHost::class)
                 ->searchable()
@@ -104,8 +99,7 @@ class ServerUser extends Resource
                 ->sortable(),
 
             Text::make('Description', 'description')
-                ->sortable()
-                ->hideFromIndex(),
+                ->sortable(),
 
             Code::make('User Configuration', 'vars')
                 ->rules(['required', 'json'])

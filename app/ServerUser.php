@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\HasVars;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Fields\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +24,22 @@ class ServerUser extends Model
     ];
 
     /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (ServerUser $item) {
+            $statement = DB::select("SHOW TABLE STATUS LIKE '" . $item->getTable() . "'");
+            $nextId = $statement[0]->Auto_increment;
+            $item->name = "user" . $nextId;
+        });
+    }
+
+    /**
      * Returns an array with default user variables.
      *
      * @return void
@@ -30,7 +47,7 @@ class ServerUser extends Model
     public function getDefaultVars()
     {
         return [
-            'name' => $this->refid,
+            'name' => $this->name,
             'isolated' => true,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),

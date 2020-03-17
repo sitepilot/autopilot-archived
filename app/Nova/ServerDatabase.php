@@ -38,7 +38,7 @@ class ServerDatabase extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'refid', 'description'
+        'name', 'description'
     ];
 
     /**
@@ -68,7 +68,7 @@ class ServerDatabase extends Resource
      */
     public function subtitle()
     {
-        return $this->refid;
+        return $this->description;
     }
 
     /**
@@ -82,12 +82,8 @@ class ServerDatabase extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->help("If the name is left blank Autopilot will assign the refference ID.")
-                ->rules(['min:3', 'unique:server_databases,name,{{resourceId}}', 'nullable']),
-
-            Text::make('Refference', 'refid')
-                ->sortable()
-                ->exceptOnForms(),
+                ->hideWhenCreating()
+                ->readonly(),
 
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->help('This field will be ignored when an App is selected above.')
@@ -120,8 +116,7 @@ class ServerDatabase extends Resource
                 })->asHtml(),
 
             Text::make('Description', 'description')
-                ->sortable()
-                ->hideFromIndex(),
+                ->sortable(),
 
             Code::make('Database Configuration', 'vars')
                 ->rules(['required', 'json'])

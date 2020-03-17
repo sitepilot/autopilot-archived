@@ -95,8 +95,8 @@ class Project extends Resource
 
             Text::make('Refference', 'refid')
                 ->sortable()
-                ->hideWhenCreating()
-                ->rules(['required', 'unique:projects,refid,{{resourceId}}']),
+                ->readonly()
+                ->hideWhenCreating(),
 
             BelongsTo::make('Client', 'client', Client::class)
                 ->sortable()

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\HasVars;
+use Illuminate\Support\Str;
 use Laravel\Nova\Fields\MorphedByMany;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +28,7 @@ class ServerAuthKey extends Model
     public function getDefaultVars()
     {
         return [
-            'name' => $this->refid,
+            'name' => Str::slug($this->name),
             'key' => null
         ];
     }

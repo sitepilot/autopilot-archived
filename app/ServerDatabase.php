@@ -5,6 +5,7 @@ namespace App;
 use App\Client;
 use App\ServerUser;
 use App\Traits\HasVars;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class ServerDatabase extends Model
@@ -21,6 +22,29 @@ class ServerDatabase extends Model
     ];
 
     /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (ServerDatabase $item) {
+            if (isset($item->app->user_id)) {
+                $item->user_id = $item->app->user_id;
+            }
+
+            $unique = true;
+            while ($unique) {
+                $name = $item->user->name . '_db' . ucfirst(Str::random(4));
+                $unique = $item->where('name', $name)->count();
+            }
+            $item->name = $name;
+        });
+    }
+
+    /**
      * Returns an array with default app variables.
      *
      * @return void
@@ -28,7 +52,7 @@ class ServerDatabase extends Model
     public function getDefaultVars()
     {
         return [
-            'name' => $this->refid,
+            'name' => $this->name,
             'state' => 'present'
         ];
     }
@@ -60,6 +84,10 @@ class ServerDatabase extends Model
      */
     public function getClientAttribute()
     {
-        return $this->user->client;
+        if ($this->user) {
+            return $this->user->client;
+        }
+
+        return null;
     }
 }

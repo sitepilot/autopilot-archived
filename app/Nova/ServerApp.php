@@ -39,7 +39,7 @@ class ServerApp extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'refid', 'description'
+        'name', 'description'
     ];
 
     /**
@@ -69,7 +69,7 @@ class ServerApp extends Resource
      */
     public function subtitle()
     {
-        return $this->refid;
+        return $this->description;
     }
 
     /**
@@ -84,11 +84,10 @@ class ServerApp extends Resource
             Text::make('Name', 'name')
                 ->sortable()
                 ->help("If the name is left blank Autopilot will generate a random name.")
-                ->rules(['min:3', 'unique:server_apps,name,{{resourceId}}', 'nullable']),
-
-            Text::make('Refference', 'refid')
-                ->sortable()
-                ->exceptOnForms(),
+                ->rules(['min:3', 'alpha_dash', 'unique:server_apps,name,{{resourceId}}', 'nullable'])
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->searchable()
@@ -112,8 +111,7 @@ class ServerApp extends Resource
                 ->hideWhenCreating(),
 
             Text::make('Description', 'description')
-                ->sortable()
-                ->hideFromIndex(),
+                ->sortable(),
 
             Code::make('App Configuration', 'vars')
                 ->rules(['required', 'json'])
