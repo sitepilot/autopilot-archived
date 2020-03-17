@@ -5,11 +5,13 @@ namespace App;
 use App\Traits\HasVars;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ServerGroup extends Model
 {
     use HasVars;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.

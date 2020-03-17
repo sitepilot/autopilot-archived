@@ -7,12 +7,14 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Fields\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class ServerUser extends Model
 {
     use HasVars;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.

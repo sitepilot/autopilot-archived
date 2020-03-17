@@ -4,9 +4,12 @@ namespace App;
 
 use App\Client;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProjectHour extends Model
 {
+    use SoftDeletes;
+    
     /**
      * The attributes that should be cast to native types.
      *

@@ -8,12 +8,14 @@ use phpseclib\Crypt\RSA;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ServerHost extends Model
 {
     use HasVars;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.

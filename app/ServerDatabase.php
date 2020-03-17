@@ -7,10 +7,12 @@ use App\ServerUser;
 use App\Traits\HasVars;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServerDatabase extends Model
 {
     use HasVars;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
