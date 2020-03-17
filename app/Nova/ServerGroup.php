@@ -81,7 +81,7 @@ class ServerGroup extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:3', 'unique:server_groups,name,{{resourceId}}'])
+                ->rules(['required', 'min:3', 'alpha_dash', 'unique:server_groups,name,{{resourceId}}'])
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),

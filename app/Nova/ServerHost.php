@@ -41,7 +41,7 @@ class ServerHost extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'refid', 'description'
+        'name', 'description'
     ];
 
     /**
@@ -71,7 +71,7 @@ class ServerHost extends Resource
      */
     public function subtitle()
     {
-        return $this->refid;
+        return $this->description;
     }
 
     /**
@@ -85,12 +85,8 @@ class ServerHost extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->help("If the name is left blank Autopilot will assign the refference ID.")
-                ->rules(['min:3', 'unique:server_hosts,name,{{resourceId}}', 'nullable']),
-
-            Text::make('Refference', 'refid')
-                ->sortable()
-                ->exceptOnForms(),
+                ->hideWhenCreating()
+                ->readonly(),
 
             BelongsTo::make('Group', 'group', ServerGroup::class)
                 ->searchable()
@@ -105,8 +101,7 @@ class ServerHost extends Resource
                 ->nullable(),
 
             Text::make('Description', 'description')
-                ->sortable()
-                ->hideFromIndex(),
+                ->sortable(),
 
             Code::make('Host Configuration', 'vars')
                 ->rules(['required', 'json'])

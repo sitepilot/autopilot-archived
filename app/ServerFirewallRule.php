@@ -27,7 +27,7 @@ class ServerFirewallRule extends Model
     public function getDefaultVars()
     {
         return [
-            'name' => $this->refid,
+            'name' => $this->name,
             'port' => '22',
             'rule' => 'allow',
             'proto' => 'tcp',
@@ -43,5 +43,25 @@ class ServerFirewallRule extends Model
     public function hosts()
     {
         return $this->belongsToMany(ServerHost::class, 'server_firewall_rule_host', 'rule_id', 'host_id');
+    }
+
+    /**
+     * Returns the port variable.
+     *
+     * @return void
+     */
+    public function getPortAttribute()
+    {
+        return $this->getVar('port');
+    }
+
+    /**
+     * Set the port variable.
+     *
+     * @return void
+     */
+    public function setPortAttribute($value)
+    {
+        $this->setVar('port', $value, true, true);
     }
 }

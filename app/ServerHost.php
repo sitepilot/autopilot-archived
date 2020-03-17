@@ -33,6 +33,11 @@ class ServerHost extends Model
     {
         parent::boot();
 
+        self::creating(function (ServerHost $host) {
+            $count = $host->where('group_id', $host->group_id)->count();
+            $host->name = $host->group->name . ($count + 10);
+        });
+
         self::created(function (ServerHost $host) {
             if ($host->getVar('ansible_connection') == 'ssh' && !$host->getVar('ansible_ssh_private_key_file')) {
                 $host->generatePrivatePublicKey();
@@ -57,7 +62,7 @@ class ServerHost extends Model
     public function getDefaultVars()
     {
         return [
-            'hostname' => $this->refid,
+            'hostname' => $this->name,
             'ansible_connection' => 'ssh',
             'ansible_ssh_host' => '0.0.0.0',
             'ansible_ssh_port' => '22',

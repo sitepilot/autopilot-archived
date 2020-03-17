@@ -84,8 +84,8 @@ class Client extends Resource
 
             Text::make('Refference', 'refid')
                 ->sortable()
-                ->hideWhenCreating()
-                ->rules(['required', 'unique:clients,refid,{{resourceId}}']),
+                ->readonly()
+                ->hideWhenCreating(),
 
             Markdown::make('Notes', 'notes')
                 ->sortable(),

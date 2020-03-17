@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\HasMany;
 
 class ServerFirewallRule extends Resource
@@ -38,7 +39,7 @@ class ServerFirewallRule extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'refid', 'description'
+        'name', 'description'
     ];
 
     /**
@@ -58,7 +59,7 @@ class ServerFirewallRule extends Resource
      */
     public function subtitle()
     {
-        return $this->refid;
+        return $this->description;
     }
 
     /**
@@ -72,16 +73,19 @@ class ServerFirewallRule extends Resource
         return [
             Text::make('Name', 'name')
                 ->sortable()
-                ->help("If the name is left blank Autopilot will assign the refference ID.")
-                ->rules(['min:3', 'unique:server_firewall_rules,name,{{resourceId}}', 'nullable']),
+                ->rules(['required', 'alpha_dash', 'min:3', 'unique:server_firewall_rules,name,{{resourceId}}'])
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
-            Text::make('Refference', 'refid')
-                ->sortable()
-                ->exceptOnForms(),
+            Number::make('Port', 'port')
+                ->hideWhenCreating()
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             Text::make('Description', 'description')
-                ->sortable()
-                ->hideFromIndex(),
+                ->sortable(),
 
             Code::make('Rule Configuration', 'vars')
                 ->rules(['required', 'json'])
