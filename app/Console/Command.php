@@ -47,14 +47,18 @@ class Command extends ConsoleCommand
             $user = ServerUser::where('name', $this->option('user'))->first();
             if (isset($user->host->name)) {
                 $this->host = $user->host->name;
-                return;
+            } elseif ($this->option('user') == 'all') {
+                $this->user = 'all';
+                $this->host = 'all';
             }
+
+            return;
         }
 
         if (!$this->user) {
             $users = ServerUser::get();
-            $options = [];
-            $hosts = [];
+            $options = ['all'];
+            $hosts = ['all' => 'all'];
 
             foreach ($users as $user) {
                 $options[] = $user->name;

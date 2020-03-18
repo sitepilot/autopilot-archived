@@ -46,7 +46,19 @@ class UserProvisionCommand extends Command
         $this->askUser();
 
         if ($this->host && $this->user) {
-            $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook(), '--extra-vars', "host=$this->host user_filter=$this->user", "--tags", "users" . "," . $this->option('tags')];
+            $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook()];
+
+            $extraVars = "host=$this->host";
+            if ($this->user != 'all') {
+                $extraVars .= " user_filter=$this->user";
+            }
+            $cmd = array_merge($cmd, ["--extra-vars", $extraVars]);
+
+            $tags = "users";
+            if ($this->option('tags')) {
+                $tags .= "," . $this->option('tags');
+            }
+            $cmd = array_merge($cmd, ["--tags", $tags]);
 
             if ($this->option('skip-tags')) {
                 $cmd = array_merge($cmd, ["--skip-tags", $this->option('skip-tags')]);
@@ -64,6 +76,8 @@ class UserProvisionCommand extends Command
                     echo $buffer;
                 }
             });
+        } else {
+            throw new Exception("Could not find user.");
         }
     }
 }
