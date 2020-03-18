@@ -46,19 +46,23 @@
     - item.state == 'absent'
 
 # File Tests
-- name: "TEST: {{ user.name }}: User can write to app folders."
+- name: "TEST: {{ user.name }}: User can write to app public folders."
   command: "touch /opt/sitepilot/users/{{ user.name }}/{{ item.name }}/public/user_test && /opt/sitepilot/users/{{ user.name }}/{{ item.name }}/public/user_test"
   become: true
   become_user: "{{ user.name }}"
   changed_when: false
   loop: "{{ user.apps }}"
+  args:
+    warn: false
 
-- name: "TEST: {{ user.name }}: Admin can write to app folders."
+- name: "TEST: {{ user.name }}: Admin can write to app public folders."
   command: "touch /opt/sitepilot/users/{{ user.name }}/{{ item.name }}/public/admin_test && rm /opt/sitepilot/users/{{ user.name }}/{{ item.name }}/public/admin_test"
   become: true
   become_user: "{{ admin }}"
   changed_when: false
   loop: "{{ user.apps }}"
+  args:
+    warn: false
 
 # HTTP Tests
 - name: "TEST {{ user.name }}: Domains are reachable."
