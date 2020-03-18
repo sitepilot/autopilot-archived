@@ -33,15 +33,17 @@
     path: "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/public"
     entity: "{{ admin }}"
     etype: user
-    permissions: rwx
+    permissions: "{{ 'rwx' if user.admin_access is defined and user.admin_access | bool else '' }}"
     default: no
-    state: present
+    state: "{{ 'present' if user.admin_access is defined and user.admin_access | bool else 'absent' }}"
+    recursive: yes
 
 - name: "{{ app.name }}: Set default permission for created files and folders."
   acl:
     path: "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/public"
     entity: "{{ user.name }}"
     etype: user
-    permissions: rwx
+    permissions: "{{ 'rwx' if user.admin_access is defined and user.admin_access | bool else '' }}"
     default: yes
-    state: present
+    state: "{{ 'present' if user.admin_access is defined and user.admin_access | bool else 'absent' }}"
+    recursive: yes

@@ -63,6 +63,9 @@
   loop: "{{ user.apps }}"
   args:
     warn: false
+  when:
+    - user.admin_access is defined
+    - user.admin_access | bool
 
 # HTTP Tests
 - name: "TEST {{ user.name }}: Domains are reachable."

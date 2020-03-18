@@ -90,6 +90,9 @@ class DatabaseSeeder extends Seeder
 
             // Create server user
             $user = new ServerUser;
+            $host->vars = [
+                'admin_access' => true,
+            ];
             $user->host_id = $host->id;
             $user->save();
             $user->authKeys()->attach([

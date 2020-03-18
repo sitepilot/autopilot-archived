@@ -51,6 +51,7 @@ class ServerUser extends Model
         return [
             'name' => $this->name,
             'isolated' => true,
+            'admin_access' => false,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),
             'apps' => [],
