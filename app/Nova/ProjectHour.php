@@ -48,7 +48,10 @@ class ProjectHour extends Resource
      *
      * @var array
      */
-    public static $orderBy = ['created_at' => 'desc'];
+    public static $orderBy = [
+        'created_at' => 'desc',
+        'id' => 'desc'
+    ];
 
     /**
      * Returns the menu label.
