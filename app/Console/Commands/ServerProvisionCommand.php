@@ -68,6 +68,8 @@ class ServerProvisionCommand extends Command
                     echo $buffer;
                 }
             });
+        } else {
+            throw new Exception("Could not find server.");
         }
     }
 }
