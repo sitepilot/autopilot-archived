@@ -2,8 +2,8 @@
 
 namespace App\Console;
 
-use App\Host;
 use App\ServerHost;
+use App\ServerUser;
 use Illuminate\Console\Command as ConsoleCommand;
 
 class Command extends ConsoleCommand
@@ -30,7 +30,41 @@ class Command extends ConsoleCommand
                 $options[] = $host->name;
             }
 
-            $this->host = $this->choice('Select a host', $options);
+            if (count($options) > 0) {
+                $this->host = $this->choice('Select a host', $options);
+            }
+        }
+    }
+
+    /**
+     * Ask for a user.
+     *
+     * @return void
+     */
+    public function askUser()
+    {
+        if ($this->user = $this->option('user')) {
+            $user = ServerUser::where('name', $this->option('user'))->first();
+            if (isset($user->host->name)) {
+                $this->host = $user->host->name;
+                return;
+            }
+        }
+
+        if (!$this->user) {
+            $users = ServerUser::get();
+            $options = [];
+            $hosts = [];
+
+            foreach ($users as $user) {
+                $options[] = $user->name;
+                $hosts[$user->name] = $user->host->name;
+            }
+
+            if (count($options) > 0) {
+                $this->user = $this->choice('Select a user', $options);
+                $this->host = $hosts[$this->user];
+            }
         }
     }
 
@@ -48,11 +82,21 @@ class Command extends ConsoleCommand
         return true;
     }
 
+    /**
+     * Returns the path to the inventory script.
+     *
+     * @return string $path
+     */
     public function getInventoryScript()
     {
         return base_path('inventory.sh');
     }
 
+    /**
+     * Returns the path to the provision playbook.
+     *
+     * @return string $path
+     */
     public function getProvisionPlaybook()
     {
         return base_path('ansible/server.yml');
