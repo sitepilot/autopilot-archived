@@ -88,6 +88,12 @@ case "$1" in
 
     echo "DONE!"
     ;;
+'update-self') echo "Updating Autopilot Script"
+    curl -o $BASE/autopilot https://raw.githubusercontent.com/sitepilot/autopilot/master/autopilot
+    chmod +x $BASE/autopilot
+    
+    echo "DONE!"
+    ;;
 'exec')
     docker exec $IT -w /var/www/html autopilot "${@:2}"
     ;;
