@@ -47,7 +47,7 @@ jobs:
         run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
 
       - name: Test user:provision command.
-        run: "./autopilot user:provision --user={{ users[0].name }} --disable-tty"
+        run: ./autopilot user:provision --user=user1000 --disable-tty
 
       - name: Test server:test command.
         run: ./autopilot server:test --host=all --skip-tags=test-domains --disable-tty
