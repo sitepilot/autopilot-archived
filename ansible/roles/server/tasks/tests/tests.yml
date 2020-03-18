@@ -71,6 +71,18 @@
   become_user: "{{ users[0].name }}"
   changed_when: false
 
+- name: "TEST: Node.js is installed."
+  command: "node -v"
+  become: true
+  become_user: "{{ users[0].name }}"
+  changed_when: false
+
+- name: "TEST: NPM is installed."
+  command: "npm -v"
+  become: true
+  become_user: "{{ users[0].name }}"
+  changed_when: false
+
 # User Tests
 - include: user.yml
   loop: "{{ users | list }}"
