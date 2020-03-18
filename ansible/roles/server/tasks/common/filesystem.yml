@@ -5,9 +5,18 @@
     owner: "root"
     group: "root"
     state: directory
+    mode: "0755"
   loop:
     - "/opt/sitepilot"
     - "/opt/sitepilot/users"
+
+- name: "Create ansible temp folder."
+  file:
+    path: "/opt/sitepilot/ansible"
+    owner: "root"
+    group: "root"
+    state: directory
+    mode: "0777"
 
 - name: "Create admin owned folders."
   file:
