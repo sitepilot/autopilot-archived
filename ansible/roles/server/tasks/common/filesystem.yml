@@ -10,6 +10,14 @@
     - "/opt/sitepilot"
     - "/opt/sitepilot/users"
 
+- name: "Create ansible temp folder."
+  file:
+    path: "/opt/sitepilot/ansible"
+    owner: "root"
+    group: "root"
+    state: directory
+    mode: "0777"
+
 - name: "Create admin owned folders."
   file:
     path: "{{ item.path }}"
