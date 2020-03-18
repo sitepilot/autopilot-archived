@@ -71,7 +71,7 @@
   become_user: "{{ users[0].name }}"
   changed_when: false
 
-- name: "TEST: NodeJS is installed."
+- name: "TEST: Node.js is installed."
   command: "node -v"
   become: true
   become_user: "{{ users[0].name }}"
