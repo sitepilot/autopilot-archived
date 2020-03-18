@@ -27,3 +27,21 @@
   loop:
     - "find /opt/sitepilot/users/{{ user.name }}/{{ app.name }} -type f -exec chmod 644 {} +"
     - "find /opt/sitepilot/users/{{ user.name }}/{{ app.name }} -type d -exec chmod 755 {} +"
+
+- name: "{{ app.name }}: Give admin write permission on app folder."
+  acl:
+    path: "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/public"
+    entity: "{{ admin }}"
+    etype: user
+    permissions: rwx
+    default: no
+    state: present
+
+- name: "{{ app.name }}: Set default permission for created files and folders."
+  acl:
+    path: "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/public"
+    entity: "{{ user.name }}"
+    etype: user
+    permissions: rwx
+    default: yes
+    state: present
