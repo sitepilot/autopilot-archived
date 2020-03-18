@@ -83,6 +83,9 @@
 - include: tools/fail2ban.yml
   tags: "fail2ban"
 
+- include: tools/nodejs.yml
+  tags: "nodejs"
+
 # ================================
 # Users
 # ================================
