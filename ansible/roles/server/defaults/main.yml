@@ -16,7 +16,6 @@ users:
     password: "secret"
     mysql_password: "secret"
     isolated: true
-    admin_access: false
     apps:
       - name: example
         domain: example.com
