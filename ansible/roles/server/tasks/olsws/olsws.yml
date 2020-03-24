@@ -1,17 +1,13 @@
 ---
-- name: Add OpenLitespeed signing keys.
-  apt_key:
-    url: "{{ item }}"
-    state: present
-  loop:
-    - http://rpms.litespeedtech.com/debian/lst_repo.gpg
-    - http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg
+- name: Download OpenLitespeed repository script.
+  get_url:
+    url: http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh
+    dest: /opt/sitepilot/scripts/olsws-repo-install.sh
+    mode: "0700"
+    force: yes
 
-- name: Install OpenLitespeed repositories.
-  apt_repository:
-    repo: "{{ item }}"
-  loop:
-    - "deb http://rpms.litespeedtech.com/debian/ bionic main"
+- name: "Install OpenLitespeed repository."
+  shell: /opt/sitepilot/scripts/olsws-repo-install.sh
 
 - name: Install OpenLitespeed web server and PHP packages.
   apt:
@@ -139,4 +135,4 @@
   cron:
     name: "reload lshttpd"
     minute: "*"
-    job: 'if ! find /opt/sitepilot/users/*/*/public/ -maxdepth 2 -type f -newer /usr/local/lsws/cgid -name ".htaccess" -exec false {} +; then /usr/local/lsws/bin/lswsctrl restart; fi'
+    job: 'find /opt/sitepilot/users/ -maxdepth 4 -type f -newer /usr/local/lsws/cgid -name ".htaccess" -exec false {} +; then /usr/local/lsws/bin/lswsctrl restart; fi'
