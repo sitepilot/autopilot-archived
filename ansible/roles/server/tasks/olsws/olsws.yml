@@ -1,17 +1,7 @@
 ---
-- name: Add OpenLitespeed signing keys.
-  apt_key:
-    url: "{{ item }}"
-    state: present
-  loop:
-    - http://rpms.litespeedtech.com/debian/lst_repo.gpg
-    - http://rpms.litespeedtech.com/debian/lst_debian_repo.gpg
-
-- name: Install OpenLitespeed repositories.
-  apt_repository:
-    repo: "{{ item }}"
-  loop:
-    - "deb http://rpms.litespeedtech.com/debian/ bionic main"
+- name: "Add OpenLitespeed repository."
+  command: "wget -O - http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh | bash"
+  changed_when: false
 
 - name: Install OpenLitespeed web server and PHP packages.
   apt:
