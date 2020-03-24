@@ -1,7 +1,12 @@
 ---
-- name: "Add OpenLitespeed repository."
-  command: "wget -O - http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh | bash"
-  changed_when: false
+- name: Download OpenLitespeed repository script.
+  get_url:
+    url: http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh
+    dest: /opt/sitepilot/scripts/olsws-repo-install.sh
+    mode: "0700"
+
+- name: "Install OpenLitespeed repository."
+  shell: /opt/sitepilot/scripts/olsws-repo-install.sh
 
 - name: Install OpenLitespeed web server and PHP packages.
   apt:
