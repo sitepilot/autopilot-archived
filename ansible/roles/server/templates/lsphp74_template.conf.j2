@@ -27,7 +27,8 @@ virtualHostConfig  {
   }
 
   phpIniOverride  {
-    php_admin_value date.timezone  "{{ timezone }}"
+    php_admin_value open_basedir $VH_ROOT
+    php_admin_value date.timezone "{{ timezone }}"
     php_admin_value post_max_size "{{ php_post_max_size }}"
     php_admin_value upload_max_filesize "{{ php_upload_max_filesize }}"
     php_admin_value error_log $VH_ROOTlogs/php_error.log
