@@ -47,3 +47,29 @@
   delay: 10
   until: result is not failed
   no_log: true
+
+- name: "Create mysql backup dir."
+  file:
+    path: "{{ item }}"
+    owner: "root"
+    group: "root"
+    state: directory
+    mode: "0700"
+  loop:
+    - "/opt/sitepilot/backups"
+    - "/opt/sitepilot/backups/mysql"
+
+- name: Generate mysql backup script.
+  template:
+    src: "mysql-backup.sh.j2"
+    dest: "/opt/sitepilot/scripts/mysql-backup.sh"
+    owner: "root"
+    group: "root"
+    mode: 0700
+
+- name: Configure hourly mysql backups.
+  cron:
+    name: "backup mysql"
+    hour: "*"
+    minute: "0"
+    job: "/opt/sitepilot/scripts/mysql-backup.sh"
