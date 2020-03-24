@@ -11,7 +11,7 @@
   apt_repository:
     repo: "{{ item }}"
   loop:
-    - "deb http://rpms.litespeedtech.com/debian/ {{ ansible_distribution_release }} main"
+    - "deb http://rpms.litespeedtech.com/debian/ bionic main"
 
 - name: Install OpenLitespeed web server and PHP packages.
   apt:
