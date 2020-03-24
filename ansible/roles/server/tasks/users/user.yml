@@ -29,6 +29,16 @@
     shell: "/bin/bash"
     password: "{{ user.password | password_hash('sha512') }}"
 
+- name: "{{ user.name }}: Set home dir permission."
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    mode: "0750"
+  loop:
+    - "/home/{{ user.name }}"
+
 - name: "{{ user.name }}: Remove isolated group."
   user:
     name: "{{ user.name }}"

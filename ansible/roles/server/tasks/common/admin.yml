@@ -40,6 +40,16 @@
     - path: "/home/{{ admin }}/.ssh"
       recurse: false
 
+- name: "Set admin home dir permission."
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ admin }}"
+    group: "{{ admin }}"
+    mode: "0750"
+  loop:
+    - "/home/{{ admin }}"
+
 - name: "Check if SSH keypair exists for '{{ admin }}'."
   stat:
     path: "/home/{{ admin }}/.ssh/id_rsa"
