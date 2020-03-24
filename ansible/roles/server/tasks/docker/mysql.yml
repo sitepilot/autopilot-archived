@@ -6,6 +6,11 @@
   loop:
     - PyMySQL
 
+- name: Check if .my.cnf file exists for 'root' user.
+  stat:
+    path: "/root/.my.cnf"
+  register: root_my_cnf
+
 - name: Copy .my.cnf file with 'root' credentials.
   template:
     src: "my-root.cnf.j2"
@@ -13,6 +18,12 @@
     owner: root
     group: root
     mode: 0600
+  when: not root_my_cnf.stat.exists
+
+- name: Check if .my.cnf file exists for '{{ admin }}' user.
+  stat:
+    path: "/home/{{ admin }}/.my.cnf"
+  register: admin_my_cnf
 
 - name: Copy .my.cnf file with '{{ admin }}' credentials.
   template:
@@ -21,6 +32,7 @@
     owner: "{{ admin }}"
     group: "{{ admin }}"
     mode: 0600
+  when: not admin_my_cnf.stat.exists
 
 - name: Ensure '{{ admin }}' user has admin rights.
   mysql_user:
