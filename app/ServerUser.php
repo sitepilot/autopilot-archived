@@ -17,7 +17,7 @@ class ServerUser extends Model
     use HasVars;
     use SoftDeletes;
     use Actionable;
-    
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -56,6 +56,7 @@ class ServerUser extends Model
             'isolated' => true,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),
+            "cert_request" => false,
             'apps' => [],
             'databases' => [],
             'auth_keys' => []
