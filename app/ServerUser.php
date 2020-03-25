@@ -50,6 +50,7 @@ class ServerUser extends Model
     {
         return [
             'name' => $this->name,
+            'full_name' => $this->name,
             'isolated' => true,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),

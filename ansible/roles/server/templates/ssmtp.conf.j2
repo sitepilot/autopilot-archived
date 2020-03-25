@@ -1,12 +1,11 @@
 # {{ sitepilot_managed }}
-
-root={{ smtp_relay_domain }}
+root={{ admin_email }}
 mailhub={{ smtp_relay_host }}
 rewriteDomain={{ smtp_relay_domain }}
 
 UseTLS=Yes
 UseSTARTTLS=Yes
 
-FromLineOverride=YES
+FromLineOverride=No
 AuthUser={{ smtp_relay_user }}
 AuthPass={{ smtp_relay_password }}

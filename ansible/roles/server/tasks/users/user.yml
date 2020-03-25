@@ -28,6 +28,7 @@
     groups: "isolated"
     shell: "/bin/bash"
     password: "{{ user.password | password_hash('sha512') }}"
+    comment: "{{ user.full_name if (user.full_name is defined) and (user.full_name|length > 0) else user.name }}"
 
 - name: "{{ user.name }}: Set home dir permission."
   file:
