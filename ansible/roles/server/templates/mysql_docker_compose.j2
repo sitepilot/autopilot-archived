@@ -1,5 +1,4 @@
 # {{ sitepilot_managed }}
-
 version: '3.3'
 
 services:
@@ -21,15 +20,3 @@ services:
       - /opt/sitepilot/services/mysql/data/:/var/lib/mysql
       - /opt/sitepilot/services/mysql/logs:/var/log/mysql
       - /opt/sitepilot/services/mysql/conf/service.cnf:/etc/mysql/conf.d/service.cnf
-
-  redis-1:
-    image: redis:5
-    container_name: redis-1
-    restart: always
-    ports:
-      - '127.0.0.1:6379:6379'
-    expose:
-      - '6379'
-    user: '{{ cmd_admin_uid.stdout }}:{{ cmd_admin_gid.stdout }}'
-    volumes:
-      - /opt/sitepilot/services/redis/data/:/data

@@ -13,7 +13,6 @@ mysql_root_pass: "supersecret"
 
 users:
   - name: testuser
-    full_name: "Test User"
     password: "secret"
     mysql_password: "secret"
     isolated: true

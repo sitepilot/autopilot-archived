@@ -1,10 +1,10 @@
 ---
-- name: "Ensure 'isolated' group exists."
+- name: "users : ensure 'isolated' group exists"
   group:
     name: "isolated"
     state: present
 
-- name: "Provision users."
+- name: "users : provision"
   include: user.yml
   loop: "{{ users if user_filter is not defined else users | selectattr('name', 'match', user_filter) | list }}"
   loop_control:

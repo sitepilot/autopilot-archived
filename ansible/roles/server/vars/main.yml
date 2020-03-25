@@ -1,39 +1,4 @@
 ---
-__gpg_keys: []
-
-__deprecated_gpg_keys: []
-
-__repositories: []
-
-__deprecated_repositories: []
-
-__packages:
-  - software-properties-common
-  - ca-certificates
-  - build-essential
-  - curl
-  - fail2ban
-  - python
-  - python-pip
-  - python3
-  - python3-pip
-  - python3-setuptools
-  - ssmtp
-  - ufw
-  - unattended-upgrades
-  - zip
-  - unzip
-  - zsh
-  - ncdu
-  - gnupg
-  - mysql-client
-
-__deprecated_packages: []
-
-__pip_packages: []
-
-__deprecated_pip_packages: []
-
 __sitepilot_managed: >
   WARNING: This file is managed by Sitepilot, any changes will be overwritten
   (updated at: {{ansible_date_time.date}} {{ansible_date_time.time}}).

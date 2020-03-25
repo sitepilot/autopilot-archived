@@ -1,5 +1,5 @@
 ---
-- name: "Create health check service folder."
+- name: "health : create folders"
   file:
     path: "{{ item.path }}"
     owner: "{{ admin }}"
@@ -10,7 +10,7 @@
     - path: /opt/sitepilot/services/health/public
       recurse: true
 
-- name: Write health check script.
+- name: "health : generate health check script"
   template:
     src: health_check.php.j2
     dest: /opt/sitepilot/services/health/public/index.php
