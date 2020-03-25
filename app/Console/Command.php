@@ -10,6 +10,7 @@ class Command extends ConsoleCommand
 {
     protected $host = null;
     protected $user = null;
+    protected static $buffer = null;
 
     /**
      * Ask for a host.
@@ -104,5 +105,31 @@ class Command extends ConsoleCommand
     public function getProvisionPlaybook()
     {
         return base_path('ansible/server.yml');
+    }
+
+    /**
+     * Add line to the process buffer.
+     *
+     * @param string $message
+     * @param boolean $debug
+     * @return void
+     */
+    public static function addToProcessBuffer($message, $debug = true)
+    {
+        if ($debug) {
+            echo $message;
+        }
+
+        self::$buffer .= $message;
+    }
+
+    /**
+     * Returns the process buffer.
+     *
+     * @return string
+     */
+    public static function getProcessBuffer()
+    {
+        return self::$buffer;
     }
 }

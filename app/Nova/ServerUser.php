@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\MorphToMany;
+use App\Nova\Actions\UserProvisionAction;
 
 class ServerUser extends Resource
 {
@@ -162,6 +163,8 @@ class ServerUser extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            new UserProvisionAction
+        ];
     }
 }

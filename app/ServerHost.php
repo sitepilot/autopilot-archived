@@ -6,6 +6,7 @@ use Exception;
 use App\Traits\HasVars;
 use phpseclib\Crypt\RSA;
 use Illuminate\Support\Str;
+use Laravel\Nova\Actions\Actionable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,6 +17,7 @@ class ServerHost extends Model
 {
     use HasVars;
     use SoftDeletes;
+    use Actionable;
 
     /**
      * The attributes that should be cast to native types.
