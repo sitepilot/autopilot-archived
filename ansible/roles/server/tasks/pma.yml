@@ -15,7 +15,8 @@
     state: directory
     recurse: "{{ item.recurse }}"
   loop:
-    - { path: /opt/sitepilot/services/phpmyadmin/public, recurse: true }
+    - path: /opt/sitepilot/services/phpmyadmin/public
+      recurse: true
 
 - name: "phpmyadmin : check if is installed"
   stat:

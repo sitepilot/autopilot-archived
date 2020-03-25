@@ -4,7 +4,7 @@
     url: https://deb.nodesource.com/setup_12.x
     dest: /opt/sitepilot/scripts/nodejs-repo-install.sh
     mode: "0700"
-    force: yes
+    force: true
 
 - name: "nodejs : install repository"
   shell: /opt/sitepilot/scripts/nodejs-repo-install.sh

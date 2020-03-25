@@ -4,7 +4,7 @@
     url: http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh
     dest: /opt/sitepilot/scripts/olsws-repo-install.sh
     mode: "0700"
-    force: yes
+    force: true
 
 - name: "olsws : install repository"
   shell: /opt/sitepilot/scripts/olsws-repo-install.sh
