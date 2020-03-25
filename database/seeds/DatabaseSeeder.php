@@ -75,6 +75,7 @@ class DatabaseSeeder extends Seeder
                 'ansible_ssh_public_key_file' => '/var/www/html/vagrant/ssh/test_key.pub',
                 'ansible_ssh_common_args' => '-o StrictHostKeyChecking=no',
                 'autopilot_host' => env('APP_TEST_AUTOPILOT_HOST'),
+                'ansible_python_interpreter' => '/usr/bin/python3'
             ];
             $host->save();
             $host->firewallRules()->attach([
