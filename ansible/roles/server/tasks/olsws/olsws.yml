@@ -131,8 +131,16 @@
     group: lsadm
   notify: reload olsws
 
-- name: Reload olsws when a .htaccess file has been changed since last reload.
+- name: Generate olsws reload script.
+  template:
+    src: "olsws-reload.sh.j2"
+    dest: "/opt/sitepilot/scripts/olsws-reload.sh"
+    owner: "root"
+    group: "root"
+    mode: 0700
+
+- name: Configure olsws reload cron.
   cron:
     name: "reload lshttpd"
     minute: "*"
-    job: 'find /opt/sitepilot/users/ -maxdepth 4 -type f -newer /usr/local/lsws/cgid -name ".htaccess" -exec false {} +; then /usr/local/lsws/bin/lswsctrl restart; fi'
+    job: "/opt/sitepilot/scripts/olsws-reload.sh > /dev/null"

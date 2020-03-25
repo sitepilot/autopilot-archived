@@ -67,9 +67,9 @@
     group: "root"
     mode: 0700
 
-- name: Configure hourly mysql backups.
+- name: Configure mysql backup cron.
   cron:
     name: "backup mysql"
     hour: "*"
     minute: "0"
-    job: "/opt/sitepilot/scripts/mysql-backup.sh"
+    job: "/opt/sitepilot/scripts/mysql-backup.sh > /dev/null"
