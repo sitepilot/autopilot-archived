@@ -11,7 +11,7 @@ use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
 
-class ServerTestAction extends Action
+class ServerProvisionAction extends Action
 {
     use InteractsWithQueue, Queueable;
 
@@ -20,7 +20,7 @@ class ServerTestAction extends Action
      *
      * @var string
      */
-    public $name = 'Test Server';
+    public $name = 'Provision Server';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,14 +34,14 @@ class ServerTestAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Test Server';
+    public $confirmButtonText = 'Provision Server';
 
     /**
      * The text to be used for the action's confirmation text.
      *
      * @var string
      */
-    public $confirmText = 'Are you sure you want to test the host?';
+    public $confirmText = 'Are you sure you want to provision the server?';
 
     /**
      * Perform the action on the given models.
@@ -54,9 +54,10 @@ class ServerTestAction extends Action
     {
         foreach ($models as $host) {
             try {
-                Artisan::call('server:test', [
+                Artisan::call('server:provision', [
                     '--host' => $host->name,
                     '--disable-tty' => true,
+                    '--tags' => $fields->tags,
                     '--skip-tags' => $fields->skip_tags
                 ]);
             } catch (Exception $e) {
@@ -72,9 +73,14 @@ class ServerTestAction extends Action
      */
     public function fields()
     {
+        $tags = "swap, config, upgrade, install, root, admin, sshd, ssmtp, firewall, docker, mysql, redis, olsws, php, composer, wpcli, pma, health, fail2ban, nodejs, users";
+
         return [
+            Text::make('Tags', 'tags')
+                ->help("Available tags: $tags"),
+
             Text::make('Skip Tags', 'skip_tags')
-                ->help('Available tags: test-domains')
+                ->help("Available tags: $tags")
         ];
     }
 }

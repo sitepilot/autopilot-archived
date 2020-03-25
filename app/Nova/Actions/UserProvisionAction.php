@@ -4,14 +4,13 @@ namespace App\Nova\Actions;
 
 use Exception;
 use Illuminate\Bus\Queueable;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Actions\Action;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
 
-class ServerTestAction extends Action
+class UserProvisionAction extends Action
 {
     use InteractsWithQueue, Queueable;
 
@@ -20,7 +19,7 @@ class ServerTestAction extends Action
      *
      * @var string
      */
-    public $name = 'Test Server';
+    public $name = 'Provision User';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,14 +33,14 @@ class ServerTestAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Test Server';
+    public $confirmButtonText = 'Provision User';
 
     /**
      * The text to be used for the action's confirmation text.
      *
      * @var string
      */
-    public $confirmText = 'Are you sure you want to test the host?';
+    public $confirmText = 'Are you sure you want to provision the user?';
 
     /**
      * Perform the action on the given models.
@@ -52,15 +51,15 @@ class ServerTestAction extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        foreach ($models as $host) {
+        foreach ($models as $user) {
             try {
-                Artisan::call('server:test', [
-                    '--host' => $host->name,
-                    '--disable-tty' => true,
-                    '--skip-tags' => $fields->skip_tags
+                Artisan::call('user:provision', [
+                    '--user' => $user->name,
+                    '--disable-tty' => true
                 ]);
+                $this->markAsFinished($user);
             } catch (Exception $e) {
-                $this->markAsFailed($host, $e->getMessage());
+                $this->markAsFailed($user, $e->getMessage());
             }
         }
     }
@@ -72,9 +71,6 @@ class ServerTestAction extends Action
      */
     public function fields()
     {
-        return [
-            Text::make('Skip Tags', 'skip_tags')
-                ->help('Available tags: test-domains')
-        ];
+        return [];
     }
 }

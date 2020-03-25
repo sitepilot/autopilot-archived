@@ -70,10 +70,10 @@ class UserProvisionCommand extends Command
 
             $process->run(function ($type, $buffer) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
-                    echo $buffer;
-                    throw new Exception("Failed to provision the user!");
+                    self::addToProcessBuffer($buffer);
+                    throw new Exception("Failed to provision the user!\n" . self::getProcessBuffer());
                 } else {
-                    echo $buffer;
+                    self::addToProcessBuffer($buffer);
                 }
             });
         } else {

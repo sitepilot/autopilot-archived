@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Nova\ServerGroup;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -12,6 +11,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\MorphToMany;
 use App\Nova\Actions\ServerTestAction;
 use Laravel\Nova\Fields\BelongsToMany;
+use App\Nova\Actions\ServerProvisionAction;
 
 class ServerHost extends Resource
 {
@@ -166,6 +166,9 @@ class ServerHost extends Resource
      */
     public function actions(Request $request)
     {
-        return [new ServerTestAction];
+        return [
+            new ServerTestAction,
+            new ServerProvisionAction
+        ];
     }
 }
