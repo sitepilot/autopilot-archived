@@ -1,15 +1,15 @@
 ---
-- name: Download OpenLitespeed repository script.
+- name: "olsws : download repository script"
   get_url:
     url: http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh
     dest: /opt/sitepilot/scripts/olsws-repo-install.sh
     mode: "0700"
     force: yes
 
-- name: "Install OpenLitespeed repository."
+- name: "olsws : install repository"
   shell: /opt/sitepilot/scripts/olsws-repo-install.sh
 
-- name: Install OpenLitespeed web server and PHP packages.
+- name: "olsws : install server and PHP packages"
   apt:
     name: >
       openlitespeed,
@@ -27,12 +27,12 @@
   notify:
     - reload olsws
 
-- name: Enable OpenLitespeed on startup.
+- name: "olsws: enable on startup"
   service:
     name: lsws
     enabled: true
 
-- name: "Create OpenLitespeed service folders."
+- name: "olsws : create folders"
   file:
     path: "{{ item.path }}"
     owner: "{{ admin }}"
@@ -58,88 +58,78 @@
     - path: /opt/sitepilot/services/default/logs
       recurse: false
 
-- name: "Generate default vhost index page."
-  template:
-    src: index.php.j2
-    dest: /opt/sitepilot/services/default/public/index.php
-  when: autopilot_path is undefined
-
-- name: Write default vhost configuration.
-  template:
-    src: vhost_default.conf.j2
-    dest: /usr/local/lsws/conf/vhosts/default.conf
-  notify:
-    - reload olsws
-  when: autopilot_path is undefined
-
-- name: Write Autopilot vhost configuration.
-  template:
-    src: vhost_autopilot.conf.j2
-    dest: /usr/local/lsws/conf/vhosts/autopilot.conf
-  notify:
-    - reload olsws
-  when: autopilot_path is defined
-
-- name: Generate an OpenSSL private key.
+- name: "olsws : generate an OpenSSL private key"
   openssl_privatekey:
     path: /usr/local/lsws/conf/cert/server.key
 
-- name: Generate an OpenSSL csr.
+- name: "olsws : generate an OpenSSL csr"
   openssl_csr:
     path: /usr/local/lsws/conf/cert/server.csr
     privatekey_path: /usr/local/lsws/conf/cert/server.key
     common_name: "{{ hostname }}"
 
-- name: Generate a self signed OpenSSL certificate.
+- name: "olsws : generate a self signed OpenSSL certificate"
   openssl_certificate:
     path: /usr/local/lsws/conf/cert/server.crt
     privatekey_path: /usr/local/lsws/conf/cert/server.key
     csr_path: /usr/local/lsws/conf/cert/server.csr
     provider: selfsigned
 
-- name: "Add olsws admin password script."
+- name: "olsws : generate default vhost index page"
   template:
-    src: olsws-pass.sh.j2
-    dest: /opt/sitepilot/scripts/olsws-pass.sh
-    mode: "a+x"
+    src: olsws_index.php.j2
+    dest: /opt/sitepilot/services/default/public/index.php
 
-- name: "Set olsws admin password."
-  command: "/opt/sitepilot/scripts/olsws-pass.sh {{ admin }} {{ admin_pass }}"
-  changed_when: false
-
-- name: Rewrite olsws httpd config.
+- name: "olsws : generate default vhost configuration"
   template:
-    src: httpd_config.conf.j2
+    src: olsws_default_vhost.j2
+    dest: /usr/local/lsws/conf/vhosts/default.conf
+  notify:
+    - reload olsws
+
+- name: "olsws : generate httpd config"
+  template:
+    src: olsws_httpd_config.j2
     dest: /usr/local/lsws/conf/httpd_config.conf
     owner: lsadm
     group: lsadm
   notify: reload olsws
 
-- name: Rewrite olsws admin config.
+- name: "olsws : generate olsws admin config"
   template:
-    src: admin_config.conf.j2
+    src: olsws_admin_config.j2
     dest: /usr/local/lsws/admin/conf/admin_config.conf
     owner: lsadm
     group: lsadm
   notify: reload olsws
 
-- name: Rewrite olsws lsphp74 vhost template.
+- name: "olsws : generate lsphp74 vhost template"
   template:
-    src: lsphp74_template.conf.j2
+    src: olsws_lsphp74_template.j2
     dest: /usr/local/lsws/conf/templates/lsphp74.conf
     owner: lsadm
     group: lsadm
   notify: reload olsws
 
-- name: Generate olsws reload script.
+- name: "olsws : generate admin password script"
   template:
-    src: "olsws-reload.sh.j2"
+    src: olsws_password.sh.j2
+    dest: /opt/sitepilot/scripts/olsws-password.sh
+    mode: "a+x"
+
+- name: "olsws : set admin password"
+  command: "/opt/sitepilot/scripts/olsws-password.sh {{ admin }} {{ admin_pass }}"
+  changed_when: false
+
+- name: "olsws : generate reload script"
+  template:
+    src: "olsws_reload.sh.j2"
     dest: "/opt/sitepilot/scripts/olsws-reload.sh"
     owner: "root"
     group: "root"
     mode: 0700
 
-- name: Configure olsws reload cron.
+- name: "olsws : configure reload cron"
   cron:
     name: "reload lshttpd"
     minute: "*"

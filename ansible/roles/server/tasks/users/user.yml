@@ -1,17 +1,17 @@
 ---
-- name: "{{ user.name }}: Install required pip packages."
+- name: "user : {{ user.name }} : install required pip packages"
   pip:
     name: "{{ item }}"
     state: present
   loop:
     - PyMySQL
 
-- name: "{{ user.name }}: Ensure user group '{{ user.name }}' exists."
+- name: "user : {{ user.name }} : ensure user group '{{ user.name }}' exists"
   group:
     name: "{{ user.name }}"
     state: present
 
-- name: "{{ user.name }}: Create user folder."
+- name: "user : {{ user.name }} : create user folder"
   file:
     path: "{{ item }}"
     state: directory
@@ -21,7 +21,7 @@
   loop:
     - "/opt/sitepilot/users/{{ user.name }}"
 
-- name: "{{ user.name }}: Ensure user exists."
+- name: "user : {{ user.name }} : ensure user exists"
   user:
     name: "{{ user.name }}"
     group: "{{ user.name }}"
@@ -30,7 +30,7 @@
     password: "{{ user.password | password_hash('sha512') }}"
     comment: "{{ user.full_name if (user.full_name is defined) and (user.full_name|length > 0) else user.name }}"
 
-- name: "{{ user.name }}: Set home dir permission."
+- name: "user : {{ user.name }} : set home dir permission"
   file:
     path: "{{ item }}"
     state: directory
@@ -40,7 +40,7 @@
   loop:
     - "/home/{{ user.name }}"
 
-- name: "{{ user.name }}: Remove isolated group."
+- name: "user : {{ user.name }} : remove isolated group"
   user:
     name: "{{ user.name }}"
     groups: ""
@@ -48,7 +48,7 @@
     - user.isolated is defined
     - not user.isolated
 
-- name: "{{ user.name }}: Add authorized keys."
+- name: "user : {{ user.name }} : add authorized keys"
   authorized_key:
     user: "{{ user.name }}"
     state: present
@@ -56,7 +56,7 @@
   loop: "{{ user.auth_keys }}"
   when: user.auth_keys is defined
 
-- name: "{{ user.name }}: Create database user."
+- name: "user : {{ user.name }}: create database user"
   mysql_user:
     name: "{{ user.name }}"
     password: "{{ user.mysql_password }}"
@@ -69,7 +69,7 @@
     - user.mysql_password | length > 0
   no_log: true
 
-- name: "{{ user.name }}: Create databases."
+- name: "user : {{ user.name }} : create databases"
   mysql_db:
     name: "{{ item.name }}"
     state: "{{ item.state | default('present', true) }}"
@@ -78,7 +78,7 @@
   when:
     - user.databases is defined
 
-- name: "{{ user.name }}: Provision apps."
+- name: "user : {{ user.name }}: provision apps"
   include: app.yml
   loop: "{{ user.apps if app_filter is not defined else user.apps | selectattr('name', 'match', app_filter) | list }}"
   loop_control:
