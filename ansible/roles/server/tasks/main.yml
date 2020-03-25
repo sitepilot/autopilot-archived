@@ -31,9 +31,6 @@
 
 - include: docker.yml
   tags: "docker"
-  when:
-    - autopilot_host is defined
-    - not autopilot_host|bool
 
 - include: mysql.yml
   tags: "mysql"
