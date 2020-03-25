@@ -3,10 +3,10 @@
 namespace App\Nova;
 
 use App\Nova\ServerUser;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 
@@ -53,6 +53,16 @@ class ServerApp extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 40;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -71,25 +81,34 @@ class ServerApp extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
                 ->help("If the name is left blank Autopilot will generate a random name.")
+                ->rules(['min:3', 'alpha_dash', 'unique:server_apps,name,{{resourceId}}', 'nullable'])
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
-
-            Text::make('Domain', 'domain')
-                ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
 
             BelongsTo::make('User', 'user', ServerUser::class)
                 ->searchable()
+                ->sortable()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+
+            Text::make('Client', 'client')
+                ->exceptOnForms()
+                ->resolveUsing(function ($client) {
+                    if (isset($client->name)) {
+                        return "<a href='" . url(config("nova.path") . "/resources/clients/" . $client->id) . "' 
+                            class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
+                    }
+                    return null;
+                })->asHtml(),
+
+            Text::make('Domain', 'domain')
+                ->readonly()
+                ->hideWhenCreating(),
 
             Text::make('Description', 'description')
                 ->sortable(),

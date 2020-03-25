@@ -56,6 +56,16 @@ class ServerHost extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 20;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -74,18 +84,22 @@ class ServerHost extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->hideWhenCreating()
+                ->readonly(),
 
             BelongsTo::make('Group', 'group', ServerGroup::class)
                 ->searchable()
+                ->sortable()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+
+            BelongsTo::make('Client', 'client', Client::class)
+                ->searchable()
+                ->sortable()
+                ->nullable(),
 
             Text::make('Description', 'description')
                 ->sortable(),
@@ -107,7 +121,7 @@ class ServerHost extends Resource
                 ->searchable(),
 
             MorphToMany::make('Auth Keys', 'authKeys', ServerAuthKey::class)
-                ->searchable(),
+                ->searchable()
         ];
     }
 

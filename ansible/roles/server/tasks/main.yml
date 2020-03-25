@@ -1,98 +1,72 @@
 ---
-# ================================
-# Variables
-# ================================
-
 - include: variables.yml
   tags: "always"
 
-# ================================
-# Common
-# ================================
+- include: swap.yml
+  tags: "swap"
 
-- include: "common/swap.yml"
-  tags: ["common", "common-swap"]
+- include: config.yml
+  tags: "config"
 
-- include: "common/upgrade.yml"
-  tags: ["common", "common-upgrade"]
+- include: upgrade.yml
+  tags: "upgrade"
 
-- include: common/install.yml
-  tags: ["common", "common-install"]
+- include: install.yml
+  tags: "install"
 
-- include: common/admin.yml
-  tags: ["common", "common-admin"]
+- include: root.yml
+  tags: "root"
 
-- include: common/filesystem.yml
-  tags: ["common", "common-filesystem"]
+- include: admin.yml
+  tags: "admin"
 
-- include: common/config.yml
-  tags: ["common", "common-config"]
+- include: sshd.yml
+  tags: "sshd"
 
-- include: common/firewall.yml
-  tags: ["common", "common-firewall"]
+- include: ssmtp.yml
+  tags: "ssmtp"
 
-# ================================
-# Docker
-# ================================
+- include: firewall.yml
+  tags: "firewall"
 
-# Only executed when the host isn't running Autopilot
-- include: docker/docker.yml
-  tags: ["docker", "docker-install"]
-  when:
-    - autopilot_host is defined
-    - not autopilot_host|bool
+- include: docker.yml
+  tags: "docker"
 
-- include: docker/config.yml
-  tags: ["docker", "docker-config"]
+- include: mysql.yml
+  tags: "mysql"
 
-- include: docker/services.yml
-  tags: ["docker", "docker-services"]
+- include: redis.yml
+  tags: "redis"
 
-- include: docker/mysql.yml
-  tags: ["docker", "docker-mysql"]
-
-# ================================
-# OpenLitespeed
-# ================================
-
-- include: olsws/olsws.yml
+- include: olsws.yml
   tags: "olsws"
 
-# ================================
-# Tools
-# ================================
-
-- include: tools/php.yml
+- include: php.yml
   tags: "php"
 
-- include: tools/composer.yml
+- include: composer.yml
   tags: "composer"
 
-- include: tools/wpcli.yml
+- include: wpcli.yml
   tags: "wpcli"
 
-- include: tools/pma.yml
+- include: pma.yml
   tags: "pma"
 
-- include: tools/cockpit.yml
-  tags: "cockpit"
-
-- include: tools/health.yml
+- include: health.yml
   tags: "health"
 
-- include: tools/fail2ban.yml
+- include: fail2ban.yml
   tags: "fail2ban"
 
-# ================================
-# Users
-# ================================
+- include: nodejs.yml
+  tags: "nodejs"
 
 - include: users/users.yml
   tags: "users"
 
-# ================================
-# Tests
-# ================================
+#- include: cleanup.yml
+#  tags: "users"
 
-- include: tests/tests.yml
+- include: test.yml
   tags: ["never", "test"]

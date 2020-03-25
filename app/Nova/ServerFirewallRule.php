@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\HasMany;
 
 class ServerFirewallRule extends Resource
@@ -70,11 +71,15 @@ class ServerFirewallRule extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
+                ->rules(['required', 'alpha_dash', 'min:3', 'unique:server_firewall_rules,name,{{resourceId}}'])
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
+
+            Number::make('Port', 'port')
+                ->hideWhenCreating()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),

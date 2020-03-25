@@ -3,17 +3,18 @@
 namespace App;
 
 use App\Traits\HasVars;
-use App\Traits\UniqueName;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Fields\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class ServerUser extends Model
 {
     use HasVars;
-    use UniqueName;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
@@ -25,16 +26,31 @@ class ServerUser extends Model
     ];
 
     /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (ServerUser $item) {
+            $statement = DB::select("SHOW TABLE STATUS LIKE '" . $item->getTable() . "'");
+            $nextId = $statement[0]->Auto_increment;
+            $item->name = "user" . $nextId;
+        });
+    }
+
+    /**
      * Returns an array with default user variables.
      *
      * @return void
      */
     public function getDefaultVars()
     {
-        $name = $this->getRandomNumericName('user');
-
         return [
-            'name' => $name,
+            'name' => $this->name,
+            'full_name' => $this->name,
             'isolated' => true,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),
@@ -52,6 +68,16 @@ class ServerUser extends Model
     public function host()
     {
         return $this->belongsTo(ServerHost::class, 'host_id');
+    }
+
+    /**
+     * Returns the client.
+     *
+     * @return BelongsTo
+     */
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
     /**

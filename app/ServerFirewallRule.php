@@ -4,11 +4,13 @@ namespace App;
 
 use App\Traits\HasVars;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ServerFirewallRule extends Model
 {
     use HasVars;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
@@ -43,5 +45,25 @@ class ServerFirewallRule extends Model
     public function hosts()
     {
         return $this->belongsToMany(ServerHost::class, 'server_firewall_rule_host', 'rule_id', 'host_id');
+    }
+
+    /**
+     * Returns the port variable.
+     *
+     * @return void
+     */
+    public function getPortAttribute()
+    {
+        return $this->getVar('port');
+    }
+
+    /**
+     * Set the port variable.
+     *
+     * @return void
+     */
+    public function setPortAttribute($value)
+    {
+        $this->setVar('port', $value, true, true);
     }
 }

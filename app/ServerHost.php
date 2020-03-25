@@ -10,16 +10,14 @@ use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Actionable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ServerHost extends Model
 {
-    use HasVars {
-        boot as hasVarsBoot;
-    }
-    use UniqueName;
-    use Actionable;
+    use HasVars;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
@@ -37,7 +35,12 @@ class ServerHost extends Model
      */
     public static function boot()
     {
-        self::hasVarsBoot();
+        parent::boot();
+
+        self::creating(function (ServerHost $host) {
+            $count = $host->where('group_id', $host->group_id)->count();
+            $host->name = $host->group->name . ($count + 10);
+        });
 
         self::created(function (ServerHost $host) {
             if ($host->getVar('ansible_connection') == 'ssh' && !$host->getVar('ansible_ssh_private_key_file')) {
@@ -62,10 +65,8 @@ class ServerHost extends Model
      */
     public function getDefaultVars()
     {
-        $name = $this->getNextInGroupName($this->group->name);
-
         return [
-            'hostname' => $name,
+            'hostname' => $this->name,
             'ansible_connection' => 'ssh',
             'ansible_ssh_host' => '0.0.0.0',
             'ansible_ssh_port' => '22',
@@ -149,6 +150,16 @@ class ServerHost extends Model
     public function group()
     {
         return $this->belongsTo(ServerGroup::class, 'group_id');
+    }
+
+    /**
+     * Returns the client.
+     *
+     * @return BelongsTo
+     */
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
     /**

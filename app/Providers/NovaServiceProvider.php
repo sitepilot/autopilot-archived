@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
-use Laravel\Nova\Cards\Help;
 use Laravel\Nova\Nova;
+use Illuminate\Support\Facades\Gate;
+use App\Nova\Metrics\ProjectTotalMetric;
+use App\Nova\Metrics\ServerAppsTotalMetric;
+use App\Nova\Metrics\ProjectHoursTotalMetric;
+use App\Nova\Metrics\ProjectBalanceTotalMetric;
+use App\Nova\Metrics\ProjectBillableHoursMetric;
 use Laravel\Nova\NovaApplicationServiceProvider;
+use App\Nova\Metrics\ProjectHoursNonBillableMetric;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -18,7 +23,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
 
-        Nova::style('autopilot', public_path('css/autopilot.css'));
+        //
     }
 
     /**
@@ -72,7 +77,12 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function cards()
     {
         return [
-            new Help,
+            new ServerAppsTotalMetric,
+            new ProjectTotalMetric,
+            new ProjectBalanceTotalMetric,
+            new ProjectHoursTotalMetric,
+            new ProjectBillableHoursMetric,
+            new ProjectHoursNonBillableMetric
         ];
     }
 

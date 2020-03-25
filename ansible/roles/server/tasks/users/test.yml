@@ -1,0 +1,76 @@
+---
+# SSH Tests (when test public key is used)
+- name: "test : {{ user.name }} : can't login over SSH using a private key as an isolated user"
+  command: "ssh -i /root/.ssh/test_key -o StrictHostKeyChecking=no {{ user.name }}@127.0.0.1 'date'"
+  register: ssh_isolate_check
+  failed_when: not ssh_isolate_check.failed
+  when:
+    - "user.isolated is defined"
+    - "user.isolated | bool"
+    - "user.auth_keys[0].key is defined"
+    - '"test@server" in user.auth_keys[0].key'
+
+- name: "test : {{ user.name }} : can login over SSH using a private key as an unisolated user"
+  command: "ssh -i /root/.ssh/test_key -o StrictHostKeyChecking=no {{ user.name }}@127.0.0.1 'date'"
+  when:
+    - "user.isolated is defined"
+    - "not user.isolated | bool"
+    - "user.auth_keys[0].key is defined"
+    - '"test@server" in user.auth_keys[0].key'
+
+# MySQL Tests
+- name: "test : {{ user.name }} : connect to MySQL as user"
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'show databases;'"
+  changed_when: false
+  when:
+    - user.mysql_password is defined
+
+- name: "test : {{ user.name }} : databases exist"
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ item.name }};'"
+  changed_when: false
+  loop: "{{ user.databases }}"
+  when:
+    - user.mysql_password is defined
+    - user.mysql_password is defined
+    - item.state is undefined or item.state == 'present'
+
+- name: "test : {{ user.name }} : databases don't exist"
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ user.name }}_{{ item.name }};'"
+  register: database_absent_check
+  changed_when: false
+  failed_when: not database_absent_check.failed
+  loop: "{{ user.databases }}"
+  when:
+    - user.mysql_password is defined
+    - user.mysql_password is defined
+    - item.state == 'absent'
+
+# File Tests
+- name: "test : {{ user.name }} : user can write to app public folders"
+  command: "touch /opt/sitepilot/users/{{ user.name }}/{{ item.name }}/public/user_test"
+  become: true
+  become_user: "{{ user.name }}"
+  changed_when: false
+  loop: "{{ user.apps }}"
+  args:
+    warn: false
+
+- name: "test : {{ user.name }} : user can delete files in app public folders"
+  command: "rm /opt/sitepilot/users/{{ user.name }}/{{ item.name }}/public/user_test"
+  become: true
+  become_user: "{{ user.name }}"
+  changed_when: false
+  loop: "{{ user.apps }}"
+  args:
+    warn: false
+
+# HTTP Tests
+- name: "test : {{ user.name }} : domains are reachable"
+  uri:
+    url: https://{{ item.domain }}
+    validate_certs: false
+  loop: "{{ user.apps }}"
+  when:
+    - user.apps is defined
+    - item.domain is defined
+  tags: ["test", "test-domains"]

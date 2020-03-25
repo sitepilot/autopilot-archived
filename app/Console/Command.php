@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\ServerHost;
+use App\ServerUser;
 use Illuminate\Console\Command as ConsoleCommand;
 
 class Command extends ConsoleCommand
@@ -30,7 +31,45 @@ class Command extends ConsoleCommand
                 $options[] = $host->name;
             }
 
-            $this->host = $this->choice('Select a host', $options);
+            if (count($options) > 0) {
+                $this->host = $this->choice('Select a host', $options);
+            }
+        }
+    }
+
+    /**
+     * Ask for a user.
+     *
+     * @return void
+     */
+    public function askUser()
+    {
+        if ($this->user = $this->option('user')) {
+            $user = ServerUser::where('name', $this->option('user'))->first();
+            if (isset($user->host->name)) {
+                $this->host = $user->host->name;
+            } elseif ($this->option('user') == 'all') {
+                $this->user = 'all';
+                $this->host = 'all';
+            }
+
+            return;
+        }
+
+        if (!$this->user) {
+            $users = ServerUser::get();
+            $options = ['all'];
+            $hosts = ['all' => 'all'];
+
+            foreach ($users as $user) {
+                $options[] = $user->name;
+                $hosts[$user->name] = $user->host->name;
+            }
+
+            if (count($options) > 0) {
+                $this->user = $this->choice('Select a user', $options);
+                $this->host = $hosts[$this->user];
+            }
         }
     }
 
@@ -51,7 +90,7 @@ class Command extends ConsoleCommand
     /**
      * Returns the path to the inventory script.
      *
-     * @return string
+     * @return string $path
      */
     public function getInventoryScript()
     {
@@ -59,9 +98,9 @@ class Command extends ConsoleCommand
     }
 
     /**
-     * Returns the path to the provision server playbook.
+     * Returns the path to the provision playbook.
      *
-     * @return string
+     * @return string $path
      */
     public function getProvisionPlaybook()
     {

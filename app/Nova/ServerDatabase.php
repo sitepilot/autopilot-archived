@@ -3,10 +3,10 @@
 namespace App\Nova;
 
 use App\Nova\ServerUser;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\BelongsTo;
 
 class ServerDatabase extends Resource
@@ -52,6 +52,16 @@ class ServerDatabase extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 50;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -70,30 +80,40 @@ class ServerDatabase extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->hideWhenCreating()
+                ->readonly(),
+
+            BelongsTo::make('User', 'user', ServerUser::class)
+                ->help('This field will be ignored when an App is selected above.')
+                ->searchable()
+                ->nullable()
+                ->sortable()
+                ->rules('required_without:app')
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
 
             BelongsTo::make('App', 'app', ServerApp::class)
                 ->help('User will be selected based on the App owner.')
                 ->searchable()
                 ->rules('required_without:user')
                 ->nullable()
+                ->sortable()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
 
-            BelongsTo::make('User', 'user', ServerUser::class)
-                ->help('This field will be ignored when an App is selected above.')
-                ->searchable()
-                ->nullable()
-                ->rules('required_without:app')
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                }),
+            Text::make('Client', 'client')
+                ->exceptOnForms()
+                ->resolveUsing(function ($client) {
+                    if (isset($client->name)) {
+                        return "<a href='" . url(config("nova.path") . "/resources/clients/" . $client->id) . "' 
+                            class='no-underline dim text-primary font-bold'>" . $client->name . "</a>";
+                    }
+                    return null;
+                })->asHtml(),
 
             Text::make('Description', 'description')
                 ->sortable(),

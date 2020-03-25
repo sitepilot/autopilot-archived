@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32c5416130812a54c2b67ba9fb12cff0",
+    "content-hash": "a80315a7e9940c653ec796df6b2cc302",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -900,6 +900,56 @@
                 "fixtures"
             ],
             "time": "2019-12-12T13:22:17+00:00"
+        },
+        {
+            "name": "gregoriohc/laravel-nova-theme-responsive",
+            "version": "v0.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gregoriohc/laravel-nova-theme-responsive.git",
+                "reference": "a37f8162872ea7483d2dec7091d29e49376df273"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gregoriohc/laravel-nova-theme-responsive/zipball/a37f8162872ea7483d2dec7091d29e49376df273",
+                "reference": "a37f8162872ea7483d2dec7091d29e49376df273",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Gregoriohc\\LaravelNovaThemeResponsive\\ThemeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Gregoriohc\\LaravelNovaThemeResponsive\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gregorio Hernández Caso",
+                    "email": "gregoriohc@gmail.com",
+                    "homepage": "https://github.com/gregoriohc",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Nova responsive theme.",
+            "homepage": "https://github.com/gregoriohc/laravel-nova-theme-responsive",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "time": "2020-03-08T16:15:03+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

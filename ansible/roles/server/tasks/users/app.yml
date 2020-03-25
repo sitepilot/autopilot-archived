@@ -1,5 +1,5 @@
 ---
-- name: "{{ app.name }}: Create app folders."
+- name: "app : {{ user.name }} : {{ app.name }} : create folders"
   file:
     path: "{{ item }}"
     state: directory
@@ -11,9 +11,9 @@
     - "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/public"
     - "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}/logs"
 
-- name: "{{ app.name }}: Generate vhost configuration."
+- name: "app : {{ user.name }} : {{ app.name }}: generate vhost configuration"
   template:
-    src: vhost_app.conf.j2
+    src: olsws_app_vhost.j2
     dest: "/usr/local/lsws/conf/vhosts/{{ app.name }}.conf"
   when:
     - app.domain is defined
@@ -22,7 +22,7 @@
     - reload olsws
     - reload fail2ban
 
-- name: "{{ app.name }}: Set folder / file permissions."
+- name: "app : {{ user.name }} : {{ app.name }}: set folder / file permissions"
   command: "{{ item }}"
   loop:
     - "find /opt/sitepilot/users/{{ user.name }}/{{ app.name }} -type f -exec chmod 644 {} +"

@@ -17,7 +17,7 @@ class AddAppIdToServerDatabases extends Migration
             $table->unsignedBigInteger('app_id')->after('user_id')->nullable();
 
             $table->foreign('app_id')
-                ->references('id')->on('server_databases')
+                ->references('id')->on('server_apps')
                 ->onDelete('set null');
         });
     }

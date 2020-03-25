@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -33,7 +32,7 @@ class ServerUser extends Resource
      * @var string
      */
     public static $title = 'name';
-    
+
     /**
      * The columns that should be searched.
      *
@@ -51,6 +50,16 @@ class ServerUser extends Resource
     public static function label()
     {
         return 'Users';
+    }
+
+    /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 30;
     }
 
     /**
@@ -72,18 +81,22 @@ class ServerUser extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
-                ->readonly()
-                ->hideWhenCreating(),
+                ->hideWhenCreating()
+                ->readonly(),
 
             BelongsTo::make('Host', 'host', ServerHost::class)
                 ->searchable()
+                ->sortable()
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),
+
+            BelongsTo::make('Client', 'client', Client::class)
+                ->searchable()
+                ->nullable()
+                ->sortable(),
 
             Text::make('Description', 'description')
                 ->sortable(),

@@ -8,6 +8,13 @@ use Laravel\Nova\Resource as NovaResource;
 abstract class Resource extends NovaResource
 {
     /**
+     * The default sort order.
+     *
+     * @var array
+     */
+    public static $orderBy = ['id' => 'desc'];
+
+    /**
      * Build an "index" query for the given resource.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
@@ -55,5 +62,21 @@ abstract class Resource extends NovaResource
     public static function relatableQuery(NovaRequest $request, $query)
     {
         return parent::relatableQuery($request, $query);
+    }
+
+    /**
+     * Apply any applicable orderings to the query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  array  $orderings
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected static function applyOrderings($query, array $orderings)
+    {
+        if (empty($orderings) && property_exists(static::class, 'orderBy')) {
+            $orderings = static::$orderBy;
+        }
+        
+        return parent::applyOrderings($query, $orderings);
     }
 }

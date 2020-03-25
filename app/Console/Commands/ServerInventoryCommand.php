@@ -57,12 +57,12 @@ class ServerInventoryCommand extends Command
 
                 $hostvars = $host->vars;
                 if (isset($hostvars['ansible_ssh_private_key_file'])) {
-                    $hostvars['ansible_ssh_private_key_file'] = substr($hostvars['ansible_ssh_private_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_private_key_file'] : storage_path($hostvars['ansible_ssh_private_key_file']);
+                    $hostvars['ansible_ssh_private_key_file'] = substr($hostvars['ansible_ssh_private_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_private_key_file'] : storage_path("app/" . $hostvars['ansible_ssh_private_key_file']);
                     chmod($hostvars['ansible_ssh_private_key_file'], 0600);
                 }
 
                 if (isset($hostvars['ansible_ssh_public_key_file'])) {
-                    $hostvars['ansible_ssh_public_key_file'] = substr($hostvars['ansible_ssh_public_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_public_key_file'] : storage_path($hostvars['ansible_ssh_public_key_file']);
+                    $hostvars['ansible_ssh_public_key_file'] = substr($hostvars['ansible_ssh_public_key_file'], 0, 1) == '/' ? $hostvars['ansible_ssh_public_key_file'] : storage_path("app/" . $hostvars['ansible_ssh_public_key_file']);
                     chmod($hostvars['ansible_ssh_public_key_file'], 0600);
                 }
 

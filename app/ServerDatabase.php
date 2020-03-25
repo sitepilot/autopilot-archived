@@ -2,16 +2,17 @@
 
 namespace App;
 
+use App\Client;
 use App\ServerUser;
 use App\Traits\HasVars;
-use App\Traits\UniqueName;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServerDatabase extends Model
 {
     use HasVars;
-    use UniqueName;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
@@ -23,23 +24,37 @@ class ServerDatabase extends Model
     ];
 
     /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (ServerDatabase $item) {
+            if (isset($item->app->user_id)) {
+                $item->user_id = $item->app->user_id;
+            }
+
+            $unique = true;
+            while ($unique) {
+                $name = $item->user->name . '_db' . ucfirst(Str::random(4));
+                $unique = $item->where('name', $name)->count();
+            }
+            $item->name = $name;
+        });
+    }
+
+    /**
      * Returns an array with default app variables.
      *
      * @return void
      */
     public function getDefaultVars()
     {
-        if (isset($this->app->user->id)) {
-            $this->user_id = $this->app->user->id;
-        }
-
-        $name = '';
-        while ($this->nameIsUsed($name)) {
-            $name =  $this->user->name . '_db' . ucfirst(Str::random('4'));
-        }
-
         return [
-            'name' => $name,
+            'name' => $this->name,
             'state' => 'present'
         ];
     }
@@ -62,5 +77,19 @@ class ServerDatabase extends Model
     public function app()
     {
         return $this->belongsTo(ServerApp::class, 'app_id');
+    }
+
+    /**
+     * Returns the client.
+     *
+     * @return Client
+     */
+    public function getClientAttribute()
+    {
+        if ($this->user) {
+            return $this->user->client;
+        }
+
+        return null;
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -52,6 +51,16 @@ class ServerGroup extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 10;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -70,11 +79,9 @@ class ServerGroup extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-            
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:4'])
+                ->rules(['required', 'min:3', 'alpha_dash', 'unique:server_groups,name,{{resourceId}}'])
                 ->readonly(function ($request) {
                     return $request->isUpdateOrUpdateAttachedRequest();
                 }),

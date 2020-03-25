@@ -3,7 +3,6 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -52,6 +51,16 @@ class ServerAuthKey extends Resource
     }
 
     /**
+     * Returns the menu position.
+     *
+     * @return int
+     */
+    public static function menuPosition()
+    {
+        return 60;
+    }
+
+    /**
      * Get the search result subtitle for the resource.
      *
      * @return string|null
@@ -70,15 +79,16 @@ class ServerAuthKey extends Resource
     public function fields(Request $request)
     {
         return [
-            ID::make()->sortable(),
-
             Text::make('Name', 'name')
                 ->sortable()
-                ->rules(['required', 'min:4']),
-         
+                ->rules(['required', 'min:3', 'unique:server_auth_keys,name,{{resourceId}}'])
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                }),
+
             Text::make('Description', 'description')
                 ->sortable(),
-  
+
             Code::make('Key Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()

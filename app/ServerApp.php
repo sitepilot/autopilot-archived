@@ -2,15 +2,18 @@
 
 namespace App;
 
+use App\Client;
+use Faker\Factory;
 use App\ServerUser;
 use App\Traits\HasVars;
-use App\Traits\UniqueName;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServerApp extends Model
 {
     use HasVars;
-    use UniqueName;
+    use SoftDeletes;
 
     /**
      * The attributes that should be cast to native types.
@@ -22,17 +25,31 @@ class ServerApp extends Model
     ];
 
     /**
+     * Bootstrap the model and its traits.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (ServerApp $app) {
+            if (empty($app->name)) {
+                $app->name = $app->getRandomName($app);
+            }
+        });
+    }
+
+    /**
      * Returns an array with default app variables.
      *
      * @return void
      */
     public function getDefaultVars()
     {
-        $name = !empty($this->name) ? $this->name : $this->getRandomName();
-
         return [
-            'name' => $name,
-            'domain' => $name . '.' . env('APP_DEFAULT_DOMAIN'),
+            'name' => $this->name,
+            'domain' => $this->name . '.' . env('APP_DEFAULT_DOMAIN'),
             'aliases' => []
         ];
     }
@@ -58,6 +75,20 @@ class ServerApp extends Model
     }
 
     /**
+     * Returns the client.
+     *
+     * @return Client
+     */
+    public function getClientAttribute()
+    {
+        if ($this->user) {
+            return $this->user->client;
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the domain variable.
      *
      * @return void
@@ -75,5 +106,38 @@ class ServerApp extends Model
     public function setDomainAttribute($value)
     {
         $this->setVar('domain', $value, true, true);
+    }
+
+    /**
+     * Returns a random name from space.
+     * 
+     * @return string $name
+     */
+    function getRandomName($item, $count = 2)
+    {
+        $faker = Factory::create();
+
+        $elements = [
+            'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune',
+            'Moon', 'Luna', 'Deimos', 'Phobos', 'Ganymede', 'Callisto', 'Io', 'Europa', 'Titan', 'Rhea', 'Iapetus', 'Dione', 'Tethys', 'Hyperion', 'Ariel', 'Puck', 'Oberon', 'Umbriel', 'Triton', 'Proteus',
+            'Milky Way', 'Andromeda', 'Triangulum', 'Whirlpool', 'Blackeye', 'Sunflower', 'Pinwheel', 'Centaurus', 'Messier',
+            'Lagoon', 'Nebula', 'Eagle', 'Triffid', 'Dumbell', 'Orion', 'Ring', 'Bodes', 'Owl',
+            'Orion', 'Mercury', 'Gemini', 'Apollo', 'Enterprise', 'Columbia', 'Challenger', 'Discovery', 'Atlantis', 'Endeavour',
+            'Aarhus', 'Abee', 'Adelie', 'Land', 'Adhi', 'Bogdo', 'Agen', 'Albareto', 'Allegan', 'Allende', 'Ambapur', 'Nagla', 'Andura', 'Angers', 'Angra', 'Ankober', 'Anlong', 'Annaheim', 'Appley', 'Bridge', 'Arbol', 'Solo', 'Archie', 'Arroyo', 'Aguiar', 'Assisi', 'Atoka', 'Avanhandava', 'Bacubirito', 'Beardsley', 'Bellsbank', 'Bench', 'Crater', 'Benton', 'Blithfield', 'Block', 'Island', 'Bovedy', 'Brachina', 'Brahin', 'Brenham', 'Buzzard', 'Coulee', 'Campo', 'Cielo', 'Canyon', 'Diablo', 'Cape', 'York', 'Carancas', 'Chambord', 'Chassigny', 'Chelyabinsk', 'Chergach', 'Chinga', 'Chinguetti', 'Claxton', 'Coahuila', 'Cranbourne', 'Orbigny', 'Dronino', 'Eagle', 'Station', 'Elbogen', 'Ensisheim', 'Esquel', 'Gancedo', 'Gebel', 'Kamil', 'Gibeon', 'Goose', 'Lake', 'Grant', 'Hadley', 'Rille', 'Heat', 'Shield', 'Rock', 'Hoba', 'Homestead', 'Hraschina', 'Huckitta', 'Imilac', 'Itqiy', 'Kaidun', 'Kainsaz', 'Karoonda', 'Kesen', 'Krasnojarsk', 'Aigle', 'Dodon', 'Lake', 'Murray', 'Loreto', 'Los', 'Angeles', 'Mackinac Island', 'Mbozi', 'Middlesbrough', 'Mineo', 'Monte Milone', 'Moss', 'Mundrabilla', 'Muonionalusta', 'Murchison', 'Nakhla', 'Nantan', 'Neuschwanstein', 'Norton', 'County', 'Novato', 'Oileán Ruaidh (Martian)', 'Old', 'Oldenburg', 'Omolon', 'Ornans', 'Osseo', 'Ourique', 'Pallasovka', 'Paragould', 'Park',  'Forest', 'Pavlovka', 'Peace', 'River', 'Peekskill', 'Penouille', 'Polonnaruwa', 'High Possil', 'Pribram', 'Pultusk', 'Qidong', 'Richardton', 'Seymchan', 'Shelter', 'Island', 'Shergotty', 'Sikhote', 'Alin', 'Sołtmany', 'Springwater', 'Robert', 'Stannern', 'Sulagiri', 'Sutter', 'Mill', 'Sylacauga', 'Tagish Lake', 'Tamdakht', 'Tenham', 'Texas Fireball', 'Tissint', 'Tlacotepec', 'Toluca', 'Treysa', 'Twannberg', 'Veliky Ustyug', 'Vermillion', 'Weston', 'Willamette', 'Winona', 'Wold', 'Cottage', 'Yardymly', 'Zagami', 'Zaisho', 'Zaklodzie',
+            'Antares', 'Ariane', 'Atlas', 'Diamant', 'Dnepr', 'Delta', 'Electron', 'Energia', 'Europa', 'Falcon', 'Falcon Heavy', 'Juno', 'Long March', 'Mercury', 'Redstone', 'Minotaur', 'Pegasus', 'Proton', 'PSLV', 'Safir', 'Shavit', 'Saturn IV', 'Semiorka', 'Soyouz', 'Titan', 'Vega', 'Veronique', 'Zenit',
+            'ants', 'bats', 'bears', 'bees', 'birds', 'buffalo', 'cats', 'chickens', 'cattle', 'dogs', 'dolphins', 'ducks', 'elephants', 'fishes', 'foxes', 'frogs', 'geese', 'goats', 'horses', 'kangaroos', 'lions', 'monkeys', 'owls', 'oxen', 'penguins', 'people', 'pigs', 'rabbits', 'sheep', 'tigers', 'whales', 'wolves', 'zebras', 'banshees', 'crows', 'black cats', 'chimeras', 'ghosts', 'conspirators', 'dragons', 'dwarfs', 'elves', 'enchanters', 'exorcists', 'sons', 'foes', 'giants', 'gnomes', 'goblins', 'gooses', 'griffins', 'lycanthropes', 'nemesis', 'ogres', 'oracles', 'prophets', 'sorcerers', 'spiders', 'spirits', 'vampires', 'warlocks', 'vixens', 'werewolves', 'witches', 'worshipers', 'zombies', 'druids'
+        ];
+
+        $name = '';
+        $unique = true;
+        while ($unique) {
+            $names = $faker->unique()->randomElements($elements, $count);
+            foreach ($names as $randomName) {
+                $name .= '-' . $randomName;
+            }
+            $unique = $item->where('name', $name)->count();
+        }
+
+        return Str::slug($name);
     }
 }

@@ -55,14 +55,9 @@ class DatabaseSeeder extends Seeder
             $fwRuleLitespeed->vars = ['port' => '2083'];
             $fwRuleLitespeed->save();
 
-            $fwRuleCockpit = new ServerFirewallRule;
-            $fwRuleCockpit->name = 'cockpit';
-            $fwRuleCockpit->vars = ['port' => '2087'];
-            $fwRuleCockpit->save();
-
             $fwRuleMysql = new ServerFirewallRule;
             $fwRuleMysql->name = 'mysql';
-            $fwRuleCockpit->vars = ['port' => '3306'];
+            $fwRuleMysql->vars = ['port' => '3306'];
             $fwRuleMysql->save();
 
             $authKey = new ServerAuthKey;
@@ -79,7 +74,7 @@ class DatabaseSeeder extends Seeder
                 'ansible_ssh_private_key_file' => '/var/www/html/vagrant/ssh/test_key',
                 'ansible_ssh_public_key_file' => '/var/www/html/vagrant/ssh/test_key.pub',
                 'ansible_ssh_common_args' => '-o StrictHostKeyChecking=no',
-                'autopilot_host' => env('APP_TEST_AUTOPILOT_HOST'),
+                'autopilot_host' => env('APP_TEST_AUTOPILOT_HOST')
             ];
             $host->save();
             $host->firewallRules()->attach([
@@ -87,7 +82,6 @@ class DatabaseSeeder extends Seeder
                 $fwRuleHttps->id,
                 $fwRuleSSH->id,
                 $fwRuleLitespeed->id,
-                $fwRuleCockpit->id,
                 $fwRuleMysql->id
             ]);
             $host->authKeys()->attach([
@@ -97,6 +91,9 @@ class DatabaseSeeder extends Seeder
             // Create server user
             $user = new ServerUser;
             $user->host_id = $host->id;
+            $user->vars = [
+                'full_name' => "Test User"
+            ];
             $user->save();
             $user->authKeys()->attach([
                 $authKey->id
