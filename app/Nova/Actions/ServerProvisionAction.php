@@ -73,7 +73,7 @@ class ServerProvisionAction extends Action
      */
     public function fields()
     {
-        $tags = "swap, config, upgrade, install, root, admin, sshd, ssmtp, firewall, docker, mysql, redis, olsws, php, composer, wpcli, pma, health, fail2ban, nodejs, users";
+        $tags = "swap, config, upgrade, install, root, admin, sshd, ssmtp, firewall, docker, mysql, redis, olsws, php, composer, wpcli, pma, health, fail2ban, nodejs, certbot, users";
 
         return [
             Text::make('Tags', 'tags')

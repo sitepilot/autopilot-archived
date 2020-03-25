@@ -1,0 +1,8 @@
+---
+- name: "certbot : add repository"
+  apt_repository:
+    repo: ppa:certbot/certbot
+
+- name: "certbot : install Certbot"
+  apt:
+    name: certbot

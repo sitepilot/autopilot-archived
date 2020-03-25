@@ -22,6 +22,7 @@ users:
         aliases:
           - example-alias1.com
           - example-alias2.com
+        ssl: yes
     databases:
       - name: live
         state: present
