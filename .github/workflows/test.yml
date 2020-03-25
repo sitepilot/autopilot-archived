@@ -44,7 +44,7 @@ jobs:
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
-        run: ./autopilot server:provision --host=all --skip-tags=common-upgrade --disable-tty
+        run: ./autopilot server:provision --host=all --skip-tags=upgrade --disable-tty
 
       - name: Test user:provision command.
         run: ./autopilot user:provision --user=all --disable-tty
