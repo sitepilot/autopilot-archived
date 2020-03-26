@@ -1,5 +1,4 @@
 # {{ sitepilot_managed }}
-
 vhRoot                    /opt/sitepilot/users/$VH_NAME
 configFile                $SERVER_ROOT/conf/vhosts/$VH_NAME.conf
 allowSymbolLink           1
@@ -74,4 +73,12 @@ virtualHostConfig  {
     enable                1
     autoLoadHtaccess      1
   }
+
+  {% if is_ssl is defined and is_ssl|bool %}  
+  vhssl {
+    keyFile               /etc/letsencrypt/live/$VH_NAME/privkey.pem
+    certFile              /etc/letsencrypt/live/$VH_NAME/fullchain.pem
+    certChain             1
+  }
+  {% endif %}
 }

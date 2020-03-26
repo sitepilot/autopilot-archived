@@ -111,6 +111,18 @@
     group: lsadm
   notify: reload olsws
 
+- name: "olsws : set ssl variables"
+  set_fact:
+    is_ssl: true
+
+- name: "olsws : generate lsphp74-ssl vhost template"
+  template:
+    src: olsws_lsphp74_template.j2
+    dest: /usr/local/lsws/conf/templates/lsphp74-ssl.conf
+    owner: lsadm
+    group: lsadm
+  notify: reload olsws
+
 - name: "olsws : generate admin password script"
   template:
     src: olsws_password.sh.j2

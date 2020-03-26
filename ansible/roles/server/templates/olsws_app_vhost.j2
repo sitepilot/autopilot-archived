@@ -1,6 +1,10 @@
 # {{ sitepilot_managed }}
 vhTemplate vhost {
+  {% if app.cert_request is defined and app.cert_request|bool %}
+  templateFile            $SERVER_ROOT/conf/templates/lsphp74-ssl.conf
+  {% else %}
   templateFile            $SERVER_ROOT/conf/templates/lsphp74.conf
+  {% endif %}
   listeners               http, https
 
   member {{ app.name }} {
@@ -12,14 +16,6 @@ vhTemplate vhost {
     
     {% if app.aliases is defined %}
     vhAliases             {{ app.aliases|join(', ') }}
-    {% endif %}
-
-    {% if app.cert_request is defined and app.cert_request|bool %}  
-    vhssl {
-      keyFile               /etc/letsencrypt/live/$VH_NAME/privkey.pem
-      certFile              /etc/letsencrypt/live/$VH_NAME/fullchain.pem
-      certChain             1
-    }
     {% endif %}
   }
 }
