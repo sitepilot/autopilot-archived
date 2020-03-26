@@ -56,9 +56,10 @@ class ServerProvisionAction extends Action
             try {
                 Artisan::call('server:provision', [
                     '--host' => $host->name,
-                    '--disable-tty' => true,
                     '--tags' => $fields->tags,
-                    '--skip-tags' => $fields->skip_tags
+                    '--skip-tags' => $fields->skip_tags,
+                    '--nova-batch-id' => $this->batchId,
+                    '--disable-tty' => true
                 ]);
             } catch (Exception $e) {
                 $this->markAsFailed($host, $e->getMessage());

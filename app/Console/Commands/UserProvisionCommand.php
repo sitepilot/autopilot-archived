@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Exception;
+use App\ServerUser;
+use Laravel\Nova\Nova;
 use App\Console\Command;
 use Symfony\Component\Process\Process;
 
@@ -17,6 +19,7 @@ class UserProvisionCommand extends Command
         {--user= : The user name (optional)}
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
+        {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}';
 
     /**
@@ -76,6 +79,15 @@ class UserProvisionCommand extends Command
                     self::addToProcessBuffer($buffer);
                 }
             });
+
+            if ($this->option('nova-batch-id')) {
+                $model = ServerUser::where('name', $this->user)->first();
+                $event = Nova::actionEvent();
+                $event::where('batch_id', $this->option('nova-batch-id'))
+                    ->where('model_type', $model->getMorphClass())
+                    ->where('model_id', $model->getKey())
+                    ->update(['exception' => self::getProcessBuffer()]);
+            }
         } else {
             throw new Exception("Could not find user.");
         }

@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Exception;
+use App\ServerHost;
+use Laravel\Nova\Nova;
 use App\Console\Command;
 use Symfony\Component\Process\Process;
 
@@ -16,6 +18,7 @@ class ServerTestCommand extends Command
     protected $signature = 'server:test 
         {--host= : The host name (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
+        {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}';
 
     /**
@@ -63,6 +66,15 @@ class ServerTestCommand extends Command
                     self::addToProcessBuffer($buffer);
                 }
             });
+
+            if ($this->option('nova-batch-id')) {
+                $model = ServerHost::where('name', $this->host)->first();
+                $event = Nova::actionEvent();
+                $event::where('batch_id', $this->option('nova-batch-id'))
+                    ->where('model_type', $model->getMorphClass())
+                    ->where('model_id', $model->getKey())
+                    ->update(['exception' => self::getProcessBuffer()]);
+            }
         }
     }
 }

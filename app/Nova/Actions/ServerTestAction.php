@@ -56,8 +56,9 @@ class ServerTestAction extends Action
             try {
                 Artisan::call('server:test', [
                     '--host' => $host->name,
-                    '--disable-tty' => true,
-                    '--skip-tags' => $fields->skip_tags
+                    '--skip-tags' => $fields->skip_tags,
+                    '--nova-batch-id' => $this->batchId,
+                    '--disable-tty' => true
                 ]);
             } catch (Exception $e) {
                 $this->markAsFailed($host, $e->getMessage());
