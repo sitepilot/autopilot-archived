@@ -50,7 +50,8 @@ class ServerApp extends Model
         return [
             'name' => $this->name,
             'domain' => $this->name . '.' . env('APP_DEFAULT_DOMAIN'),
-            'aliases' => []
+            'aliases' => [],
+            "cert_request" => false
         ];
     }
 

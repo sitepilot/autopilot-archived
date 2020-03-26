@@ -56,7 +56,6 @@ class ServerUser extends Model
             'isolated' => true,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),
-            "cert_request" => false,
             'apps' => [],
             'databases' => [],
             'auth_keys' => []
