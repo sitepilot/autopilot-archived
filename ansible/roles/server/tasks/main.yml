@@ -62,6 +62,9 @@
 - include: nodejs.yml
   tags: "nodejs"
 
+- include: certbot.yml
+  tags: "certbot"
+
 - include: users/users.yml
   tags: "users"
 

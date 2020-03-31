@@ -56,9 +56,10 @@ class ServerProvisionAction extends Action
             try {
                 Artisan::call('server:provision', [
                     '--host' => $host->name,
-                    '--disable-tty' => true,
                     '--tags' => $fields->tags,
-                    '--skip-tags' => $fields->skip_tags
+                    '--skip-tags' => $fields->skip_tags,
+                    '--nova-batch-id' => $this->batchId,
+                    '--disable-tty' => true
                 ]);
             } catch (Exception $e) {
                 $this->markAsFailed($host, $e->getMessage());
@@ -73,7 +74,7 @@ class ServerProvisionAction extends Action
      */
     public function fields()
     {
-        $tags = "swap, config, upgrade, install, root, admin, sshd, ssmtp, firewall, docker, mysql, redis, olsws, php, composer, wpcli, pma, health, fail2ban, nodejs, users";
+        $tags = "swap, config, upgrade, install, root, admin, sshd, ssmtp, firewall, docker, mysql, redis, olsws, php, composer, wpcli, pma, health, fail2ban, nodejs, certbot, users";
 
         return [
             Text::make('Tags', 'tags')

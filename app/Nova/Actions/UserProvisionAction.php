@@ -55,9 +55,9 @@ class UserProvisionAction extends Action
             try {
                 Artisan::call('user:provision', [
                     '--user' => $user->name,
+                    '--nova-batch-id' => $this->batchId,
                     '--disable-tty' => true
                 ]);
-                $this->markAsFinished($user);
             } catch (Exception $e) {
                 $this->markAsFailed($user, $e->getMessage());
             }
