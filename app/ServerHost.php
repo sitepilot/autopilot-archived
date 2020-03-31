@@ -74,6 +74,7 @@ class ServerHost extends Model
             'ansible_ssh_private_key_file' => null,
             'ansible_ssh_public_key_file' => null,
             'ansible_python_interpreter' => '/usr/bin/python3',
+            'ansible_ssh_common_args' => '-o StrictHostKeyChecking=no',
             'autopilot_host' => false,
             'admin_pass' => Str::random(12),
             'mysql_root_pass' => Str::random(12),

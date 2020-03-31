@@ -73,7 +73,6 @@ class DatabaseSeeder extends Seeder
                 'ansible_ssh_port' => env('APP_TEST_PORT'),
                 'ansible_ssh_private_key_file' => '/var/www/html/vagrant/ssh/test_key',
                 'ansible_ssh_public_key_file' => '/var/www/html/vagrant/ssh/test_key.pub',
-                'ansible_ssh_common_args' => '-o StrictHostKeyChecking=no',
                 'autopilot_host' => env('APP_TEST_AUTOPILOT_HOST')
             ];
             $host->save();
