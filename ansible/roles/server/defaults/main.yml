@@ -8,6 +8,7 @@ autopilot_host: false
 admin: sitepilot
 admin_pass: "supersecret"
 admin_email: support@sitepilot.io
+health_email: health@sitepilot.io
 
 mysql_root_pass: "supersecret"
 
