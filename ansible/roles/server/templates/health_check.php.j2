@@ -77,7 +77,7 @@ function checkMail()
 
     if (((time() - $lastCheck) > 3600) || $lastState == "NOK") {
         $from = "server@sitepilot.io";
-        $to = "no-reply@sitepilot.io";
+        $to = "{{ health_email if health_email is defined else 'health@sitepilot.io' }}";
         
         $subject = "Test mail function";
         $message = "This is a test to check if php mail function sends out the email.";

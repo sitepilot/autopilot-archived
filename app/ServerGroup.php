@@ -33,6 +33,7 @@ class ServerGroup extends Model
             'name' => $this->name,
             'admin' => 'sitepilot',
             'admin_email' => 'support@sitepilot.io',
+            'health_email' => 'health@sitepilot.io',    
             'timezone' => 'Europe/Amsterdam',
             'timezone_update' => true,
             'php_post_max_size' => '64M',
