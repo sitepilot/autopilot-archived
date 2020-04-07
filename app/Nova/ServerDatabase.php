@@ -6,8 +6,10 @@ use App\Nova\ServerUser;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\HasOne;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\BelongsTo;
+use App\Nova\Actions\DatabaseDestroyAction;
+use App\Nova\Actions\DatabaseProvisionAction;
 
 class ServerDatabase extends Resource
 {
@@ -118,9 +120,16 @@ class ServerDatabase extends Resource
             Text::make('Description', 'description')
                 ->sortable(),
 
+            Select::make('State')->options(
+                \App\ServerDatabase::getStates()
+            )
+                ->exceptOnForms()
+                ->displayUsingLabels(),
+
             Code::make('Database Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
+                ->onlyOnForms()
                 ->hideWhenCreating(),
 
             Code::make('Default Configuration', 'default_vars')
@@ -128,6 +137,11 @@ class ServerDatabase extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            Code::make('Database Configuration', 'secure_vars')
+                ->readonly()
+                ->json()
+                ->onlyOnDetail(),
         ];
     }
 
@@ -172,6 +186,9 @@ class ServerDatabase extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            new DatabaseProvisionAction,
+            new DatabaseDestroyAction
+        ];
     }
 }

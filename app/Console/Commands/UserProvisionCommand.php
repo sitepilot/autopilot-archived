@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use Exception;
-use App\ServerUser;
 use Laravel\Nova\Nova;
 use App\Console\Command;
+use App\Notifications\CommandFailed;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Notification;
 
 class UserProvisionCommand extends Command
 {
@@ -49,15 +50,15 @@ class UserProvisionCommand extends Command
         $this->askUser();
 
         if ($this->host && $this->user) {
+            $user = $this->userModel;
+            $user->setStateProvisioning();
+
             $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook()];
 
-            $extraVars = "host=$this->host";
-            if ($this->user != 'all') {
-                $extraVars .= " user_filter=$this->user";
-            }
+            $extraVars = "host=$this->host provision_user=$this->user";
             $cmd = array_merge($cmd, ["--extra-vars", $extraVars]);
 
-            $tags = "users";
+            $tags = "provision-user";
             if ($this->option('tags')) {
                 $tags .= "," . $this->option('tags');
             }
@@ -71,9 +72,12 @@ class UserProvisionCommand extends Command
             $process->setTty($this->getTTY());
             $process->setTimeout(3600);
 
-            $process->run(function ($type, $buffer) {
+            $process->run(function ($type, $buffer) use ($user) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
+                    $user->setStateError();
                     self::addToProcessBuffer($buffer);
+                    Notification::route('slack', env('SLACK_HOOK'))
+                        ->notify(new CommandFailed("Failed to provision user.", self::getProcessBuffer()));
                     throw new Exception("Failed to provision the user!\n" . self::getProcessBuffer());
                 } else {
                     self::addToProcessBuffer($buffer);
@@ -81,13 +85,14 @@ class UserProvisionCommand extends Command
             });
 
             if ($this->option('nova-batch-id')) {
-                $model = ServerUser::where('name', $this->user)->first();
                 $event = Nova::actionEvent();
                 $event::where('batch_id', $this->option('nova-batch-id'))
-                    ->where('model_type', $model->getMorphClass())
-                    ->where('model_id', $model->getKey())
+                    ->where('model_type', $user->getMorphClass())
+                    ->where('model_id', $user->getKey())
                     ->update(['exception' => self::getProcessBuffer()]);
             }
+
+            $user->setStateProvisioned();
         } else {
             throw new Exception("Could not find user.");
         }

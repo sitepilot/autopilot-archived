@@ -1,0 +1,12 @@
+---
+- name: "user : ensure 'isolated' group exists"
+  group:
+    name: "isolated"
+    state: present
+
+- name: "user : get user"
+  set_fact:
+    user: "{{ users | selectattr('name', 'match', provision_user) | list | first }}"
+
+- name: "user : provision"
+  include_tasks: inc/user.yml

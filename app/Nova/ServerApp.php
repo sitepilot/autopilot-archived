@@ -6,9 +6,11 @@ use App\Nova\ServerUser;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\HasOne;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
+use App\Nova\Actions\AppDestroyAction;
+use App\Nova\Actions\AppProvisionAction;
 
 class ServerApp extends Resource
 {
@@ -113,9 +115,16 @@ class ServerApp extends Resource
             Text::make('Description', 'description')
                 ->sortable(),
 
+            Select::make('State')->options(
+                \App\ServerApp::getStates()
+            )
+                ->exceptOnForms()
+                ->displayUsingLabels(),
+
             Code::make('App Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
+                ->onlyOnForms()
                 ->hideWhenCreating(),
 
             Code::make('Default Configuration', 'default_vars')
@@ -123,6 +132,11 @@ class ServerApp extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            Code::make('App Configuration', 'secure_vars')
+                ->readonly()
+                ->json()
+                ->onlyOnDetail(),
 
             HasMany::make('Databases', 'databases', ServerDatabase::class),
         ];
@@ -169,6 +183,9 @@ class ServerApp extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            new AppProvisionAction,
+            new AppDestroyAction
+        ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\HasVars;
+use App\Traits\Encryptable;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,6 +13,16 @@ class ServerGroup extends Model
 {
     use HasVars;
     use SoftDeletes;
+    use Encryptable;
+
+    /**
+     * The attributes that should be encrypted.
+     *
+     * @var array
+     */
+    protected $encryptable = [
+        'vars',
+    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -33,7 +44,7 @@ class ServerGroup extends Model
             'name' => $this->name,
             'admin' => 'sitepilot',
             'admin_email' => 'support@sitepilot.io',
-            'health_email' => 'health@sitepilot.io',    
+            'health_email' => 'health@sitepilot.io',
             'timezone' => 'Europe/Amsterdam',
             'timezone_update' => true,
             'php_post_max_size' => '64M',

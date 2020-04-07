@@ -1,0 +1,14 @@
+---
+- name: "app : {{ user.name }} : {{ app.name }} : remove app folder"
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/opt/sitepilot/users/{{ user.name }}/{{ app.name }}"
+
+- name: "app : {{ user.name }} : {{ app.name }} : remove vhost configuration"
+  file:
+    path: "/usr/local/lsws/conf/vhosts/{{ app.name }}.conf"
+    state: absent
+  notify:
+    - reload olsws

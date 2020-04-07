@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\HasVars;
+use App\Traits\Encryptable;
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\MorphedByMany;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,16 @@ class ServerAuthKey extends Model
 {
     use HasVars;
     use SoftDeletes;
+    use Encryptable;
+
+    /**
+     * The attributes that should be encrypted.
+     *
+     * @var array
+     */
+    protected $encryptable = [
+        'vars',
+    ];
 
     /**
      * The attributes that should be cast to native types.

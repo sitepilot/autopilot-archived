@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\HasVars;
+use App\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,16 @@ class ServerFirewallRule extends Model
 {
     use HasVars;
     use SoftDeletes;
+    use Encryptable;
+
+    /**
+     * The attributes that should be encrypted.
+     *
+     * @var array
+     */
+    protected $encryptable = [
+        'vars',
+    ];
 
     /**
      * The attributes that should be cast to native types.

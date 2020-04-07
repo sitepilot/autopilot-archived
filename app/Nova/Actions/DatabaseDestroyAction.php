@@ -4,14 +4,13 @@ namespace App\Nova\Actions;
 
 use Exception;
 use Illuminate\Bus\Queueable;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Actions\Action;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
+use Laravel\Nova\Actions\DestructiveAction;
 
-class ServerProvisionAction extends Action
+class DatabaseDestroyAction extends DestructiveAction
 {
     use InteractsWithQueue, Queueable;
 
@@ -20,7 +19,7 @@ class ServerProvisionAction extends Action
      *
      * @var string
      */
-    public $name = 'Provision Server';
+    public $name = 'Destroy Database';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,14 +33,14 @@ class ServerProvisionAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Provision Server';
+    public $confirmButtonText = 'Destroy Database';
 
     /**
      * The text to be used for the action's confirmation text.
      *
      * @var string
      */
-    public $confirmText = 'Are you sure you want to provision the server?';
+    public $confirmText = 'Are you sure you want to destroy the database?';
 
     /**
      * Perform the action on the given models.
@@ -52,17 +51,15 @@ class ServerProvisionAction extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        foreach ($models as $host) {
+        foreach ($models as $database) {
             try {
-                Artisan::call('server:provision', [
-                    '--host' => $host->name,
-                    '--tags' => $fields->tags,
-                    '--skip-tags' => $fields->skip_tags,
+                Artisan::call('database:destroy', [
+                    '--database' => $database->name,
                     '--nova-batch-id' => $this->batchId,
                     '--disable-tty' => true
                 ]);
             } catch (Exception $e) {
-                $this->markAsFailed($host, $e->getMessage());
+                $this->markAsFailed($database, $e->getMessage());
             }
         }
     }
@@ -74,14 +71,6 @@ class ServerProvisionAction extends Action
      */
     public function fields()
     {
-        $tags = "swap, config, upgrade, install, root, admin, sshd, ssmtp, firewall, docker, mysql, redis, olsws, php, composer, wpcli, pma, health, fail2ban, nodejs, certbot";
-
-        return [
-            Text::make('Tags', 'tags')
-                ->help("Available tags: $tags"),
-
-            Text::make('Skip Tags', 'skip_tags')
-                ->help("Available tags: $tags")
-        ];
+        return [];
     }
 }

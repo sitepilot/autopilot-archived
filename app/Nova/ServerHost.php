@@ -6,6 +6,7 @@ use App\Nova\ServerGroup;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\MorphToMany;
@@ -104,9 +105,16 @@ class ServerHost extends Resource
             Text::make('Description', 'description')
                 ->sortable(),
 
+            Select::make('State')->options(
+                \App\ServerHost::getStates()
+            )
+                ->exceptOnForms()
+                ->displayUsingLabels(),
+
             Code::make('Host Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
+                ->onlyOnForms()
                 ->hideWhenCreating(),
 
             Code::make('Default Configuration', 'default_vars')
@@ -114,6 +122,11 @@ class ServerHost extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            Code::make('Host Configuration', 'secure_vars')
+                ->readonly()
+                ->json()
+                ->onlyOnDetail(),
 
             HasMany::make('Users', 'users', ServerUser::class),
 
