@@ -28,7 +28,8 @@ class Command extends ConsoleCommand
     public function askHost()
     {
         if ($this->option('host')) {
-            if ($this->hostModel = ServerHost::where('name', $this->option('host'))->first()) {
+            $this->hostModel = $this->option('host') == 'test' ? ServerHost::first() : ServerHost::where('name', $this->option('host'))->first();
+            if ($this->hostModel) {
                 $this->host = $this->hostModel->name;
             }
 
@@ -58,7 +59,8 @@ class Command extends ConsoleCommand
     public function askUser()
     {
         if ($this->option('user')) {
-            if ($this->userModel = ServerUser::where('name', $this->option('user'))->first()) {
+            $this->userModel = $this->option('user') == 'test' ? ServerUser::first() : ServerUser::where('name', $this->option('host'))->first();
+            if ($this->userModel) {
                 $this->user = $this->userModel->name;
                 if ($this->hostModel = $this->userModel->host) {
                     $this->host = $this->hostModel->name;
@@ -95,7 +97,8 @@ class Command extends ConsoleCommand
     public function askApp()
     {
         if ($this->option('app')) {
-            if ($this->appModel = ServerApp::where('name', $this->option('app'))->first()) {
+            $this->appModel = $this->option('app') == 'test' ? ServerApp::first() : ServerApp::where('name', $this->option('host'))->first();
+            if ($this->appModel) {
                 $this->app = $this->appModel->name;
 
                 if ($this->userModel = $this->appModel->user) {
@@ -141,7 +144,8 @@ class Command extends ConsoleCommand
     public function askDatabase()
     {
         if ($this->option('database')) {
-            if ($this->databaseModel = ServerDatabase::where('name', $this->option('database'))->first()) {
+            $this->databaseModel = $this->option('database') == 'test' ? ServerDatabase::first() : ServerDatabase::where('name', $this->option('host'))->first();
+            if ($this->databaseModel) {
                 $this->database = $this->databaseModel->name;
 
                 if ($this->userModel = $this->databaseModel->user) {

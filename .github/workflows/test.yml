@@ -39,7 +39,7 @@ jobs:
           sudo sed -i 's/APP_TEST_HOST=host.docker.internal/APP_TEST_HOST=172.17.0.1/' .env
           sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
           sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
-    
+
       - name: Keep sources.list up to date.
         run: |
           sudo gem install apt-spy2 --no-document
@@ -49,13 +49,28 @@ jobs:
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
-        run: ./autopilot server:provision --host=ams-web10 --skip-tags=upgrade --disable-tty
+        run: ./autopilot server:provision --host=test --skip-tags=upgrade --disable-tty
 
       - name: Test user:provision command.
-        run: ./autopilot user:provision --user=user1000 --disable-tty
+        run: ./autopilot user:provision --user=test --disable-tty
+
+      - name: Test app:provision command.
+        run: ./autopilot app:provision --app=test --disable-tty
+
+      - name: Test database:provision command.
+        run: ./autopilot database:provision --database=test  --disable-tty
 
       - name: Test server:test command.
-        run: ./autopilot server:test --host=ams-web10 --skip-tags=test-domains --disable-tty
+        run: ./autopilot server:test --host=test --skip-tags=test-domains --disable-tty
+
+      - name: Test database:destroy command.
+        run: ./autopilot database:destroy --database=test --disable-tty
+
+      - name: Test app:destroy command.
+        run: ./autopilot app:destroy --app=test --disable-tty
+
+      - name: Test user:destroy command.
+        run: ./autopilot user:destroy --user=test --disable-tty
 
       - name: Deploy image to Docker hub.
         run: |
