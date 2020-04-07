@@ -40,10 +40,9 @@ jobs:
           sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
           sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
 
-      - name: Keep sources.list up to date.
+      - name: Update packages non interactively.
         run: |
-          sudo gem install apt-spy2 --no-document
-          apt-spy2 fix
+          DEBIAN_FRONTEND=noninteractive sudo apt update
 
       - name: Run Autopilot installer.
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
