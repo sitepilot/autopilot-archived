@@ -44,13 +44,13 @@ jobs:
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
-        run: ./autopilot server:provision --host=all --skip-tags=upgrade --disable-tty
+        run: ./autopilot server:provision --host=ams-web10 --skip-tags=upgrade --disable-tty
 
       - name: Test user:provision command.
-        run: ./autopilot user:provision --user=all --disable-tty
+        run: ./autopilot user:provision --user=user1250 --disable-tty
 
       - name: Test server:test command.
-        run: ./autopilot server:test --host=all --skip-tags=test-domains --disable-tty
+        run: ./autopilot server:test --host=ams-web10 --skip-tags=test-domains --disable-tty
 
       - name: Deploy image to Docker hub.
         run: |

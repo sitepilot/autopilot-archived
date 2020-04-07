@@ -27,8 +27,10 @@ class Command extends ConsoleCommand
      */
     public function askHost()
     {
-        if ($this->host = $this->option('host')) {
-            $this->hostModel = ServerHost::where('name', $this->host)->first();
+        if ($this->option('host')) {
+            if ($this->hostModel = ServerHost::where('name', $this->option('host'))->first()) {
+                $this->host = $this->hostModel->name;
+            }
 
             return;
         }
@@ -55,13 +57,12 @@ class Command extends ConsoleCommand
      */
     public function askUser()
     {
-        if ($this->user = $this->option('user')) {
-            $user = ServerUser::where('name', $this->option('user'))->first();
-            $this->userModel = ServerUser::where('name', $this->user)->first();
-
-            if (isset($user->host->name)) {
-                $this->host = $user->host->name;
-                $this->hostModel = ServerHost::where('name', $this->host)->first();
+        if ($this->option('user')) {
+            if ($this->userModel = ServerUser::where('name', $this->option('user'))->first()) {
+                $this->user = $this->userModel->name;
+                if ($this->hostModel = $this->userModel->host) {
+                    $this->host = $this->hostModel->name;
+                }
             }
 
             return;
@@ -93,18 +94,17 @@ class Command extends ConsoleCommand
      */
     public function askApp()
     {
-        if ($this->app = $this->option('app')) {
-            $app = ServerApp::where('name', $this->option('app'))->first();
-            $this->appModel = ServerApp::where('name', $this->app)->first();
+        if ($this->option('app')) {
+            if ($this->appModel = ServerApp::where('name', $this->option('app'))->first()) {
+                $this->app = $this->appModel->name;
 
-            if (isset($app->user->name)) {
-                $this->user = $app->user->name;
-                $this->userModel = ServerUser::where('name', $this->user)->first();
-            }
+                if ($this->userModel = $this->appModel->user) {
+                    $this->user = $this->userModel->name;
 
-            if (isset($app->user->host->name)) {
-                $this->host = $app->user->host->name;
-                $this->hostModel = ServerHost::where('name', $this->host)->first();
+                    if ($this->hostModel = $this->userModel->host) {
+                        $this->host = $this->hostModel->name;
+                    }
+                }
             }
 
             return;
@@ -140,18 +140,17 @@ class Command extends ConsoleCommand
      */
     public function askDatabase()
     {
-        if ($this->database = $this->option('database')) {
-            $database = ServerDatabase::where('name', $this->option('database'))->first();
-            $this->databaseModel = ServerDatabase::where('name', $this->database)->first();
+        if ($this->option('database')) {
+            if ($this->databaseModel = ServerDatabase::where('name', $this->option('database'))->first()) {
+                $this->database = $this->databaseModel->name;
 
-            if (isset($database->user->name)) {
-                $this->user = $database->user->name;
-                $this->userModel = ServerUser::where('name', $this->user)->first();
-            }
+                if ($this->userModel = $this->databaseModel->user) {
+                    $this->user = $this->userModel->name;
 
-            if (isset($database->user->host->name)) {
-                $this->host = $database->user->host->name;
-                $this->hostModel = ServerHost::where('name', $this->host)->first();
+                    if ($this->hostModel = $this->userModel->host) {
+                        $this->host = $this->hostModel->name;
+                    }
+                }
             }
 
             return;
