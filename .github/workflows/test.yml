@@ -42,7 +42,7 @@ jobs:
     
       - name: Keep sources.list up to date.
         run: |
-          sudo gem install --no-ri --no-rdoc apt-spy2
+          sudo gem install apt-spy2 --no-document
           apt-spy2 fix
 
       - name: Run Autopilot installer.
