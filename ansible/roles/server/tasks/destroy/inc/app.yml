@@ -12,4 +12,3 @@
     state: absent
   notify:
     - reload olsws
-    - reload fail2ban
