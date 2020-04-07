@@ -1,5 +1,5 @@
 ---
-- name: "database : {{ user.name }} : {{ database.name }} : create database"
+- name: "database : {{ user.name }} : {{ database.name }} : drop database"
   mysql_db:
     name: "{{ database.name }}"
     state: "absent"
