@@ -6,7 +6,9 @@ use Exception;
 use App\ServerHost;
 use Laravel\Nova\Nova;
 use App\Console\Command;
+use App\Notifications\CommandFailed;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Notification;
 
 class ServerTestCommand extends Command
 {
@@ -61,6 +63,8 @@ class ServerTestCommand extends Command
             $process->run(function ($type, $buffer) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
                     self::addToProcessBuffer($buffer);
+                    Notification::route('slack', env('SLACK_HOOK'))
+                        ->notify(new CommandFailed("Failed to test server.", self::getProcessBuffer()));
                     throw new Exception("Failed to test the server!\n" . self::getProcessBuffer());
                 } else {
                     self::addToProcessBuffer($buffer);

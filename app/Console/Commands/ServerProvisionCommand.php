@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use Exception;
-use App\ServerHost;
 use Laravel\Nova\Nova;
 use App\Console\Command;
+use App\Notifications\CommandFailed;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Notification;
 
 class ServerProvisionCommand extends Command
 {
@@ -49,6 +50,9 @@ class ServerProvisionCommand extends Command
         $this->askHost();
 
         if ($this->host) {
+            $host = $this->hostModel;
+            $host->setStateProvisioning();
+
             $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook(), '--extra-vars', "host=$this->host"];
 
             if ($this->option('tags')) {
@@ -63,9 +67,12 @@ class ServerProvisionCommand extends Command
             $process->setTty($this->getTTY());
             $process->setTimeout(3600);
 
-            $process->run(function ($type, $buffer) {
+            $process->run(function ($type, $buffer) use ($host) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
+                    $host->setStateError();
                     self::addToProcessBuffer($buffer);
+                    Notification::route('slack', env('SLACK_HOOK'))
+                        ->notify(new CommandFailed("Failed to provision server.", self::getProcessBuffer()));
                     throw new Exception("Failed to provision the server!\n" . self::getProcessBuffer());
                 } else {
                     self::addToProcessBuffer($buffer);
@@ -73,13 +80,14 @@ class ServerProvisionCommand extends Command
             });
 
             if ($this->option('nova-batch-id')) {
-                $model = ServerHost::where('name', $this->host)->first();
                 $event = Nova::actionEvent();
                 $event::where('batch_id', $this->option('nova-batch-id'))
-                    ->where('model_type', $model->getMorphClass())
-                    ->where('model_id', $model->getKey())
+                    ->where('model_type', $host->getMorphClass())
+                    ->where('model_id', $host->getKey())
                     ->update(['exception' => self::getProcessBuffer()]);
             }
+
+            $host->setStateProvisioned();
         } else {
             throw new Exception("Could not find server.");
         }
