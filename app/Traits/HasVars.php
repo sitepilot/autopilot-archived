@@ -34,10 +34,30 @@ trait HasVars
     public function getVar($key)
     {
         $vars = $this->vars;
-        if (isset($vars[$key])) {
+        if (is_array($vars) && isset($vars[$key])) {
             return $vars[$key];
+        } elseif (is_object($vars) && isset($vars->$key)) {
+            return $vars->$key;
         }
         return null;
+    }
+
+    /**
+     * Hide passwords.
+     *
+     * @return void
+     */
+    public function getSecureVarsAttribute()
+    {
+        $vars = $this->vars;
+
+        foreach ($vars as $key => $item) {
+            if (strpos($key, 'password') !== false || strpos($key, '_pass') !== false || strpos($key, '_secret') !== false) {
+                $vars[$key] = '******';
+            }
+        }
+
+        return $vars;
     }
 
     /**

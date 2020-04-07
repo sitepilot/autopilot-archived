@@ -6,9 +6,11 @@ use App\Nova\ServerHost;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\MorphToMany;
+use App\Nova\Actions\UserDestroyAction;
 use App\Nova\Actions\UserProvisionAction;
 
 class ServerUser extends Resource
@@ -102,9 +104,16 @@ class ServerUser extends Resource
             Text::make('Description', 'description')
                 ->sortable(),
 
+            Select::make('State')->options(
+                \App\ServerUser::getStates()
+            )
+                ->exceptOnForms()
+                ->displayUsingLabels(),
+
             Code::make('User Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
+                ->onlyOnForms()
                 ->hideWhenCreating(),
 
             Code::make('Default Configuration', 'default_vars')
@@ -112,6 +121,11 @@ class ServerUser extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            Code::make('User Configuration', 'secure_vars')
+                ->readonly()
+                ->json()
+                ->onlyOnDetail(),
 
             HasMany::make('Apps', 'apps', ServerApp::class),
 
@@ -164,7 +178,8 @@ class ServerUser extends Resource
     public function actions(Request $request)
     {
         return [
-            new UserProvisionAction
+            new UserProvisionAction,
+            new UserDestroyAction
         ];
     }
 }

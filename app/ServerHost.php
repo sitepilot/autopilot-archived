@@ -4,7 +4,9 @@ namespace App;
 
 use Exception;
 use App\Traits\HasVars;
+use App\Traits\HasState;
 use phpseclib\Crypt\RSA;
+use App\Traits\Encryptable;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Actionable;
 use Illuminate\Database\Eloquent\Model;
@@ -16,8 +18,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class ServerHost extends Model
 {
     use HasVars;
+    use HasState;
     use SoftDeletes;
     use Actionable;
+    use Encryptable;
+
+    /**
+     * The attributes that should be encrypted.
+     *
+     * @var array
+     */
+    protected $encryptable = [
+        'vars',
+    ];
 
     /**
      * The attributes that should be cast to native types.

@@ -92,6 +92,7 @@ class ServerAuthKey extends Resource
             Code::make('Key Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
+                ->onlyOnForms()
                 ->hideWhenCreating(),
 
             Code::make('Default Configuration', 'default_vars')
@@ -99,6 +100,11 @@ class ServerAuthKey extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            Code::make('Key Configuration', 'secure_vars')
+                ->readonly()
+                ->json()
+                ->onlyOnDetail(),
 
             MorphMany::make('Hosts', 'hosts', ServerHost::class),
             MorphMany::make('Users', 'users', ServerUser::class)

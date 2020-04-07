@@ -92,6 +92,7 @@ class ServerGroup extends Resource
             Code::make('Group Configuration', 'vars')
                 ->rules(['required', 'json'])
                 ->json()
+                ->onlyOnForms()
                 ->hideWhenCreating(),
 
             Code::make('Default Configuration', 'default_vars')
@@ -99,6 +100,11 @@ class ServerGroup extends Resource
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
+
+            Code::make('Group Configuration', 'secure_vars')
+                ->readonly()
+                ->json()
+                ->onlyOnDetail(),
 
             HasMany::make('Hosts', 'hosts', ServerHost::class),
         ];
