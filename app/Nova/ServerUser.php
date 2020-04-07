@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
+use App\Nova\Actions\UserTestAction;
 use Laravel\Nova\Fields\MorphToMany;
 use App\Nova\Actions\UserDestroyAction;
 use App\Nova\Actions\UserProvisionAction;
@@ -179,6 +180,7 @@ class ServerUser extends Resource
     {
         return [
             new UserProvisionAction,
+            new UserTestAction,
             new UserDestroyAction
         ];
     }

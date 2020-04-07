@@ -81,6 +81,9 @@
 - include: provision/database.yml
   tags: ["never", "provision-database"]
 
+- include: provision/user-test.yml
+  tags: ["never", "test-user"]
+
 - include: destroy/user.yml
   tags: ["never", "destroy-user"]
 

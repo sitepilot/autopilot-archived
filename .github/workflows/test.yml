@@ -61,7 +61,10 @@ jobs:
         run: ./autopilot database:provision --database=test  --disable-tty
 
       - name: Test server:test command.
-        run: ./autopilot server:test --host=test --skip-tags=test-domains --disable-tty
+        run: ./autopilot server:test --host=test --disable-tty
+
+      - name: Test user:test command.
+        run: ./autopilot user:test --user=test --skip-tags=test-domains --disable-tty
 
       - name: Test database:destroy command.
         run: ./autopilot database:destroy --database=test --disable-tty

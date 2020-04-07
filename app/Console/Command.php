@@ -59,7 +59,7 @@ class Command extends ConsoleCommand
     public function askUser()
     {
         if ($this->option('user')) {
-            $this->userModel = $this->option('user') == 'test' ? ServerUser::first() : ServerUser::where('name', $this->option('host'))->first();
+            $this->userModel = $this->option('user') == 'test' ? ServerUser::first() : ServerUser::where('name', $this->option('user'))->first();
             if ($this->userModel) {
                 $this->user = $this->userModel->name;
                 if ($this->hostModel = $this->userModel->host) {
@@ -97,7 +97,7 @@ class Command extends ConsoleCommand
     public function askApp()
     {
         if ($this->option('app')) {
-            $this->appModel = $this->option('app') == 'test' ? ServerApp::first() : ServerApp::where('name', $this->option('host'))->first();
+            $this->appModel = $this->option('app') == 'test' ? ServerApp::first() : ServerApp::where('name', $this->option('app'))->first();
             if ($this->appModel) {
                 $this->app = $this->appModel->name;
 
@@ -144,7 +144,7 @@ class Command extends ConsoleCommand
     public function askDatabase()
     {
         if ($this->option('database')) {
-            $this->databaseModel = $this->option('database') == 'test' ? ServerDatabase::first() : ServerDatabase::where('name', $this->option('host'))->first();
+            $this->databaseModel = $this->option('database') == 'test' ? ServerDatabase::first() : ServerDatabase::where('name', $this->option('database'))->first();
             if ($this->databaseModel) {
                 $this->database = $this->databaseModel->name;
 
