@@ -1,0 +1,6 @@
+---
+- name: "database : {{ user.name }} : {{ database.name }} : create database"
+  mysql_db:
+    name: "{{ database.name }}"
+    state: "absent"
+    config_file: "/root/.my.cnf"

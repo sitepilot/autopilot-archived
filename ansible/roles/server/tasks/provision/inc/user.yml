@@ -60,7 +60,7 @@
   mysql_user:
     name: "{{ user.name }}"
     password: "{{ user.mysql_password }}"
-    priv: "{{ user.name }}_%.*:ALL"
+    priv: "{{ user.name }}_%.*:SELECT,INSERT,UPDATE,DELETE,INDEX,ALTER,CREATE,CREATE TEMPORARY TABLES,EXECUTE,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,EVENT,TRIGGER,DROP"
     state: present
     host: "%"
     config_file: "/root/.my.cnf"
@@ -78,8 +78,10 @@
   when:
     - user.databases is defined
 
-- name: "user : {{ user.name }}: provision apps"
-  include: app.yml
+- name: "user : {{ user.name }} : provision apps"
+  include_tasks: app.yml
   loop: "{{ user.apps if app_filter is not defined else user.apps | selectattr('name', 'match', app_filter) | list }}"
   loop_control:
     loop_var: app
+  when:
+    - user.apps is defined

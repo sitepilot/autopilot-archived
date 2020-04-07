@@ -65,11 +65,30 @@
 - include: certbot.yml
   tags: "certbot"
 
-- include: users/users.yml
-  tags: "users"
-
 #- include: cleanup.yml
 #  tags: "users"
+
+# ===================================
+# Tasks
+# ===================================
+
+- include: provision/user.yml
+  tags: ["never", "provision-user"]
+
+- include: provision/app.yml
+  tags: ["never", "provision-app"]
+
+- include: provision/database.yml
+  tags: ["never", "provision-database"]
+
+- include: destroy/user.yml
+  tags: ["never", "destroy-user"]
+
+- include: destroy/app.yml
+  tags: ["never", "destroy-app"]
+
+- include: destroy/database.yml
+  tags: ["never", "destroy-database"]
 
 - include: test.yml
   tags: ["never", "test"]

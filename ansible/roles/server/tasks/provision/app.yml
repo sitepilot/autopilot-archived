@@ -1,0 +1,11 @@
+---
+- name: "app : get app user"
+  set_fact:
+    user: "{{ users | selectattr('name', 'match', provision_app_user) | list | first }}"
+
+- name: "app : get app"
+  set_fact:
+    app: "{{ user.apps | selectattr('name', 'match', provision_app) | list | first }}"
+
+- name: "app : provision"
+  include_tasks: inc/app.yml
