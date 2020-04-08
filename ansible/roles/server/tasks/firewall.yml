@@ -24,6 +24,8 @@
     comment: "{{ item.name }}"
     from_ip: "{{ item.from_ip }}"
   loop: "{{ firewall }}"
+  when:
+    - ansible_ssh_host != 'autopilot-test'
 
 - name: "firewall : enable firewall"
   ufw:
