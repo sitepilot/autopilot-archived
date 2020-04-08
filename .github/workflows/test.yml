@@ -23,7 +23,7 @@ jobs:
 
       - name: Enable IPV6 for docker.
         run: |
-          su -c 'echo \'{ "ipv6": true }\' >> /etc/docker/daemon.json'
+          su -c "echo '{ \"ipv6\": true }' >> /etc/docker/daemon.json"
           sudo systemctl reload docker
 
       - name: Build container.
