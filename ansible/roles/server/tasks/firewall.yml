@@ -30,3 +30,5 @@
 - name: "firewall : enable firewall"
   ufw:
     state: enabled
+  when:
+    - ansible_ssh_host != 'autopilot-test'
