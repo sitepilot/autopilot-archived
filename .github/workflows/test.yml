@@ -23,9 +23,8 @@ jobs:
 
       - name: Enable IPV6 for docker.
         run: |
-          sudo su
-          echo '{ "ipv6": true }' >> /etc/docker/daemon.json
-          systemctl reload docker
+          su -c 'echo \'{ "ipv6": true }\' >> /etc/docker/daemon.json'
+          sudo systemctl reload docker
 
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot-base:${GITHUB_SHA}
