@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Define packages
 ARG DEPS="\
+    kmod \
     python3-apt \
     systemd \
     systemd-sysv \
