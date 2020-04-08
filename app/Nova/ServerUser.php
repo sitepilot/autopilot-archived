@@ -179,9 +179,9 @@ class ServerUser extends Resource
     public function actions(Request $request)
     {
         return [
-            new UserProvisionAction,
             new UserTestAction,
-            new UserDestroyAction
+            new UserProvisionAction,
+            (new UserDestroyAction)->onlyOnDetail()
         ];
     }
 }

@@ -188,7 +188,7 @@ class ServerDatabase extends Resource
     {
         return [
             new DatabaseProvisionAction,
-            new DatabaseDestroyAction
+            (new DatabaseDestroyAction)->onlyOnDetail()
         ];
     }
 }
