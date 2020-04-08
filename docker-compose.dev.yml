@@ -58,6 +58,8 @@ services:
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "autopilot_data:/opt/sitepilot"
+    add_cap:
+      - NET_ADMIN
 
 volumes:
   mysql_data:
