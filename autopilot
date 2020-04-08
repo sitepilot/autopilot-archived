@@ -96,7 +96,7 @@ case "$1" in
 *)
     if [ "$(docker ps | grep autopilot-test)" ]; then
         echo "Starting sshd service in autopilot-test container..."
-        docker exec -it autopilot-test service sshd start
+        docker exec $IT autopilot-test service sshd start
     fi
     docker exec $IT -w /var/www/html autopilot php artisan $@
     ;;
