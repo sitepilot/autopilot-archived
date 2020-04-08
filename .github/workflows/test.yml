@@ -20,9 +20,10 @@ jobs:
 
       - name: Run Ansible lint on ansible folder.
         run: sudo ansible-lint -v --force-color ansible/
-      
+
       - name: Enable IPV6 for docker.
         run: |
+          sudo su
           echo '{ "ipv6": true }' >> /etc/docker/daemon.json
           systemctl reload docker
 
