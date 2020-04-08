@@ -45,9 +45,7 @@ case "$1" in
     echo "DONE!"
     ;;
 'install'|'install-test'|'install-dev') echo "Installing Autopilot"
-    if [ "$1" == 'install-test' ]; then
-        cp $BASE/docker-compose.prod.yml $BASE/docker-compose.yml
-    elif [ "$1" == 'install-dev' ]; then
+    if [ "$1" == 'install-dev' ]; then
         cp $BASE/docker-compose.dev.yml $BASE/docker-compose.yml
     else
         curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/master/docker-compose.prod.yml
@@ -69,9 +67,7 @@ case "$1" in
     echo "DONE!"
     ;;
 'update'|'update-test'|'update-dev') echo "Updating Autopilot"
-    if [ "$1" == 'update-test' ]; then
-        cp $BASE/docker-compose.prod.yml $BASE/docker-compose.yml
-    elif [ "$1" == 'update-dev' ]; then
+    if [ "$1" == 'update-dev' ]; then
         cp $BASE/docker-compose.dev.yml $BASE/docker-compose.yml
     else
         curl -o $BASE/docker-compose.yml https://raw.githubusercontent.com/sitepilot/autopilot/master/docker-compose.prod.yml
@@ -98,6 +94,10 @@ case "$1" in
     docker exec $IT -w /var/www/html autopilot "${@:2}"
     ;;
 *)
+    if [ "$(docker ps | grep autopilot-test)" ]; then
+        echo "Starting sshd service in autopilot-test container..."
+        docker exec -it autopilot-test service sshd start
+    fi
     docker exec $IT -w /var/www/html autopilot php artisan $@
     ;;
 esac

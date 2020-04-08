@@ -3,6 +3,7 @@
   hostname:
     name: "{{ hostname }}"
   when:
+    - ansible_ssh_host != 'autopilot-test'
     - hostname_update is defined
     - hostname_update|bool
 
@@ -10,6 +11,7 @@
   timezone:
     name: "{{ timezone }}"
   when:
+    - ansible_ssh_host != 'autopilot-test'
     - timezone_update is defined
     - timezone_update|bool
 
@@ -18,3 +20,11 @@
     path: /etc/adduser.conf
     regexp: "^DIR_MODE="
     line: "DIR_MODE=0750"
+
+- name: "config : update hosts file"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*docker-host$'
+    line: "127.0.0.1 docker-host"
+    state: present
+  when: ansible_ssh_host != 'autopilot-test'

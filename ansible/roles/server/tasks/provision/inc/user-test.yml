@@ -20,13 +20,13 @@
 
 # MySQL Tests
 - name: "user test : {{ user.name }} : connect to MySQL as user"
-  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'show databases;'"
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h docker-host -e 'show databases;'"
   changed_when: false
   when:
     - user.mysql_password is defined
 
 - name: "user test : {{ user.name }} : databases exist"
-  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ item.name }};'"
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h docker-host -e 'use {{ item.name }};'"
   changed_when: false
   loop: "{{ user.databases }}"
   when:
@@ -35,7 +35,7 @@
     - item.state is undefined or item.state == 'present'
 
 - name: "user test : {{ user.name }} : databases don't exist"
-  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h 127.0.0.1 -e 'use {{ user.name }}_{{ item.name }};'"
+  command: "mysql -u {{ user.name }} -p'{{ user.mysql_password }}' -h docker-host -e 'use {{ user.name }}_{{ item.name }};'"
   register: database_absent_check
   changed_when: false
   failed_when: not database_absent_check.failed

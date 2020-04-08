@@ -25,12 +25,40 @@ services:
     environment:
       WEBSERVER_USER_ID: ${APP_USER_ID}
       WEBSERVER_USER_GID: ${APP_USER_GID}
-      SET_VHOST_FILE_PERMISSIONS: "no"
+      SET_VHOST_FILE_PERMISSIONS: "yes"
     volumes:
       - type: bind
         source: "./"
         target: "/var/www/html"
         consistency: cached
+  
+  dind:
+    image: docker:dind
+    container_name: autopilot-dind
+    restart: always
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: ''
+    volumes:
+      - "autopilot_data:/opt/sitepilot"
+
+  test:
+    build: ./docker
+    container_name: autopilot-test
+    restart: always
+    privileged: true
+    ports:
+      - "10080:80"
+      - "10443:443"
+      - "12083:2083"
+    links:
+      - "dind:docker-host"
+    environment:
+      DOCKER_HOST: 'tcp://docker:2375'
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "autopilot_data:/opt/sitepilot"
 
 volumes:
   mysql_data:
+  autopilot_data:

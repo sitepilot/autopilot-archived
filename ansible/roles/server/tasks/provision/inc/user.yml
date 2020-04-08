@@ -64,6 +64,7 @@
     state: present
     host: "%"
     config_file: "/root/.my.cnf"
+    login_host: "docker-host"
   when:
     - user.mysql_password is defined
     - user.mysql_password | length > 0
@@ -74,6 +75,7 @@
     name: "{{ item.name }}"
     state: "{{ item.state | default('present', true) }}"
     config_file: "/root/.my.cnf"
+    login_host: "docker-host"
   loop: "{{ user.databases }}"
   when:
     - user.databases is defined

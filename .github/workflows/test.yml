@@ -21,14 +21,6 @@ jobs:
       - name: Run Ansible lint on ansible folder.
         run: sudo ansible-lint -v --force-color ansible/
 
-      - name: Stop MySQL server.
-        run: sudo service mysql stop && sudo rm -rf /root/.my.cnf
-
-      - name: Copy authorized keys file.
-        run: |
-          sudo cp ./vagrant/ssh/authorized_keys /root/.ssh/authorized_keys
-          sudo chmod 600 /root/.ssh/authorized_keys
-
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
@@ -40,12 +32,8 @@ jobs:
           sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
           sudo sed -i 's/APP_TEST_AUTOPILOT_HOST=false/APP_TEST_AUTOPILOT_HOST=true/' .env
 
-      - name: Update packages non interactively.
-        run: |
-          DEBIAN_FRONTEND=noninteractive sudo apt update
-
       - name: Run Autopilot installer.
-        run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+        run: ./autopilot install-dev ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
         run: ./autopilot server:provision --host=test --skip-tags=upgrade --disable-tty
