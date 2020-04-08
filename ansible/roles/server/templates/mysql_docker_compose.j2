@@ -11,7 +11,7 @@ services:
       MYSQL_USER: "{{ admin }}"
       MYSQL_PASSWORD: "{{ admin_pass }}"
       MYSQL_ROOT_PASSWORD: "{{ mysql_root_pass }}"
-    user: '{{ cmd_admin_uid.stdout }}:{{ cmd_admin_gid.stdout }}'
+    # user: '{{ cmd_admin_uid.stdout }}:{{ cmd_admin_gid.stdout }}'
     ports:
       - '3306:3306'
     expose:
