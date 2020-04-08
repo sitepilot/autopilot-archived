@@ -82,8 +82,3 @@
   become: true
   become_user: "{{ users[0].name }}"
   changed_when: false
-# User Tests
-#- include: provision/test.yml
-#  loop: "{{ users | list }}"
-#  loop_control:
-#    loop_var: user
