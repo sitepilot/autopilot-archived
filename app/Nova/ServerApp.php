@@ -185,7 +185,7 @@ class ServerApp extends Resource
     {
         return [
             new AppProvisionAction,
-            new AppDestroyAction
+            (new AppDestroyAction)->onlyOnDetail()
         ];
     }
 }

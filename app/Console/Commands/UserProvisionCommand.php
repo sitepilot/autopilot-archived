@@ -92,6 +92,16 @@ class UserProvisionCommand extends Command
                     ->update(['exception' => self::getProcessBuffer()]);
             }
 
+            // Set app state to provisioned
+            foreach ($user->apps as $app) {
+                $app->setStateProvisioned();
+            }
+
+            // Set database state to provisioned
+            foreach ($user->databases as $database) {
+                $database->setStateProvisioned();
+            }
+
             $user->setStateProvisioned();
         } else {
             throw new Exception("Could not find user.");
