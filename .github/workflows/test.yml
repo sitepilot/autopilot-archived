@@ -21,11 +21,6 @@ jobs:
       - name: Run Ansible lint on ansible folder.
         run: sudo ansible-lint -v --force-color ansible/
 
-      - name: Enable IPV6 for docker.
-        run: |
-          sudo cp ./docker/daemon.json /etc/docker/daemon.json
-          sudo systemctl reload docker
-
       - name: Build container.
         run: docker build . --file Dockerfile --tag sitepilot/autopilot-base:${GITHUB_SHA}
 
