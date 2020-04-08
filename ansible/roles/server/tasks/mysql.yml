@@ -88,7 +88,6 @@
   retries: 5
   delay: 10
   until: result is not failed
-  no_log: true
 
 - name: "mysql: create backup dir"
   file:
