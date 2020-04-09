@@ -81,6 +81,7 @@ jobs:
       - name: "Failure: mysql-1 dind container logs."
         if: failure()
         run: |
+          docker exec autopilot-dind docker exec -w /etc/mysql mysql-1 ls -l
           docker exec autopilot-dind docker logs mysql-1
 
       - name: "Failure: redis-1 dind container logs."
