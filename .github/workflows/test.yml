@@ -68,8 +68,22 @@ jobs:
           docker tag sitepilot/autopilot-base:${GITHUB_SHA} sitepilot/autopilot-base:$DOCKER_TAG
           docker push sitepilot/autopilot-base:$DOCKER_TAG
 
-      - name: The job has failed
+      - name: "Failure: autopilot container logs."
         if: failure()
         run: |
-          docker ps
+          docker logs autopilot_test
+
+      - name: "Failure: autopilot-mysql container logs."
+        if: failure()
+        run: |
           docker logs autopilot-mysql
+
+      - name: "Failure: mysql-1 dind container logs."
+        if: failure()
+        run: |
+          docker exec autopilot-dind docker logs mysql-1
+
+      - name: "Failure: redis-1 dind container logs."
+        if: failure()
+        run: |
+          docker exec autopilot-dind docker logs redis-1
