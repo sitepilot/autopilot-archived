@@ -31,17 +31,6 @@ services:
         source: "./"
         target: "/var/www/html"
         consistency: cached
-  
-  dind:
-    image: docker:latest
-    container_name: autopilot-dind
-    restart: always
-    privileged: true
-    environment:
-      DOCKER_TLS_CERTDIR: ''
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "autopilot_data:/opt/sitepilot"
 
   test:
     build: ./docker
@@ -52,14 +41,8 @@ services:
       - "10080:80"
       - "10443:443"
       - "12083:2083"
-    links:
-      - "dind:docker-host"
-    environment:
-      DOCKER_HOST: 'tcp://docker-host:2375'
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-      - "autopilot_data:/opt/sitepilot"
 
 volumes:
   mysql_data:
-  autopilot_data:
