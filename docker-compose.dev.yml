@@ -39,8 +39,9 @@ services:
     privileged: true
     environment:
       DOCKER_TLS_CERTDIR: ""
-    volumes:
-      - "/my/own/var-lib-docker:/var/lib/docker"
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
 
   test:
     build: ./docker
