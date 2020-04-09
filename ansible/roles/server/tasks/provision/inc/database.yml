@@ -4,4 +4,4 @@
     name: "{{ database.name }}"
     state: "present"
     config_file: "/root/.my.cnf"
-    login_host: "docker-host"
+

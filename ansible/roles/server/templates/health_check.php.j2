@@ -19,7 +19,7 @@ try {
  */
 function checkMySQL()
 {
-    $servername = "docker-host";
+    $servername = "127.0.0.1";
     $username = "{{ admin }}";
     $password = "{{ admin_pass }}";
 
@@ -38,7 +38,7 @@ function checkMySQL()
  */
 function checkRedis()
 {
-    $client = new TinyRedisClient('docker-host:6379');
+    $client = new TinyRedisClient('127.0.0.1:6379');
     $client->set('sitepilot_redis_check', 'OK');
     $value = $client->get('sitepilot_redis_check');
 
@@ -71,7 +71,7 @@ function checkLoad()
  */
 function checkMail()
 {
-    $client = new TinyRedisClient('docker-host:6379');
+    $client = new TinyRedisClient('127.0.0.1:6379');
     $lastState = $client->get('sitepilot_mail_check_state');
     $lastCheck = $client->get('sitepilot_mail_check_timestamp');
 

@@ -83,7 +83,6 @@
     state: present
     host: "%"
     config_file: "/root/.my.cnf"
-    login_host: "docker-host"
   register: result
   retries: 5
   delay: 10

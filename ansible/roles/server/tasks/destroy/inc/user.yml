@@ -39,7 +39,6 @@
     state: absent
     config_file: "/root/.my.cnf"
     host: "%"
-    login_host: "docker-host"
   no_log: true
 
 - name: "user : {{ user.name }} : remove user databases"
@@ -47,7 +46,6 @@
     name: "{{ item.name }}"
     state: "absent"
     config_file: "/root/.my.cnf"
-    login_host: "docker-host"
   loop: "{{ user.databases }}"
   when:
     - user.databases is defined
