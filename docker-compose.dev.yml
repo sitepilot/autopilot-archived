@@ -56,8 +56,8 @@ services:
       - "dind:docker-host"
     environment:
       DOCKER_HOST: "tcp://docker:2375"
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    #volumes:
+      #- "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
 volumes:
   mysql_data:
