@@ -33,13 +33,14 @@ services:
         consistency: cached
   
   dind:
-    image: docker:dind
+    image: docker:latest
     container_name: autopilot-dind
     restart: always
     privileged: true
     environment:
       DOCKER_TLS_CERTDIR: ''
     volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
       - "autopilot_data:/opt/sitepilot"
 
   test:
