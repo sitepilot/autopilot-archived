@@ -77,7 +77,6 @@ Users are isolated and allowed to use SFTP with password authentication (chroot 
 * Clone this repository.
 * Copy environment file and modify it to your needs: `cp .env.example .env`.
 * Start the containers, install packages and migrate the database: `./autopilot install-dev`. The Autopilot source files are mounted to the the container. *NOTE: This will prompt for your Laravel Nova username and password.*
-* Optional for testing Ansible roles and playbooks: install [Vagrant](https://www.vagrantup.com/) and run `vagrant up` to start a clean Ubuntu 18.04 virtual machine (ip: `192.168.25.100`, ssh port: `<localhost>:7685`). The Autopilot Docker container has access to this VM using a test private key file located at `/var/www/html/vagrant/ssh/test_key`.
 * Navigate to `https://<SERVER IP>:<APP_HTTPS_PORT>` and login (default user: `admin@sitepilot.io`, default pass: `supersecret`).
 
 ## License

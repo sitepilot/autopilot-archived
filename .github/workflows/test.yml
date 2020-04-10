@@ -22,7 +22,7 @@ jobs:
         run: sudo ansible-lint -v --force-color ansible/
 
       - name: Build container.
-        run: docker build . --file Dockerfile --tag sitepilot/autopilot-base:${GITHUB_SHA}
+        run: docker build . --file Dockerfile --tag sitepilot/autopilot:${GITHUB_SHA}
 
       - name: Create environment file.
         run: |
@@ -32,7 +32,7 @@ jobs:
           sudo sed -i 's/APP_TEST_PORT=7685/APP_TEST_PORT=22/' .env
 
       - name: Run Autopilot installer.
-        run: ./autopilot install-dev ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+        run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
         run: ./autopilot server:provision --host=test --skip-tags=upgrade --disable-tty
@@ -65,8 +65,8 @@ jobs:
         run: |
           if [[ ${GITHUB_REF##*/} = "master" ]]; then export DOCKER_TAG=latest; else export DOCKER_TAG=${GITHUB_REF##*/}; fi
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker tag sitepilot/autopilot-base:${GITHUB_SHA} sitepilot/autopilot-base:$DOCKER_TAG
-          docker push sitepilot/autopilot-base:$DOCKER_TAG
+          docker tag sitepilot/autopilot:${GITHUB_SHA} sitepilot/autopilot:$DOCKER_TAG
+          docker push sitepilot/autopilot:$DOCKER_TAG
 
       - name: "Failure: autopilot container logs."
         if: failure()
