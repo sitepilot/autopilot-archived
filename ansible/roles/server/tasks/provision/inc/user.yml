@@ -78,6 +78,24 @@
   when:
     - user.databases is defined
 
+- name: "user : {{ user.name }} : set ssmtp alias"
+  lineinfile:
+    path: /etc/ssmtp/revaliases
+    regexp: "^{{ user.name }}:"
+    line: "{{ user.name }}:{{ user.email }}"
+    state: present
+  when:
+    - user.email is defined
+    - user.email | length > 0
+
+- name: "user : {{ user.name }} : remove ssmtp alias"
+  lineinfile:
+    path: /etc/ssmtp/revaliases
+    regexp: "^{{ user.name }}:"
+    state: absent
+  when:
+    - (user.email is not defined) or (user.email | length < 1)
+
 - name: "user : {{ user.name }} : provision apps"
   include_tasks: app.yml
   loop: "{{ user.apps if app_filter is not defined else user.apps | selectattr('name', 'match', app_filter) | list }}"

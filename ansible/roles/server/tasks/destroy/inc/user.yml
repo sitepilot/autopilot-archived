@@ -49,3 +49,9 @@
   loop: "{{ user.databases }}"
   when:
     - user.databases is defined
+
+- name: "user : {{ user.name }} : remove ssmtp alias"
+  lineinfile:
+    path: /etc/ssmtp/revaliases
+    regexp: "^{{ user.name }}:"
+    state: absent
