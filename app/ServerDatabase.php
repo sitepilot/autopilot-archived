@@ -10,13 +10,11 @@ use App\Traits\Encryptable;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Actionable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServerDatabase extends Model
 {
     use HasVars;
     use HasState;
-    use SoftDeletes;
     use Actionable;
     use Encryptable;
 
