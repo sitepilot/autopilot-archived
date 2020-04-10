@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\AppCertProvisionAction;
 use App\Nova\ServerUser;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
@@ -185,6 +186,7 @@ class ServerApp extends Resource
     {
         return [
             new AppProvisionAction,
+            new AppCertProvisionAction,
             (new AppDestroyAction)->onlyOnDetail()
         ];
     }
