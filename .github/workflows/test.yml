@@ -49,6 +49,9 @@ jobs:
       - name: Test server:test command.
         run: ./autopilot server:test --host=test --disable-tty
 
+      - name: Test server:cert:renew command.
+        run: ./autopilot server:cert:renew --host=test --disable-tty
+
       - name: Test user:test command.
         run: ./autopilot user:test --user=test --skip-tags=test-domains --disable-tty
 

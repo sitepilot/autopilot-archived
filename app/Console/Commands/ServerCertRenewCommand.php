@@ -6,6 +6,7 @@ use Exception;
 use Laravel\Nova\Nova;
 use App\Console\Command;
 use App\Notifications\CommandFailed;
+use App\Notifications\CommandSuccess;
 use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\Notification;
 
@@ -88,6 +89,11 @@ class ServerCertRenewCommand extends Command
                     ->where('model_type', $host->getMorphClass())
                     ->where('model_id', $host->getKey())
                     ->update(['exception' => self::getProcessBuffer()]);
+            }
+
+            if ($this->option('disable-tty')) {
+                Notification::route('slack', env('SLACK_HOOK'))
+                    ->notify(new CommandSuccess("Successfully renewed certificates.", self::getProcessBuffer()));
             }
         } else {
             throw new Exception("Could not find host.");

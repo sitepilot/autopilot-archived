@@ -86,4 +86,14 @@ trait HasState
         $this->state = 5;
         $this->save();
     }
+
+    /**
+     * Returns the provisioned state index.
+     *
+     * @return int
+     */
+    public static function getProvisionedIndex()
+    {
+        return 2;
+    }
 }

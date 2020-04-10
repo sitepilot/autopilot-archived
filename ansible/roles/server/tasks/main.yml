@@ -32,11 +32,11 @@
 - include: docker.yml
   tags: "docker"
 
-- include: redis.yml
-  tags: "redis"
-
 - include: mysql.yml
   tags: "mysql"
+
+- include: redis.yml
+  tags: "redis"
 
 - include: olsws.yml
   tags: "olsws"
@@ -64,6 +64,9 @@
 
 - include: certbot.yml
   tags: "certbot"
+
+- include: cleanup.yml
+  tags: "cleanup"
 
 # ===================================
 # Tasks
