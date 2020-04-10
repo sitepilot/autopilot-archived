@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Actions\Actionable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
@@ -18,7 +17,6 @@ class ServerUser extends Model
 {
     use HasVars;
     use HasState;
-    use SoftDeletes;
     use Actionable;
     use Encryptable;
 

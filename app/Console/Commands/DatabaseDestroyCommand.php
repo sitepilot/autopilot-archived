@@ -92,7 +92,7 @@ class DatabaseDestroyCommand extends Command
                     ->update(['exception' => self::getProcessBuffer()]);
             }
 
-            $database->setStateDestroyed();
+            $database->delete();
         } else {
             throw new Exception("Could not find database.");
         }

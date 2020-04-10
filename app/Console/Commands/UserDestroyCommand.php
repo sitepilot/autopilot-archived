@@ -92,7 +92,17 @@ class UserDestroyCommand extends Command
                     ->update(['exception' => self::getProcessBuffer()]);
             }
 
-            $user->setStateDestroyed();
+            // Set app state to destroyed
+            foreach ($user->apps as $app) {
+                $app->delete();
+            }
+
+            // Set database state to destroyed
+            foreach ($user->databases as $database) {
+                $database->delete();
+            }
+
+            $user->delete();
         } else {
             throw new Exception("Could not find user.");
         }

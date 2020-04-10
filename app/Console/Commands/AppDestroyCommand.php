@@ -94,7 +94,7 @@ class AppDestroyCommand extends Command
                     ->update(['exception' => self::getProcessBuffer()]);
             }
 
-            $app->setStateDestroyed();
+            $app->delete();
         } else {
             throw new Exception("Could not find app.");
         }

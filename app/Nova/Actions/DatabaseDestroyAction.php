@@ -2,17 +2,18 @@
 
 namespace App\Nova\Actions;
 
+use App\Traits\DestructiveAction;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Laravel\Nova\Actions\Action;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
-use Laravel\Nova\Actions\DestructiveAction;
 
-class DatabaseDestroyAction extends DestructiveAction
+class DatabaseDestroyAction extends Action
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue, Queueable, DestructiveAction;
 
     /**
      * The displayable name of the action.
