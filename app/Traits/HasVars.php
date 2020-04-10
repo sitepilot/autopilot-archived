@@ -23,6 +23,8 @@ trait HasVars
         if ($save) {
             $this->save();
         }
+
+        return $this;
     }
 
     /**
@@ -39,6 +41,7 @@ trait HasVars
         } elseif (is_object($vars) && isset($vars->$key)) {
             return $vars->$key;
         }
+        
         return null;
     }
 

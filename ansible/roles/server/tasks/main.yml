@@ -81,6 +81,12 @@
 - include: provision/database.yml
   tags: ["never", "provision-database"]
 
+- include: provision/cert.yml
+  tags: ["never", "provision-cert"]
+
+- include: provision/cert-renew.yml
+  tags: ["never", "provision-cert-renew"]
+
 - include: provision/user-test.yml
   tags: ["never", "test-user"]
 

@@ -1,0 +1,3 @@
+---
+- name: "cert renew : {{ user.name }} : {{ app.name }} : request ssl certificate"
+  command: "certbot renew"

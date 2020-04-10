@@ -27,9 +27,3 @@
   loop:
     - "find /opt/sitepilot/users/{{ user.name }}/{{ app.name }} -type f -exec chmod 644 {} +"
     - "find /opt/sitepilot/users/{{ user.name }}/{{ app.name }} -type d -exec chmod 755 {} +"
-
-- name: "app : {{ user.name }} : {{ app.name }} : request ssl certificate"
-  command: "certbot certonly --noninteractive --agree-tos --email {{ admin_email }} --cert-name {{ app.name }} --webroot -w /opt/sitepilot/users/{{ user.name }}/{{ app.name }}/public -d {{ app.domain }} {{ '-d ' + app.aliases|join(' -d ') if app.aliases is defined and app.aliases|length>0 else '' }}"
-  when:
-    - app.cert_request is defined
-    - app.cert_request|bool
