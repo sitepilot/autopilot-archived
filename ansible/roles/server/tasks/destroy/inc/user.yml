@@ -18,7 +18,7 @@
   user:
     name: "{{ user.name }}"
     state: absent
-    force: yes
+    force: true
 
 - name: "user : {{ user.name }} : remove user group"
   group:

@@ -36,6 +36,7 @@
 - name: "docker : enable Docker on startup"
   service:
     name: docker
+    state: started
     enabled: true
 
 - name: "docker : add user '{{ admin }}' to Docker group"

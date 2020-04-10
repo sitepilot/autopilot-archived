@@ -25,12 +25,24 @@ services:
     environment:
       WEBSERVER_USER_ID: ${APP_USER_ID}
       WEBSERVER_USER_GID: ${APP_USER_GID}
-      SET_VHOST_FILE_PERMISSIONS: "no"
+      SET_VHOST_FILE_PERMISSIONS: "yes"
     volumes:
       - type: bind
         source: "./"
         target: "/var/www/html"
         consistency: cached
+
+  test:
+    build: ./docker
+    container_name: autopilot-test
+    restart: always
+    privileged: true
+    ports:
+      - "10080:80"
+      - "10443:443"
+      - "12083:2083"
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
 volumes:
   mysql_data:
