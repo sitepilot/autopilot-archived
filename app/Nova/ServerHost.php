@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\ServerCertRenewAction;
 use App\Nova\ServerGroup;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
@@ -181,6 +182,7 @@ class ServerHost extends Resource
     {
         return [
             new ServerTestAction,
+            new ServerCertRenewAction,
             new ServerProvisionAction
         ];
     }
