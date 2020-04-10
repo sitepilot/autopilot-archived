@@ -8,11 +8,12 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
-use Laravel\Nova\Actions\DestructiveAction;
+use Laravel\Nova\Actions\Action;
+use App\Traits\DestructiveAction;
 
-class UserDestroyAction extends DestructiveAction
+class UserDestroyAction extends Action
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue, Queueable, DestructiveAction;
 
     /**
      * The displayable name of the action.

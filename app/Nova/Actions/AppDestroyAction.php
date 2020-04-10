@@ -2,17 +2,18 @@
 
 namespace App\Nova\Actions;
 
+use App\Traits\DestructiveAction;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Laravel\Nova\Actions\Action;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
-use Laravel\Nova\Actions\DestructiveAction;
 
-class AppDestroyAction extends DestructiveAction
+class AppDestroyAction extends Action
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue, Queueable, DestructiveAction;
 
     /**
      * The displayable name of the action.
@@ -33,7 +34,7 @@ class AppDestroyAction extends DestructiveAction
      *
      * @var string
      */
-    public $confirmButtonText = 'Provision App';
+    public $confirmButtonText = 'Destroy App';
 
     /**
      * The text to be used for the action's confirmation text.
