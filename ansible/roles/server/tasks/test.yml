@@ -56,34 +56,29 @@
 - name: "test : PHP is installed"
   command: "php -v"
   become: true
-  become_user: "{{ users[0].name }}"
+  become_user: "{{ admin }}"
   changed_when: false
 
 - name: "test : WPCLI is installed"
   command: "wp --version"
   become: true
-  become_user: "{{ users[0].name }}"
+  become_user: "{{ admin }}"
   changed_when: false
 
 - name: "test : Composer is installed"
   command: "composer --version"
   become: true
-  become_user: "{{ users[0].name }}"
+  become_user: "{{ admin }}"
   changed_when: false
 
 - name: "test : Node.js is installed"
   command: "node -v"
   become: true
-  become_user: "{{ users[0].name }}"
+  become_user: "{{ admin }}"
   changed_when: false
 
 - name: "test : NPM is installed"
   command: "npm -v"
   become: true
-  become_user: "{{ users[0].name }}"
+  become_user: "{{ admin }}"
   changed_when: false
-# User Tests
-#- include: provision/test.yml
-#  loop: "{{ users | list }}"
-#  loop_control:
-#    loop_var: user
