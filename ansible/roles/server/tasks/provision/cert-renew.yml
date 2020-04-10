@@ -1,0 +1,8 @@
+---
+- name: "cert renew : renew certificates"
+  command: "certbot renew"
+  register: cert_renew
+
+- name: "cert renew : debug"
+  debug:
+    msg: "{{ cert_renew.stdout.split('\n') }}"

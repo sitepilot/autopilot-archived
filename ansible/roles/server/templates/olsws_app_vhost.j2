@@ -1,6 +1,6 @@
 # {{ sitepilot_managed }}
 vhTemplate vhost {
-  {% if app.cert_request is defined and app.cert_request|bool %}
+  {% if app.ssl is defined and app.ssl|bool %}
   templateFile            $SERVER_ROOT/conf/templates/lsphp74-ssl.conf
   {% else %}
   templateFile            $SERVER_ROOT/conf/templates/lsphp74.conf

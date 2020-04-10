@@ -6,18 +6,3 @@
 - name: "certbot : install Certbot"
   apt:
     name: certbot
-
-- name: "certbot : generate renew script"
-  template:
-    src: "certbot_renew.sh.j2"
-    dest: "/opt/sitepilot/scripts/certbot-renew.sh"
-    owner: "root"
-    group: "root"
-    mode: 0700
-
-- name: "certbot : configure renew cron"
-  cron:
-    name: "renew certbot"
-    minute: "0"
-    hour: "8"
-    job: "/opt/sitepilot/scripts/certbot-renew.sh"

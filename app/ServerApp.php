@@ -66,7 +66,7 @@ class ServerApp extends Model
             'name' => $this->name,
             'domain' => $this->name . '.' . env('APP_DEFAULT_DOMAIN'),
             'aliases' => [],
-            "cert_request" => false
+            "ssl" => false
         ];
     }
 

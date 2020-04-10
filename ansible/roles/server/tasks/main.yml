@@ -32,11 +32,11 @@
 - include: docker.yml
   tags: "docker"
 
-- include: redis.yml
-  tags: "redis"
-
 - include: mysql.yml
   tags: "mysql"
+
+- include: redis.yml
+  tags: "redis"
 
 - include: olsws.yml
   tags: "olsws"
@@ -65,6 +65,9 @@
 - include: certbot.yml
   tags: "certbot"
 
+- include: cleanup.yml
+  tags: "cleanup"
+
 # ===================================
 # Tasks
 # ===================================
@@ -77,6 +80,12 @@
 
 - include: provision/database.yml
   tags: ["never", "provision-database"]
+
+- include: provision/cert.yml
+  tags: ["never", "provision-cert"]
+
+- include: provision/cert-renew.yml
+  tags: ["never", "provision-cert-renew"]
 
 - include: provision/user-test.yml
   tags: ["never", "test-user"]

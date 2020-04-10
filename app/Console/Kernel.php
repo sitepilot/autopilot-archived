@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\ServerHost;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +25,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Renew SSL certificates on provisioned hosts
+        $hosts = ServerHost::where('state', ServerHost::getProvisionedIndex())->get();
+        foreach ($hosts as $host) {
+            $schedule->command("server:cert:renew --host=$host->name --disable-tty")->dailyAt('08:05');
+        }
     }
 
     /**
@@ -34,7 +39,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
