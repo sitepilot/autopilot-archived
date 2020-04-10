@@ -34,6 +34,13 @@ Ubuntu 18.04 is the only supported operating system (for the master and slave ho
 * `./autopilot server:inventory`: Outputs the inventory in JSON format.
 * `./autopilot server:provision`: Provision a server.
 * `./autopilot server:test`: Test a server.
+* `./autopilot user:provision`: Provision a user.
+* `./autopilot user:destroy`: Destroy an user from the server.
+* `./autopilot user:test`: Test a provisioned user.
+* `./autopilot app:provision`: Provision a app.
+* `./autopilot app:destroy`: Destroy an app from the server.
+* `./autopilot database:provision`: Provision a database.
+* `./autopilot database:destroy`: Destroy a database from the server.
 
 ## Server Configuration
 
@@ -75,8 +82,8 @@ Users are isolated and allowed to use SFTP with password authentication (chroot 
 ## Development
 
 * Clone this repository.
-* Copy environment file and modify it to your needs: `cp .env.example .env`.
-* Start the containers, install packages and migrate the database: `./autopilot install-dev`. The Autopilot source files are mounted to the the container. *NOTE: This will prompt for your Laravel Nova username and password.*
+* Copy the example environment file and modify it to your needs: `cp .env.example .env`.
+* Start the containers, install packages and migrate the database: `./autopilot install-dev`. The Autopilot source files are mounted to the the `autopilot` container. *NOTE: This will prompt for your Laravel Nova username and password.*
 * Navigate to `https://<SERVER IP>:<APP_HTTPS_PORT>` and login (default user: `admin@sitepilot.io`, default pass: `supersecret`).
 
 ## License
