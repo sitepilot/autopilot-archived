@@ -111,9 +111,13 @@ class ServerApp extends Resource
 
             Text::make('Domain', 'domain')
                 ->readonly()
-                ->hideWhenCreating(),
+                ->exceptOnForms()
+                ->resolveUsing(function ($domain) {
+                    return "<a href='https://$domain' target='_blank' />$domain</a>";
+                })->asHtml(),
 
             Text::make('Description', 'description')
+                ->hideFromIndex()
                 ->sortable(),
 
             Select::make('State')->options(
