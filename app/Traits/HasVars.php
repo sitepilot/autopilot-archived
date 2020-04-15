@@ -84,12 +84,22 @@ trait HasVars
     }
 
     /**
+     * Returns all default and optional vars.
+     *
+     * @return array
+     */
+    public function getAllVars()
+    {
+        return $this->getDefaultVars();
+    }
+
+    /**
      * Returns the default vars attribute.
      *
      * @return string
      */
     public function getDefaultVarsAttribute()
     {
-        return json_encode($this->getDefaultVars());
+        return json_encode($this->getAllVars());
     }
 }
