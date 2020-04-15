@@ -73,7 +73,7 @@ class ServerApp extends Model
                 'update_core' => true,
                 'update_plugins' => true,
                 'update_themes' => true,
-                'update_exclude' => ''
+                'update_exclude' => []
             ]
         ];
     }
