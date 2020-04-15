@@ -16,21 +16,21 @@
     db_host: ""
     path: "/opt/sitepilot/users/{{ user }}/{{ app }}/public"
   tasks:
-    - name: "wp install : check if index.php exists"
+    - name: "wp/install : check if index.php exists"
       stat:
         path: "{{ path }}/index.php"
       register: wp_index
 
-    - name: "wp install : check if wp-config.php exists"
+    - name: "wp/install : check if wp-config.php exists"
       stat:
         path: "{{ path }}/wp-config.php"
       register: wp_config
 
-    - name: "wp install : download core"
+    - name: "wp/install : download core"
       command: "wp core download --path={{ path }}"
       when: not wp_index.stat.exists
 
-    - name: "wp install : create config"
+    - name: "wp/install : create config"
       command: "wp config create --dbname='{{ db_name }}' --dbuser='{{ db_user }}' --dbpass='{{ db_pass }}' --dbhost='{{ db_host }}' --path={{ path }}"
       when:
         - db_name | length > 0
@@ -39,7 +39,7 @@
         - db_host | length > 0
         - not wp_config.stat.exists
 
-    - name: "wp install : install core"
+    - name: "wp/install : install core"
       command: "wp core install --url='{{ url }}' --title='{{ title }}' --admin_user='{{ admin_user }}' --admin_password='{{ admin_pass }}' --admin_email='{{ admin_email }}' --path={{ path }}"
       when:
         - url | length > 0
