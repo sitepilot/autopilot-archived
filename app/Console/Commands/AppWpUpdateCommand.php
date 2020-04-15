@@ -63,6 +63,6 @@ class AppWpUpdateCommand extends Command
             'update_exclude' => 'array',
         ];
 
-        $this->runAppPlaybook('wordpress/update.yml', $vars, $validations, "Failed to update WordPress.");
+        $this->runPlaybook($this->appModel, 'wordpress/update.yml', $vars, $validations, "Failed to update WordPress.");
     }
 }

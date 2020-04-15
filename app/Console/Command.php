@@ -255,7 +255,7 @@ class Command extends ConsoleCommand
      * @return void
      * @throws Exception
      */
-    public function runAppPlaybook($playbook, $vars = [], $validations = [], $failedMessage = '')
+    public function runPlaybook($model, $playbook, $vars = [], $validations = [], $failedMessage = '')
     {
         // Validate playbook vars
         $validator = Validator::make($vars, $validations, [
@@ -280,9 +280,9 @@ class Command extends ConsoleCommand
         // Run process
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
-        $process->run(function ($type, $buffer) use ($failedMessage) {
+        $process->run(function ($type, $buffer) use ($model, $failedMessage) {
             if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
-                $this->appModel->setStateError();
+                $model->setStateError();
 
                 self::addToProcessBuffer($buffer);
 
@@ -299,8 +299,8 @@ class Command extends ConsoleCommand
         if ($this->option('nova-batch-id')) {
             $event = Nova::actionEvent();
             $event::where('batch_id', $this->option('nova-batch-id'))
-                ->where('model_type', $this->appModel->getMorphClass())
-                ->where('model_id', $this->appModel->getKey())
+                ->where('model_type', $model->getMorphClass())
+                ->where('model_id', $model->getKey())
                 ->update(['exception' => self::getProcessBuffer()]);
         }
     }
