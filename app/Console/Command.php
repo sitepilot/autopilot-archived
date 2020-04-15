@@ -257,6 +257,7 @@ class Command extends ConsoleCommand
      */
     public function runAppPlaybook($playbook, $vars = [], $validations = [], $failedMessage = '')
     {
+        // Validate playbook vars
         $validator = Validator::make($vars, $validations, [
             'exists' => 'The selected :key is invalid or not provisioned.',
             'required' => 'The :key configuration parameter is required.'
@@ -267,26 +268,24 @@ class Command extends ConsoleCommand
             foreach ($validator->errors()->all() as $msg) {
                 $validationErrors .= "\n$msg";
             }
-
-            Notification::route('slack', env('SLACK_HOOK'))
-                ->notify(new CommandFailed($failedMessage, $validationErrors));
-
             throw new Exception("$failedMessage\n$validationErrors");
         }
 
-        $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), base_path("ansible/playbooks/$playbook")];
+        // Add sitepilot_managed var
+        $vars['sitepilot_managed'] = "WARNING: This file is managed by Sitepilot, any changes will be overwritten (updated at: {{ansible_date_time.date}} {{ansible_date_time.time}}).";
 
-        $varsCmd = "";
-        foreach ($vars as $key => $var) {
-            $varsCmd .= "$key=" . json_encode($var) . " ";
-        }
-        $cmd = array_merge($cmd, ["--extra-vars", $varsCmd]);
+        // Prepare command
+        $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), base_path("ansible/playbooks/$playbook"), "--extra-vars", json_encode($vars)];
 
+        // Run process
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
         $process->run(function ($type, $buffer) use ($failedMessage) {
             if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
+                $this->appModel->setStateError();
+
                 self::addToProcessBuffer($buffer);
+
                 Notification::route('slack', env('SLACK_HOOK'))
                     ->notify(new CommandFailed($failedMessage, self::getProcessBuffer()));
 
@@ -296,6 +295,7 @@ class Command extends ConsoleCommand
             }
         });
 
+        // Update Nova batch status
         if ($this->option('nova-batch-id')) {
             $event = Nova::actionEvent();
             $event::where('batch_id', $this->option('nova-batch-id'))
