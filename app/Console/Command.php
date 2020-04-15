@@ -259,7 +259,7 @@ class Command extends ConsoleCommand
     {
         // Validate playbook vars
         $validator = Validator::make($vars, $validations, [
-            'exists' => 'The selected :key is invalid or not provisioned.',
+            'exists' => 'The :key is invalid or not provisioned.',
             'required' => 'The :key configuration parameter is required.'
         ]);
 
