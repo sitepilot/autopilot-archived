@@ -52,7 +52,7 @@ class AppWpInstallCommand extends Command
             "admin_user" => $this->appModel->getVar('admin_user', 'wordpress'),
             "admin_pass" => $this->appModel->getVar('admin_pass', 'wordpress'),
             "admin_email" => $this->appModel->getVar('admin_email', 'wordpress'),
-            "db_name" => $this->appModel->getVar('db_name', 'wordpress', $this->appModel->user->getVar('db_name')),
+            "db_name" => $this->appModel->getVar('db_name', 'wordpress'),
             'db_user' => $this->appModel->getVar('db_user', 'wordpress', $this->appModel->user->getVar('name')),
             'db_pass' => $this->appModel->getVar('db_pass', 'wordpress', $this->appModel->user->getVar('mysql_password')),
             'db_host' => $this->appModel->getVar('db_host', 'wordpress', '127.0.0.1'),
