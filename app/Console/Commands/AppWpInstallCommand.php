@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Console\Command;
+use App\Traits\HasState;
 
 class AppWpInstallCommand extends Command
 {
@@ -51,12 +52,27 @@ class AppWpInstallCommand extends Command
             "admin_user" => $this->appModel->getVar('admin_user', 'wordpress'),
             "admin_pass" => $this->appModel->getVar('admin_pass', 'wordpress'),
             "admin_email" => $this->appModel->getVar('admin_email', 'wordpress'),
-            "db_name" => $this->appModel->getVar('db_name', 'wordpress'),
+            "db_name" => $this->appModel->getVar('db_name', 'wordpress', $this->appModel->user->getVar('db_name')),
             'db_user' => $this->appModel->getVar('db_user', 'wordpress', $this->appModel->user->getVar('name')),
             'db_pass' => $this->appModel->getVar('db_pass', 'wordpress', $this->appModel->user->getVar('mysql_password')),
             'db_host' => $this->appModel->getVar('db_host', 'wordpress', '127.0.0.1'),
         ];
 
-        $this->runAppPlaybook('wordpress/install.yml', $vars, "Failed to install WordPress.");
+        $validations = [
+            'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
+            'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
+            'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
+            'db_name' => 'required|exists:server_databases,name,state,' . HasState::getProvisionedIndex(),
+            'db_user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
+            'url' => 'required|url',
+            'title' => 'required',
+            'admin_user' => 'required',
+            'admin_pass' => 'required',
+            'admin_email' => 'required|email',
+            'db_pass' => 'required',
+            'db_host' => 'required'
+        ];
+
+        $this->runAppPlaybook('wordpress/install.yml', $vars, $validations, "Failed to install WordPress.");
     }
 }

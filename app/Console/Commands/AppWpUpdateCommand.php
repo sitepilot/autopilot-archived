@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Console\Command;
+use App\Traits\HasState;
 
 class AppWpUpdateCommand extends Command
 {
@@ -52,6 +53,16 @@ class AppWpUpdateCommand extends Command
             "update_exclude" => implode(',', $this->appModel->getVar('update_exclude', 'wordpress', []))
         ];
 
-        $this->runAppPlaybook('wordpress/update.yml', $vars, "Failed to update WordPress.");
+        $validations = [
+            'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
+            'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
+            'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
+            'update_core' => 'required|boolean',
+            'update_plugins' => 'required|boolean',
+            'update_themes' => 'required|boolean',
+            'update_exclude' => 'array',
+        ];
+
+        $this->runAppPlaybook('wordpress/update.yml', $vars, $validations, "Failed to update WordPress.");
     }
 }

@@ -10,6 +10,7 @@ use Laravel\Nova\Nova;
 use App\ServerDatabase;
 use App\Notifications\CommandFailed;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Console\Command as ConsoleCommand;
 
@@ -254,8 +255,25 @@ class Command extends ConsoleCommand
      * @return void
      * @throws Exception
      */
-    public function runAppPlaybook($playbook, $vars = [], $failedMessage = '')
+    public function runAppPlaybook($playbook, $vars = [], $validations = [], $failedMessage = '')
     {
+        $validator = Validator::make($vars, $validations, [
+            'exists' => 'The selected :key is invalid or not provisioned.',
+            'required' => 'The :key configuration parameter is required.'
+        ]);
+
+        if ($validator->fails()) {
+            $validationErrors = "";
+            foreach ($validator->errors()->all() as $msg) {
+                $validationErrors .= "\n$msg";
+            }
+
+            Notification::route('slack', env('SLACK_HOOK'))
+                ->notify(new CommandFailed($failedMessage, $validationErrors));
+
+            throw new Exception("$failedMessage\n$validationErrors");
+        }
+
         $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), base_path("ansible/playbooks/$playbook")];
 
         $varsCmd = "";
