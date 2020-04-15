@@ -64,7 +64,17 @@ class ServerApp extends Model
             'name' => $this->name,
             'domain' => $this->name . '.' . env('APP_DEFAULT_DOMAIN'),
             'aliases' => [],
-            "ssl" => false
+            "ssl" => false,
+            'wordpress' => [
+                'db_name' => '',
+                'admin_user' => 'captain',
+                'admin_pass' => Str::random(12),
+                'admin_email' => 'website@sitepilot.io',
+                'update_core' => true,
+                'update_plugins' => true,
+                'update_themes' => true,
+                'update_exclude' => ''
+            ]
         ];
     }
 

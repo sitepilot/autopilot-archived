@@ -33,16 +33,21 @@ trait HasVars
      * @param string $key
      * @return mixed
      */
-    public function getVar($key)
+    public function getVar($key, $namespace = '', $default = null)
     {
         $vars = $this->vars;
+
+        if (!empty($namespace) && isset($vars[$namespace])) {
+            $vars = $vars[$namespace];
+        }
+
         if (is_array($vars) && isset($vars[$key])) {
             return $vars[$key];
         } elseif (is_object($vars) && isset($vars->$key)) {
             return $vars->$key;
         }
-        
-        return null;
+
+        return $default;
     }
 
     /**

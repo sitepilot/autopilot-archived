@@ -55,6 +55,12 @@ jobs:
       - name: Test user:test command.
         run: ./autopilot user:test --user=test --skip-tags=test-domains --disable-tty
 
+      - name: Test app:wp:install command.
+        run: ./autopilot app:wp:install --app=test --disable-tty
+
+      - name: Test app:wp:update command.
+        run: ./autopilot app:wp:update --app=test --disable-tty
+
       - name: Test database:destroy command.
         run: ./autopilot database:destroy --database=test --disable-tty
 

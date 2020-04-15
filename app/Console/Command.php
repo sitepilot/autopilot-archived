@@ -2,10 +2,15 @@
 
 namespace App\Console;
 
+use Exception;
 use App\ServerApp;
 use App\ServerHost;
 use App\ServerUser;
+use Laravel\Nova\Nova;
 use App\ServerDatabase;
+use App\Notifications\CommandFailed;
+use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Console\Command as ConsoleCommand;
 
 class Command extends ConsoleCommand
@@ -241,5 +246,44 @@ class Command extends ConsoleCommand
     public static function getProcessBuffer()
     {
         return self::$buffer;
+    }
+
+    /**
+     * Run app playbook.
+     * 
+     * @return void
+     * @throws Exception
+     */
+    public function runAppPlaybook($playbook, $vars = [], $failedMessage = '')
+    {
+        $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), base_path("ansible/playbooks/$playbook")];
+
+        $varsCmd = "";
+        foreach ($vars as $key => $var) {
+            $varsCmd .= "$key=$var ";
+        }
+        $cmd = array_merge($cmd, ["--extra-vars", $varsCmd]);
+
+        $process = new Process($cmd);
+        $process->setTty($this->getTTY())->setTimeout(3600);
+        $process->run(function ($type, $buffer) use ($failedMessage) {
+            if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
+                self::addToProcessBuffer($buffer);
+                Notification::route('slack', env('SLACK_HOOK'))
+                    ->notify(new CommandFailed($failedMessage, self::getProcessBuffer()));
+
+                throw new Exception("$failedMessage\n" . self::getProcessBuffer());
+            } else {
+                self::addToProcessBuffer($buffer);
+            }
+        });
+
+        if ($this->option('nova-batch-id')) {
+            $event = Nova::actionEvent();
+            $event::where('batch_id', $this->option('nova-batch-id'))
+                ->where('model_type', $this->appModel->getMorphClass())
+                ->where('model_id', $this->appModel->getKey())
+                ->update(['exception' => self::getProcessBuffer()]);
+        }
     }
 }
