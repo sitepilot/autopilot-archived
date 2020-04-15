@@ -57,11 +57,26 @@ trait HasVars
      */
     public function getSecureVarsAttribute()
     {
-        $vars = $this->vars;
+        return $this->hidePasswords($this->vars);
+    }
 
-        foreach ($vars as $key => $item) {
-            if (strpos($key, 'password') !== false || strpos($key, '_pass') !== false || strpos($key, '_secret') !== false) {
-                $vars[$key] = '******';
+    /**
+     * Hide passwords with stars in array.
+     *
+     * @param array $vars
+     * @return arrau $vars
+     */
+    private function hidePasswords($vars)
+    {
+        if (is_array($vars)) {
+            foreach ($vars as $key => $item) {
+                if (!is_array($item)) {
+                    if (strpos($key, 'password') !== false || strpos($key, '_pass') !== false || strpos($key, '_secret') !== false) {
+                        $vars[$key] = '******';
+                    }
+                } else {
+                    $vars[$key] = $this->hidePasswords($item);
+                }
             }
         }
 
