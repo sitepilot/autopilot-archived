@@ -113,7 +113,7 @@ class ServerApp extends Resource
                 ->readonly()
                 ->exceptOnForms()
                 ->resolveUsing(function ($domain) {
-                    return "<a href='https://$domain' target='_blank' />$domain</a>";
+                    return "<a href='https://$domain' target='_blank' class='no-underline dim text-primary font-bold'/>$domain</a>";
                 })->asHtml(),
 
             Text::make('Description', 'description')
