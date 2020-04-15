@@ -12,6 +12,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 use App\Nova\Actions\AppDestroyAction;
 use App\Nova\Actions\AppProvisionAction;
+use App\Rules\AppConfigRule;
 
 class ServerApp extends Resource
 {
@@ -127,7 +128,7 @@ class ServerApp extends Resource
                 ->displayUsingLabels(),
 
             Code::make('App Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new AppConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
