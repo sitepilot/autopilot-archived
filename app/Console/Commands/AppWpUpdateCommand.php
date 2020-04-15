@@ -50,7 +50,7 @@ class AppWpUpdateCommand extends Command
             "update_core" => $this->appModel->getVar('update_core', 'wordpress'),
             "update_plugins" => $this->appModel->getVar('update_plugins', 'wordpress'),
             "update_themes" => $this->appModel->getVar('update_themes', 'wordpress'),
-            "update_exclude" => implode(',', $this->appModel->getVar('update_exclude', 'wordpress', []))
+            "update_exclude" => $this->appModel->getVar('update_exclude', 'wordpress', [])
         ];
 
         $validations = [
