@@ -22,7 +22,7 @@
       when: not wp_config.stat.exists
 
     - name: "wp update : update plugins"
-      command: "wp plugin update --all --exclude='{{ update_exclude }}' --path={{ path }}"
+      command: "wp plugin update --all --exclude='{{ update_exclude|join(', ') }}' --path={{ path }}"
       when: update_plugins | bool
       register: result
       changed_when: "'Success: Plugin already updated.' not in result.stdout"
@@ -34,7 +34,7 @@
       changed_when: "'Success: Translations are up to date.' not in result.stdout"
 
     - name: "wp update : update themes"
-      command: "wp theme update --all --exclude='{{ update_exclude }}' --path={{ path }}"
+      command: "wp theme update --all --exclude='{{ update_exclude|join(', ') }}' --path={{ path }}"
       when: update_themes | bool
       register: result
       changed_when: "'Success: Theme already updated.' not in result.stdout"

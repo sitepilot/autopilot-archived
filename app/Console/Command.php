@@ -278,7 +278,7 @@ class Command extends ConsoleCommand
 
         $varsCmd = "";
         foreach ($vars as $key => $var) {
-            $varsCmd .= "$key=$var ";
+            $varsCmd .= "$key=" . json_encode($var) . " ";
         }
         $cmd = array_merge($cmd, ["--extra-vars", $varsCmd]);
 
