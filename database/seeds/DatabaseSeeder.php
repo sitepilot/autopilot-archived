@@ -113,6 +113,15 @@ class DatabaseSeeder extends Seeder
                 ],
                 'wordpress' => [
                     'db_name' => $db->name,
+                    'admin_user' => 'captain',
+                    'admin_pass' => 'supersecret',
+                    'admin_email' => 'website@sitepilot.io',
+                    'update_core' => true,
+                    'update_plugins' => true,
+                    'update_themes' => true,
+                    'update_exclude' => [
+                        'twentynineteen'
+                    ]
                 ]
             ];
             $app->save();
