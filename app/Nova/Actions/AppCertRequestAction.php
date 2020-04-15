@@ -10,7 +10,7 @@ use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
 
-class AppCertProvisionAction extends Action
+class AppCertRequestAction extends Action
 {
     use InteractsWithQueue, Queueable;
 
@@ -53,7 +53,7 @@ class AppCertProvisionAction extends Action
     {
         foreach ($models as $app) {
             try {
-                Artisan::call('app:cert:provision', [
+                Artisan::call('app:cert:request', [
                     '--app' => $app->name,
                     '--nova-batch-id' => $this->batchId,
                     '--disable-tty' => true
