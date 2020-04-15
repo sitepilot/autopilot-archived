@@ -85,6 +85,7 @@ class ServerFirewallRule extends Resource
                 }),
 
             Text::make('Description', 'description')
+                ->hideFromIndex()
                 ->sortable(),
 
             Code::make('Rule Configuration', 'vars')

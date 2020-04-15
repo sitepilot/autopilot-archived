@@ -30,6 +30,12 @@ class Kernel extends ConsoleKernel
         foreach ($hosts as $host) {
             $schedule->command("server:cert:renew --host=$host->name --disable-tty")->dailyAt('08:05');
         }
+
+        // Test provisioned hosts
+        $hosts = ServerHost::where('state', ServerHost::getProvisionedIndex())->get();
+        foreach ($hosts as $host) {
+            $schedule->command("server:test --host=$host->name --disable-tty")->hourly();
+        }
     }
 
     /**

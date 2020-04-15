@@ -118,6 +118,7 @@ class ServerDatabase extends Resource
                 })->asHtml(),
 
             Text::make('Description', 'description')
+                ->hideFromIndex()
                 ->sortable(),
 
             Select::make('State')->options(

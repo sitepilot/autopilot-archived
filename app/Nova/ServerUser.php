@@ -103,6 +103,7 @@ class ServerUser extends Resource
                 ->sortable(),
 
             Text::make('Description', 'description')
+                ->hideFromIndex()
                 ->sortable(),
 
             Select::make('State')->options(

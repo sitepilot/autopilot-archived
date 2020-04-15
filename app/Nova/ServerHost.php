@@ -104,6 +104,7 @@ class ServerHost extends Resource
                 ->nullable(),
 
             Text::make('Description', 'description')
+                ->hideFromIndex()
                 ->sortable(),
 
             Select::make('State')->options(
