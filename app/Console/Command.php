@@ -256,7 +256,7 @@ class Command extends ConsoleCommand
      * @return void
      * @throws Exception
      */
-    public function runPlaybook($model, $playbook, $vars = [], $validations = [], $failedMessage = '')
+    public function runPlaybook($model, $playbook, $vars = [], $validations = [], $failedMessage = '', $setErrorState = true)
     {
         // Validate playbook vars
         $validator = Validator::make($vars, $validations, [
@@ -296,20 +296,21 @@ class Command extends ConsoleCommand
         // Run process
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
+        $batchId = $this->option('nova-batch-id');
 
         try {
-            $process->mustRun(function ($type, $buffer) use ($model, $failedMessage) {
+            $process->mustRun(function ($type, $buffer) use ($model, $failedMessage, $setErrorState, $batchId) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
-                    $model->setStateError();
+                    if ($setErrorState) $model->setStateError();
 
-                    self::addToProcessBuffer($buffer);
+                    self::addToProcessBuffer($buffer, empty($batchId));
 
                     Notification::route('slack', env('SLACK_HOOK'))
                         ->notify(new CommandFailed($failedMessage, self::getProcessBuffer()));
 
                     throw new Exception("$failedMessage\n" . self::getProcessBuffer());
                 } else {
-                    self::addToProcessBuffer($buffer);
+                    self::addToProcessBuffer($buffer, empty($batchId));
                 }
             });
         } catch (ProcessFailedException $e) {
@@ -317,12 +318,41 @@ class Command extends ConsoleCommand
         }
 
         // Update Nova batch status
-        if ($this->option('nova-batch-id')) {
+        if ($batchId) {
+            $result =  $this->findBetween(self::getProcessBuffer(), '[autopilot-result]', '[/autopilot-result]');
             $event = Nova::actionEvent();
-            $event::where('batch_id', $this->option('nova-batch-id'))
+            $event::where('batch_id', $batchId)
                 ->where('model_type', $model->getMorphClass())
                 ->where('model_id', $model->getKey())
-                ->update(['exception' => self::getProcessBuffer()]);
+                ->update(['exception' => !empty($result) ? $result : self::getProcessBuffer()]);
         }
+    }
+
+    /**
+     * Finds a substring between two strings.
+     * 
+     * @param  string $string The string to be searched
+     * @param  string $start The start of the desired substring
+     * @param  string $end The end of the desired substring
+     * @param  bool   $greedy Use last instance of`$end` (default: false)
+     * @return string
+     */
+    function findBetween(string $string, string $start, string $end, bool $greedy = false)
+    {
+        $start = preg_quote($start, '/');
+        $end   = preg_quote($end, '/');
+
+        $format = '/(%s)(.*';
+        if (!$greedy) $format .= '?';
+        $format .= ')(%s)/';
+
+        $pattern = sprintf($format, $start, $end);
+        preg_match($pattern, $string, $matches);
+
+        if (isset($matches[2])) {
+            return $matches[2];
+        }
+
+        return '';
     }
 }

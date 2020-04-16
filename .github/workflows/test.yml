@@ -64,6 +64,9 @@ jobs:
       - name: Test app:wp:search-replace command.
         run: ./autopilot app:wp:search-replace test123 test456 --app=test --debug
 
+      - name: Test app:wp:login command.
+        run: ./autopilot app:wp:login captain --app=test --debug
+
       - name: Test database:destroy command.
         run: ./autopilot database:destroy --database=test --debug
 
