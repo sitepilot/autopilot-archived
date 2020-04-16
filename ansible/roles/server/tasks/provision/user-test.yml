@@ -1,7 +1,0 @@
----
-- name: "user test : get user"
-  set_fact:
-    user: "{{ users | selectattr('name', 'match', test_user) | list | first }}"
-
-- name: "user test : run"
-  include_tasks: inc/user-test.yml

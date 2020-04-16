@@ -20,7 +20,7 @@ class ServerTestAction extends Action
      *
      * @var string
      */
-    public $name = 'Test Server';
+    public $name = 'Test';  
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,7 +34,7 @@ class ServerTestAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Test Server';
+    public $confirmButtonText = 'Test';
 
     /**
      * The text to be used for the action's confirmation text.

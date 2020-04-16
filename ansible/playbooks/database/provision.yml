@@ -1,0 +1,10 @@
+---
+- hosts: "{{ host }}"
+  vars:
+    database: ""
+  tasks:
+    - name: "database/provision : {{ database }} : create database"
+      mysql_db:
+        name: "{{ database }}"
+        state: "present"
+        config_file: "/root/.my.cnf"

@@ -13,6 +13,7 @@ use App\Nova\Actions\UserTestAction;
 use Laravel\Nova\Fields\MorphToMany;
 use App\Nova\Actions\UserDestroyAction;
 use App\Nova\Actions\UserProvisionAction;
+use App\Rules\ServerUserConfigRule;
 
 class ServerUser extends Resource
 {
@@ -113,7 +114,7 @@ class ServerUser extends Resource
                 ->displayUsingLabels(),
 
             Code::make('User Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new ServerUserConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),

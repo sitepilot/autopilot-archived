@@ -3,12 +3,12 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\HasMany;
+use App\Rules\ServerFirewallConfigRule;
 
 class ServerFirewallRule extends Resource
 {
@@ -89,7 +89,7 @@ class ServerFirewallRule extends Resource
                 ->sortable(),
 
             Code::make('Rule Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new ServerFirewallConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),

@@ -2,8 +2,8 @@
 
 namespace App\Nova;
 
-use App\Nova\Actions\AppCertProvisionAction;
 use App\Nova\ServerUser;
+use App\Rules\ServerAppConfigRule;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -11,7 +11,12 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 use App\Nova\Actions\AppDestroyAction;
+use App\Nova\Actions\AppWpUpdateAction;
 use App\Nova\Actions\AppProvisionAction;
+use App\Nova\Actions\AppWpInstallAction;
+use App\Nova\Actions\AppCertRequestAction;
+use App\Nova\Actions\AppWpLoginAction;
+use App\Nova\Actions\AppWpSearchReplaceAction;
 
 class ServerApp extends Resource
 {
@@ -113,7 +118,7 @@ class ServerApp extends Resource
                 ->readonly()
                 ->exceptOnForms()
                 ->resolveUsing(function ($domain) {
-                    return "<a href='https://$domain' target='_blank' />$domain</a>";
+                    return "<a href='https://$domain' target='_blank' class='no-underline dim text-primary font-bold'/>$domain</a>";
                 })->asHtml(),
 
             Text::make('Description', 'description')
@@ -127,7 +132,7 @@ class ServerApp extends Resource
                 ->displayUsingLabels(),
 
             Code::make('App Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new ServerAppConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
@@ -190,7 +195,11 @@ class ServerApp extends Resource
     {
         return [
             new AppProvisionAction,
-            new AppCertProvisionAction,
+            new AppCertRequestAction,
+            new AppWpInstallAction,
+            new AppWpUpdateAction,
+            (new AppWpLoginAction)->onlyOnDetail(),
+            (new AppWpSearchReplaceAction)->onlyOnDetail(),
             (new AppDestroyAction)->onlyOnDetail()
         ];
     }

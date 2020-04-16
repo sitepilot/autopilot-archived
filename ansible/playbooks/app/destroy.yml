@@ -1,0 +1,24 @@
+---
+- hosts: "{{ host }}"
+  vars:
+    user: ""
+    app: ""
+    path: "/opt/sitepilot/users/{{ user }}/{{ app }}"
+    path_vhost: "/usr/local/lsws/conf/vhosts/{{ app }}.conf"
+  tasks:
+    - name: "app/destroy : {{ user }} : {{ app }} : remove app folder"
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ path }}"
+
+    - name: "app/destroy : {{ user }} : {{ app }} : remove vhost configuration"
+      file:
+        path: "{{ path_vhost }}"
+        state: absent
+
+    - name: "app/destroy : {{ user }} : {{ app }} : reload web server"
+      service:
+        name: lsws
+        state: reloaded

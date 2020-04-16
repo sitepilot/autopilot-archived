@@ -2,12 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use Laravel\Nova\Nova;
 use App\Console\Command;
-use App\Notifications\CommandFailed;
-use Symfony\Component\Process\Process;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Artisan;
 
 class UserDestroyCommand extends Command
 {
@@ -21,7 +17,8 @@ class UserDestroyCommand extends Command
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
-        {--disable-tty : Disable TTY}';
+        {--disable-tty : Disable TTY}
+        {--debug : Show debug info}';
 
     /**
      * The console command description.
@@ -49,62 +46,32 @@ class UserDestroyCommand extends Command
     {
         $this->askUser();
 
-        if ($this->host && $this->user) {
-            $user = $this->userModel;
-            $user->setStateDestroying();
+        $this->userModel->setStateDestroying();
 
-            $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook()];
-
-            $extraVars = "host=$this->host destroy_user=$this->user";
-            $cmd = array_merge($cmd, ["--extra-vars", $extraVars]);
-
-            $tags = "destroy-user";
-            if ($this->option('tags')) {
-                $tags .= "," . $this->option('tags');
-            }
-            $cmd = array_merge($cmd, ["--tags", $tags]);
-
-            if ($this->option('skip-tags')) {
-                $cmd = array_merge($cmd, ["--skip-tags", $this->option('skip-tags')]);
-            }
-
-            $process = new Process($cmd);
-            $process->setTty($this->getTTY());
-            $process->setTimeout(3600);
-
-            $process->run(function ($type, $buffer) use ($user) {
-                if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
-                    $user->setStateError();
-                    self::addToProcessBuffer($buffer);
-                    Notification::route('slack', env('SLACK_HOOK'))
-                        ->notify(new CommandFailed("Failed to destroy user.", self::getProcessBuffer()));
-                    throw new Exception("Failed to destroy the user!\n" . self::getProcessBuffer());
-                } else {
-                    self::addToProcessBuffer($buffer);
-                }
-            });
-
-            if ($this->option('nova-batch-id')) {
-                $event = Nova::actionEvent();
-                $event::where('batch_id', $this->option('nova-batch-id'))
-                    ->where('model_type', $user->getMorphClass())
-                    ->where('model_id', $user->getKey())
-                    ->update(['exception' => self::getProcessBuffer()]);
-            }
-
-            // Set app state to destroyed
-            foreach ($user->apps as $app) {
-                $app->delete();
-            }
-
-            // Set database state to destroyed
-            foreach ($user->databases as $database) {
-                $database->delete();
-            }
-
-            $user->delete();
-        } else {
-            throw new Exception("Could not find user.");
+        foreach ($this->userModel->apps as $app) {
+            Artisan::call('app:destroy', [
+                '--app' => $app->name
+            ]);
         }
+
+        foreach ($this->userModel->databases as $database) {
+            Artisan::call('database:destroy', [
+                '--database' => $database->name
+            ]);
+        }
+
+        $vars = [
+            "host" => $this->host,
+            "user" => $this->user,
+        ];
+
+        $validations = [
+            'host' => 'required|exists:server_hosts,name',
+            'user' => 'required|exists:server_users,name',
+        ];
+
+        $this->runPlaybook($this->userModel, 'user/destroy.yml', $vars, $validations, "Failed to destroy user.");
+
+        $this->userModel->delete();
     }
 }

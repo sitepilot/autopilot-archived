@@ -1,0 +1,10 @@
+---
+- hosts: "{{ host }}"
+  vars:
+    database: ""
+  tasks:
+    - name: "database/destroy : {{ database }} : drop database"
+      mysql_db:
+        name: "{{ database }}"
+        state: "absent"
+        config_file: "/root/.my.cnf"

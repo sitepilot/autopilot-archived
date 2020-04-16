@@ -98,6 +98,11 @@ class DatabaseSeeder extends Seeder
                 $authKey->id
             ]);
 
+            // Create server database
+            $db = new ServerDatabase;
+            $db->user_id = $user->id;
+            $db->save();
+
             // Create server app
             $app = new ServerApp;
             $app->user_id = $user->id;
@@ -105,15 +110,21 @@ class DatabaseSeeder extends Seeder
                 'aliases' => [
                     'example-alias1.com',
                     'example-alias2.com'
+                ],
+                'wordpress' => [
+                    'db_name' => $db->name,
+                    'admin_user' => 'captain',
+                    'admin_pass' => 'supersecret',
+                    'admin_email' => 'website@sitepilot.io',
+                    'update_core' => true,
+                    'update_plugins' => true,
+                    'update_themes' => true,
+                    'update_exclude' => [
+                        'twentynineteen'
+                    ]
                 ]
             ];
             $app->save();
-
-            // Create server database
-            $db = new ServerDatabase;
-            $db->user_id = $user->id;
-            $db->app_id = $app->id;
-            $db->save();
         }
     }
 }

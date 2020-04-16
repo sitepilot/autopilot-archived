@@ -19,7 +19,7 @@ class UserProvisionAction extends Action
      *
      * @var string
      */
-    public $name = 'Provision User';
+    public $name = 'Provision';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -33,7 +33,7 @@ class UserProvisionAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Provision User';
+    public $confirmButtonText = 'Provision';
 
     /**
      * The text to be used for the action's confirmation text.

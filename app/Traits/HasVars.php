@@ -33,16 +33,21 @@ trait HasVars
      * @param string $key
      * @return mixed
      */
-    public function getVar($key)
+    public function getVar($key, $namespace = '', $default = null)
     {
         $vars = $this->vars;
+
+        if (!empty($namespace) && isset($vars[$namespace])) {
+            $vars = $vars[$namespace];
+        }
+
         if (is_array($vars) && isset($vars[$key])) {
             return $vars[$key];
         } elseif (is_object($vars) && isset($vars->$key)) {
             return $vars->$key;
         }
-        
-        return null;
+
+        return $default;
     }
 
     /**
@@ -52,15 +57,40 @@ trait HasVars
      */
     public function getSecureVarsAttribute()
     {
-        $vars = $this->vars;
+        return $this->hidePasswords($this->vars);
+    }
 
-        foreach ($vars as $key => $item) {
-            if (strpos($key, 'password') !== false || strpos($key, '_pass') !== false || strpos($key, '_secret') !== false) {
-                $vars[$key] = '******';
+    /**
+     * Hide passwords with stars in array.
+     *
+     * @param array $vars
+     * @return arrau $vars
+     */
+    private function hidePasswords($vars)
+    {
+        if (is_array($vars)) {
+            foreach ($vars as $key => $item) {
+                if (!is_array($item)) {
+                    if (strpos($key, 'password') !== false || strpos($key, '_pass') !== false || strpos($key, '_secret') !== false) {
+                        $vars[$key] = '******';
+                    }
+                } else {
+                    $vars[$key] = $this->hidePasswords($item);
+                }
             }
         }
 
         return $vars;
+    }
+
+    /**
+     * Returns all default and optional vars.
+     *
+     * @return array
+     */
+    public function getAllVars()
+    {
+        return $this->getDefaultVars();
     }
 
     /**
@@ -70,6 +100,6 @@ trait HasVars
      */
     public function getDefaultVarsAttribute()
     {
-        return json_encode($this->getDefaultVars());
+        return json_encode($this->getAllVars());
     }
 }

@@ -67,8 +67,7 @@ class ServerDatabase extends Model
     public function getDefaultVars()
     {
         return [
-            'name' => $this->name,
-            'state' => 'present'
+            'name' => $this->name
         ];
     }
 

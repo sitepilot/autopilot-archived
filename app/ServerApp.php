@@ -56,7 +56,7 @@ class ServerApp extends Model
     /**
      * Returns an array with default app variables.
      *
-     * @return void
+     * @return array
      */
     public function getDefaultVars()
     {
@@ -66,6 +66,28 @@ class ServerApp extends Model
             'aliases' => [],
             "ssl" => false
         ];
+    }
+
+    /**
+     * Returns all default and optional vars.
+     *
+     * @return array
+     */
+    public function getAllVars()
+    {
+        return array_merge($this->getDefaultVars(), [
+            'aliases' => [],
+            'wordpress' => [
+                'db_name' => '',
+                'admin_user' => 'captain',
+                'admin_pass' => Str::random(12),
+                'admin_email' => 'website@sitepilot.io',
+                'update_core' => true,
+                'update_plugins' => true,
+                'update_themes' => true,
+                'update_exclude' => []
+            ]
+        ]);
     }
 
     /**

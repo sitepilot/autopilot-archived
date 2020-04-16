@@ -39,6 +39,10 @@ Ubuntu 18.04 is the only supported operating system (for the master and slave ho
 * `./autopilot user:test`: Test a provisioned user.
 * `./autopilot app:provision`: Provision a app.
 * `./autopilot app:destroy`: Destroy an app from the server.
+* `./autopilot app:cert:request`: Request SSL certificate for app domains.
+* `./autopilot app:wp:install`: Install WordPress in app.
+* `./autopilot app:wp:update`: Update WordPress in app.
+* `./autopilot app:wp:search-replace`: Search and replace in WordPress database.
 * `./autopilot database:provision`: Provision a database.
 * `./autopilot database:destroy`: Destroy a database from the server.
 

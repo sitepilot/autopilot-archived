@@ -17,7 +17,7 @@ class VarsObserver
      */
     public function creating(Model $item)
     {
-        $item->vars = array_merge($item->getDefaultVars(), is_array($item->vars) ? $item->vars : []);
+        $item->vars = array_replace_recursive($item->getDefaultVars(), is_array($item->vars) ? $item->vars : []);
     }
 
     /**
@@ -29,7 +29,7 @@ class VarsObserver
     public function updating(Model $item)
     {
         $originalVars = $item->getOriginal('vars');
-        $updatedVars = array_merge($item->getDefaultVars(), is_array($item->vars) ? $item->vars : []);
+        $updatedVars = array_replace_recursive($item->getDefaultVars(), is_array($item->vars) ? $item->vars : []);
         
         // Prevent name update
         if (isset($originalVars['name'])) $updatedVars['name'] = $originalVars['name'];

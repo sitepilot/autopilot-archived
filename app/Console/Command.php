@@ -2,11 +2,18 @@
 
 namespace App\Console;
 
+use Exception;
 use App\ServerApp;
 use App\ServerHost;
 use App\ServerUser;
+use Laravel\Nova\Nova;
 use App\ServerDatabase;
+use App\Notifications\CommandFailed;
+use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Console\Command as ConsoleCommand;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Command extends ConsoleCommand
 {
@@ -32,11 +39,7 @@ class Command extends ConsoleCommand
             if ($this->hostModel) {
                 $this->host = $this->hostModel->name;
             }
-
-            return;
-        }
-
-        if (!$this->host) {
+        } else {
             $hosts = ServerHost::get();
             $options = [];
 
@@ -48,6 +51,10 @@ class Command extends ConsoleCommand
                 $this->host = $this->choice('Select a host', $options);
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
+        }
+
+        if (!$this->host) {
+            throw new Exception("Could not find host.");
         }
     }
 
@@ -66,11 +73,7 @@ class Command extends ConsoleCommand
                     $this->host = $this->hostModel->name;
                 }
             }
-
-            return;
-        }
-
-        if (!$this->user) {
+        } else {
             $users = ServerUser::get();
             $options = [];
             $hosts = [];
@@ -86,6 +89,10 @@ class Command extends ConsoleCommand
                 $this->host = $hosts[$this->user];
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
+        }
+
+        if (!$this->host || !$this->user) {
+            throw new Exception("Could not find user.");
         }
     }
 
@@ -109,11 +116,7 @@ class Command extends ConsoleCommand
                     }
                 }
             }
-
-            return;
-        }
-
-        if (!$this->app) {
+        } else {
             $apps = ServerApp::get();
             $options = [];
             $hosts = [];
@@ -133,6 +136,10 @@ class Command extends ConsoleCommand
                 $this->host = $hosts[$this->app];
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
+        }
+
+        if (!$this->host || !$this->user || !$this->app) {
+            throw new Exception("Could not find app.");
         }
     }
 
@@ -156,11 +163,7 @@ class Command extends ConsoleCommand
                     }
                 }
             }
-
-            return;
-        }
-
-        if (!$this->database) {
+        } else {
             $databases = ServerDatabase::get();
             $options = [];
             $hosts = [];
@@ -181,6 +184,10 @@ class Command extends ConsoleCommand
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
         }
+
+        if (!$this->host || !$this->user || !$this->database) {
+            throw new Exception("Could not find database.");
+        }
     }
 
     /**
@@ -194,7 +201,7 @@ class Command extends ConsoleCommand
             return false;
         }
 
-        return true;
+        return Process::isTtySupported();
     }
 
     /**
@@ -241,5 +248,111 @@ class Command extends ConsoleCommand
     public static function getProcessBuffer()
     {
         return self::$buffer;
+    }
+
+    /**
+     * Run app playbook.
+     * 
+     * @return void
+     * @throws Exception
+     */
+    public function runPlaybook($model, $playbook, $vars = [], $validations = [], $failedMessage = '', $setErrorState = true)
+    {
+        // Validate playbook vars
+        $validator = Validator::make($vars, $validations, [
+            'exists' => 'The :key is invalid or not provisioned.',
+            'required' => 'The :key configuration parameter is required.'
+        ]);
+
+        if ($validator->fails()) {
+            $validationErrors = "";
+            foreach ($validator->errors()->all() as $msg) {
+                $validationErrors .= "\n$msg";
+            }
+            throw new Exception("$failedMessage\n$validationErrors");
+        }
+
+        // Add sitepilot_managed var
+        $vars['sitepilot_managed'] = "WARNING: This file is managed by Sitepilot, any changes will be overwritten (updated at: {{ansible_date_time.date}} {{ansible_date_time.time}}).";
+
+        // Prepare command
+        $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), base_path("ansible/playbooks/$playbook"), "--extra-vars", json_encode($vars)];
+
+        // Add tags
+        if ($this->option('tags')) {
+            $cmd = array_merge($cmd, ['--tags', $this->option('tags')]);
+        }
+
+        // Add skip tags
+        if ($this->option('skip-tags')) {
+            $cmd = array_merge($cmd, ['--skip-tags', $this->option('skip-tags')]);
+        }
+
+        // Add debug parameter
+        if ($this->option('debug')) {
+            $cmd = array_merge($cmd, ['-v']);
+        }
+
+        // Run process
+        $process = new Process($cmd);
+        $process->setTty($this->getTTY())->setTimeout(3600);
+        $batchId = $this->option('nova-batch-id');
+
+        try {
+            $process->mustRun(function ($type, $buffer) use ($model, $failedMessage, $setErrorState, $batchId) {
+                if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
+                    if ($setErrorState) $model->setStateError();
+
+                    self::addToProcessBuffer($buffer, empty($batchId));
+
+                    Notification::route('slack', env('SLACK_HOOK'))
+                        ->notify(new CommandFailed($failedMessage, self::getProcessBuffer()));
+
+                    throw new Exception("$failedMessage\n" . self::getProcessBuffer());
+                } else {
+                    self::addToProcessBuffer($buffer, empty($batchId));
+                }
+            });
+        } catch (ProcessFailedException $e) {
+            throw new Exception($failedMessage);
+        }
+
+        // Update Nova batch status
+        if ($batchId) {
+            $result =  $this->findBetween(self::getProcessBuffer(), '[autopilot-result]', '[/autopilot-result]');
+            $event = Nova::actionEvent();
+            $event::where('batch_id', $batchId)
+                ->where('model_type', $model->getMorphClass())
+                ->where('model_id', $model->getKey())
+                ->update(['exception' => !empty($result) ? $result : self::getProcessBuffer()]);
+        }
+    }
+
+    /**
+     * Finds a substring between two strings.
+     * 
+     * @param  string $string The string to be searched
+     * @param  string $start The start of the desired substring
+     * @param  string $end The end of the desired substring
+     * @param  bool   $greedy Use last instance of`$end` (default: false)
+     * @return string
+     */
+    function findBetween(string $string, string $start, string $end, bool $greedy = false)
+    {
+        $start = preg_quote($start, '/');
+        $end   = preg_quote($end, '/');
+
+        $format = '/(%s)(.*';
+        if (!$greedy) $format .= '?';
+        $format .= ')(%s)/';
+
+        $pattern = sprintf($format, $start, $end);
+        preg_match($pattern, $string, $matches);
+
+        if (isset($matches[2])) {
+            return $matches[2];
+        }
+
+        return '';
     }
 }

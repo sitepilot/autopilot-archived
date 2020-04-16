@@ -2,12 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use Laravel\Nova\Nova;
 use App\Console\Command;
-use App\Notifications\CommandFailed;
-use Symfony\Component\Process\Process;
-use Illuminate\Support\Facades\Notification;
+use App\Traits\HasState;
+use Illuminate\Support\Facades\Artisan;
 
 class UserProvisionCommand extends Command
 {
@@ -21,7 +18,8 @@ class UserProvisionCommand extends Command
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
-        {--disable-tty : Disable TTY}';
+        {--disable-tty : Disable TTY}
+        {--debug : Show debug info}';
 
     /**
      * The console command description.
@@ -49,62 +47,51 @@ class UserProvisionCommand extends Command
     {
         $this->askUser();
 
-        if ($this->host && $this->user) {
-            $user = $this->userModel;
-            $user->setStateProvisioning();
+        $this->userModel->setStateProvisioning();
 
-            $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook()];
+        $authKeys = [];
+        foreach ($this->userModel->authKeys as $key) {
+            $authKeys[] = $key->vars;
+        }
 
-            $extraVars = "host=$this->host provision_user=$this->user";
-            $cmd = array_merge($cmd, ["--extra-vars", $extraVars]);
+        $vars = [
+            "host" => $this->host,
+            "user" => $this->user,
+            "full_name" => $this->userModel->getVar('full_name'),
+            "email" => $this->userModel->getVar('email'),
+            "password" => $this->userModel->getVar('password'),
+            "mysql_password" => $this->userModel->getVar('mysql_password'),
+            "isolated" => $this->userModel->getVar('isolated'),
+            "auth_keys" => $authKeys
+        ];
 
-            $tags = "provision-user";
-            if ($this->option('tags')) {
-                $tags .= "," . $this->option('tags');
-            }
-            $cmd = array_merge($cmd, ["--tags", $tags]);
+        $validations = [
+            #'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
+            'user' => 'required|exists:server_users,name',
+            'full_name' => 'required|min:3',
+            'email' => 'email',
+            'password' => 'required|min:6',
+            'mysql_password' => 'required|min:6',
+            'isolated' => 'required|boolean',
+            'auth_keys' => 'array',
+            'auth_keys.*.name' => 'required',
+            'auth_keys.*.key' => 'required'
+        ];
 
-            if ($this->option('skip-tags')) {
-                $cmd = array_merge($cmd, ["--skip-tags", $this->option('skip-tags')]);
-            }
+        $this->runPlaybook($this->userModel, 'user/provision.yml', $vars, $validations, "Failed to provision user.");
 
-            $process = new Process($cmd);
-            $process->setTty($this->getTTY());
-            $process->setTimeout(3600);
+        $this->userModel->setStateProvisioned();
 
-            $process->run(function ($type, $buffer) use ($user) {
-                if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
-                    $user->setStateError();
-                    self::addToProcessBuffer($buffer);
-                    Notification::route('slack', env('SLACK_HOOK'))
-                        ->notify(new CommandFailed("Failed to provision user.", self::getProcessBuffer()));
-                    throw new Exception("Failed to provision the user!\n" . self::getProcessBuffer());
-                } else {
-                    self::addToProcessBuffer($buffer);
-                }
-            });
+        foreach ($this->userModel->apps as $app) {
+            Artisan::call('app:provision', [
+                '--app' => $app->name
+            ]);
+        }
 
-            if ($this->option('nova-batch-id')) {
-                $event = Nova::actionEvent();
-                $event::where('batch_id', $this->option('nova-batch-id'))
-                    ->where('model_type', $user->getMorphClass())
-                    ->where('model_id', $user->getKey())
-                    ->update(['exception' => self::getProcessBuffer()]);
-            }
-
-            // Set app state to provisioned
-            foreach ($user->apps as $app) {
-                $app->setStateProvisioned();
-            }
-
-            // Set database state to provisioned
-            foreach ($user->databases as $database) {
-                $database->setStateProvisioned();
-            }
-
-            $user->setStateProvisioned();
-        } else {
-            throw new Exception("Could not find user.");
+        foreach ($this->userModel->databases as $database) {
+            Artisan::call('database:provision', [
+                '--database' => $database->name
+            ]);
         }
     }
 }

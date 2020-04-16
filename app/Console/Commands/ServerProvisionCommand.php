@@ -2,12 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use Laravel\Nova\Nova;
 use App\Console\Command;
-use App\Notifications\CommandFailed;
-use Symfony\Component\Process\Process;
-use Illuminate\Support\Facades\Notification;
 
 class ServerProvisionCommand extends Command
 {
@@ -21,7 +16,8 @@ class ServerProvisionCommand extends Command
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
-        {--disable-tty : Disable TTY}';
+        {--disable-tty : Disable TTY}
+        {--debug : Show debug info}';
 
     /**
      * The console command description.
@@ -49,47 +45,18 @@ class ServerProvisionCommand extends Command
     {
         $this->askHost();
 
-        if ($this->host) {
-            $host = $this->hostModel;
-            $host->setStateProvisioning();
+        $this->hostModel->setStateProvisioning();
 
-            $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), $this->getProvisionPlaybook(), '--extra-vars', "host=$this->host"];
+        $vars = [
+            "host" => $this->host,
+        ];
 
-            if ($this->option('tags')) {
-                $cmd = array_merge($cmd, ["--tags", $this->option('tags')]);
-            }
+        $validations = [
+            'host' => 'required|exists:server_hosts,name'
+        ];
 
-            if ($this->option('skip-tags')) {
-                $cmd = array_merge($cmd, ["--skip-tags", $this->option('skip-tags')]);
-            }
+        $this->runPlaybook($this->hostModel, 'server/provision.yml', $vars, $validations, "Failed to provision server.");
 
-            $process = new Process($cmd);
-            $process->setTty($this->getTTY());
-            $process->setTimeout(3600);
-
-            $process->run(function ($type, $buffer) use ($host) {
-                if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
-                    $host->setStateError();
-                    self::addToProcessBuffer($buffer);
-                    Notification::route('slack', env('SLACK_HOOK'))
-                        ->notify(new CommandFailed("Failed to provision server.", self::getProcessBuffer()));
-                    throw new Exception("Failed to provision the server!\n" . self::getProcessBuffer());
-                } else {
-                    self::addToProcessBuffer($buffer);
-                }
-            });
-
-            if ($this->option('nova-batch-id')) {
-                $event = Nova::actionEvent();
-                $event::where('batch_id', $this->option('nova-batch-id'))
-                    ->where('model_type', $host->getMorphClass())
-                    ->where('model_id', $host->getKey())
-                    ->update(['exception' => self::getProcessBuffer()]);
-            }
-
-            $host->setStateProvisioned();
-        } else {
-            throw new Exception("Could not find server.");
-        }
+        $this->hostModel->setStateProvisioned();
     }
 }

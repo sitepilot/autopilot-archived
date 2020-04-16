@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
+use App\Rules\ServerAuthKeyConfigRule;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -90,7 +91,7 @@ class ServerAuthKey extends Resource
                 ->sortable(),
 
             Code::make('Key Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new ServerAuthKeyConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),

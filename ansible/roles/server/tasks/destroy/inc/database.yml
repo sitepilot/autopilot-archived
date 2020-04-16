@@ -1,6 +1,0 @@
----
-- name: "database : {{ user.name }} : {{ database.name }} : drop database"
-  mysql_db:
-    name: "{{ database.name }}"
-    state: "absent"
-    config_file: "/root/.my.cnf"

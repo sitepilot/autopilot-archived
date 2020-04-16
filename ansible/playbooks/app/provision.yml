@@ -1,0 +1,38 @@
+---
+- hosts: "{{ host }}"
+  vars:
+    user: ""
+    app: ""
+    domain: ""
+    aliases: []
+    ssl: false
+    path: "/opt/sitepilot/users/{{ user }}/{{ app }}"
+    path_vhost: "/usr/local/lsws/conf/vhosts/{{ app }}.conf"
+  tasks:
+    - name: "app/provision : {{ user }} : {{ app }} : create folders"
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0755"
+      loop:
+        - "{{ path }}"
+        - "{{ path }}/public"
+        - "{{ path }}/logs"
+
+    - name: "app/provision : {{ user }} : {{ app }} : generate vhost configuration"
+      template:
+        src: ./templates/olsws_app_vhost.j2
+        dest: "{{ path_vhost }}"
+
+    - name: "app/provision : {{ user }} : {{ app }} : set folder / file permissions"
+      command: "{{ item }}"
+      loop:
+        - "find {{ path }} -type f -exec chmod 644 {} +"
+        - "find {{ path }} -type d -exec chmod 755 {} +"
+
+    - name: "app/provision : {{ user }} : {{ app }} : reload web server"
+      service:
+        name: lsws
+        state: reloaded

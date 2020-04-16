@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\BelongsTo;
 use App\Nova\Actions\DatabaseDestroyAction;
 use App\Nova\Actions\DatabaseProvisionAction;
+use App\Rules\ServerDatabaseConfigRule;
 
 class ServerDatabase extends Resource
 {
@@ -128,7 +129,7 @@ class ServerDatabase extends Resource
                 ->displayUsingLabels(),
 
             Code::make('Database Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new ServerDatabaseConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),

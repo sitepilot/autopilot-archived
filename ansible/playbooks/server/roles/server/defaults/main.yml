@@ -1,0 +1,43 @@
+---
+hostname: undefined
+hostname_update: false
+timezone: Europe/Amsterdam
+timezone_update: true
+autopilot_host: false
+
+admin: sitepilot
+admin_pass: "supersecret"
+admin_email: support@sitepilot.io
+health_email: health@sitepilot.io
+
+mysql_root_pass: "supersecret"
+
+firewall:
+  - port: "22"
+    name: "ssh"
+    rule: "allow"
+    proto: "tcp"
+    from_ip: "any"
+
+php_post_max_size: "64M"
+php_upload_max_filesize: "32M"
+php_memory_limit: "512M"
+
+smtp_relay_host: "smtp.eu.mailgun.org"
+smtp_relay_domain: "mg.example.com"
+smtp_relay_user: "postmaster@mg.example.com"
+smtp_relay_password: "supersecret"
+
+swap_path: "/swapfile"
+swap_size: "1024"
+swap_swappiness: "60"
+
+pma_version: "5.0.1"
+pma_update_version: false
+pma_blowfish_secret: "9B3U6iQKBeaoki8n07HZckWxBKCrxlok"
+
+auth_keys:
+  - name: test@server
+    key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYWDiu9nNJJFWXo/KQZaS/wZB27Ig83m9GW30L7mOhV7GeMtDQ82idl5T1jfgB2uXedc1dbY0xLO2if9wIovaKXP5ZWoh7f3Mvx3WAuhhYq1rsqEhf282Q59KobCmG99Tni9W23FT3aNF8I+atLJF6uUU09xKK5tzoWLS7eiAbsrxbm10KcWB/AbpCJQQJn3Dulno1zCI1Z5FyKlU5lMWgDAUJO/CxyC4rtkAzexz/KAjV7OvPmQmI74xldxjQA9S+LfAu5Zx/Qs4vVb+cWOjCXyjaUMT4oF8lpkFvw2P2o9NCgdx8yoMJJGsiqCP6yn+3KDtAq6x5J8EgsxKpzGud test@server
+
+auth_keys_deprecated: []
