@@ -19,7 +19,7 @@ class AppWpInstallAction extends Action
      *
      * @var string
      */
-    public $name = 'WordPress: Install';
+    public $name = 'WP: Install';
 
     /**
      * Indicates if this action is available on the resource's table row.
