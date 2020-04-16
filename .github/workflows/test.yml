@@ -35,7 +35,7 @@ jobs:
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
-        run: ./autopilot server:provision --host=test --skip-tags=upgrade --disable-tty
+        run: ./autopilot server:provision --host=test --skip-tags=upgrade --debug
 
       - name: Test user:provision command.
         run: ./autopilot user:provision --user=test --debug
@@ -44,13 +44,13 @@ jobs:
         run: ./autopilot app:provision --app=test --debug
 
       - name: Test database:provision command.
-        run: ./autopilot database:provision --database=test  --debug
+        run: ./autopilot database:provision --database=test --debug
 
       - name: Test server:test command.
-        run: ./autopilot server:test --host=test --disable-tty
+        run: ./autopilot server:test --host=test --debug
 
       - name: Test server:cert:renew command.
-        run: ./autopilot server:cert:renew --host=test --disable-tty
+        run: ./autopilot server:cert:renew --host=test --debug
 
       - name: Test user:test command.
         run: ./autopilot user:test --user=test --skip-tags=test-domains --debug
