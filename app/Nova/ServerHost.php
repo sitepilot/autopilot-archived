@@ -183,8 +183,8 @@ class ServerHost extends Resource
     {
         return [
             new ServerTestAction,
-            new ServerCertRenewAction,
-            new ServerProvisionAction
+            new ServerProvisionAction,
+            new ServerCertRenewAction
         ];
     }
 }
