@@ -19,7 +19,7 @@ class UserTestAction extends Action
      *
      * @var string
      */
-    public $name = 'Test User';
+    public $name = 'Test';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -33,7 +33,7 @@ class UserTestAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Test User';
+    public $confirmButtonText = 'Test';
 
     /**
      * The text to be used for the action's confirmation text.

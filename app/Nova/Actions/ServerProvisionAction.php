@@ -20,7 +20,7 @@ class ServerProvisionAction extends Action
      *
      * @var string
      */
-    public $name = 'Provision Server';
+    public $name = 'Provision';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,7 +34,7 @@ class ServerProvisionAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Provision Server';
+    public $confirmButtonText = 'Provision';
 
     /**
      * The text to be used for the action's confirmation text.
