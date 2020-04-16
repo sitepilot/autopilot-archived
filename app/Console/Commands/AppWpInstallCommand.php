@@ -76,6 +76,6 @@ class AppWpInstallCommand extends Command
             'db_host' => 'required'
         ];
 
-        $this->runPlaybook($this->appModel, 'wordpress/install.yml', $vars, $validations, "Failed to install WordPress.");
+        $this->runPlaybook($this->appModel, 'wordpress/install.yml', $vars, $validations, "Failed to install WordPress.", false);
     }
 }

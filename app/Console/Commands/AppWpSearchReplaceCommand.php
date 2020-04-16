@@ -64,6 +64,6 @@ class AppWpSearchReplaceCommand extends Command
             'replace' => 'required|min:3',
         ];
 
-        $this->runPlaybook($this->appModel, 'wordpress/search-replace.yml', $vars, $validations, "Failed to search and replace in WordPress database.");
+        $this->runPlaybook($this->appModel, 'wordpress/search-replace.yml', $vars, $validations, "Failed to search and replace in WordPress database.", false);
     }
 }
