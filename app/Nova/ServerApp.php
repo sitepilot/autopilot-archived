@@ -11,7 +11,9 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\BelongsTo;
 use App\Nova\Actions\AppDestroyAction;
+use App\Nova\Actions\AppWpUpdateAction;
 use App\Nova\Actions\AppProvisionAction;
+use App\Nova\Actions\AppWpInstallAction;
 use App\Nova\Actions\AppCertRequestAction;
 
 class ServerApp extends Resource
@@ -192,6 +194,8 @@ class ServerApp extends Resource
         return [
             new AppProvisionAction,
             new AppCertRequestAction,
+            new AppWpInstallAction,
+            new AppWpUpdateAction,
             (new AppDestroyAction)->onlyOnDetail()
         ];
     }
