@@ -14,6 +14,7 @@ class AppWpUpdateCommand extends Command
      */
     protected $signature = 'app:wp:update 
         {--app= : The app name (optional)}
+        {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}';
 

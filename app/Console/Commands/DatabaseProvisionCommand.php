@@ -18,6 +18,7 @@ class DatabaseProvisionCommand extends Command
      */
     protected $signature = 'database:provision 
         {--database= : The database name (optional)}
+        {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}';
 
