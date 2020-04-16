@@ -21,7 +21,7 @@ class AppWpLoginAction extends Action
      *
      * @var string
      */
-    public $name = 'WP: Login';
+    public $name = 'Login to WordPress';
 
     /**
      * Indicates if this action is available on the resource's table row.

@@ -20,7 +20,7 @@ class AppWpSearchReplaceAction extends Action
      *
      * @var string
      */
-    public $name = 'WP: Search & Replace';
+    public $name = 'Search & Replace WordPress';
 
     /**
      * Indicates if this action is available on the resource's table row.
