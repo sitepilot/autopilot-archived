@@ -20,7 +20,8 @@ class DatabaseProvisionCommand extends Command
         {--database= : The database name (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
-        {--disable-tty : Disable TTY}';
+        {--disable-tty : Disable TTY}
+        {--debug : Show debug info}';
 
     /**
      * The console command description.

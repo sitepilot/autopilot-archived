@@ -283,6 +283,11 @@ class Command extends ConsoleCommand
             $cmd = array_merge($cmd, ['--skip-tags', $this->option('skip-tags')]);
         }
 
+        // Add debug parameter
+        if ($this->option('debug')) {
+            $cmd = array_merge($cmd, ['-v']);
+        }
+
         // Run process
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
