@@ -95,7 +95,6 @@ class ServerHost extends Model
             'swap_path' => '/swapfile',
             'swap_size' => '1024',
             'swap_swappiness' => '60',
-            'users' => [],
             'firewall' => [],
             'auth_keys' => []
         ];

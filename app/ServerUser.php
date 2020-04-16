@@ -68,8 +68,6 @@ class ServerUser extends Model
             'isolated' => true,
             'password' => Str::random(12),
             'mysql_password' => Str::random(12),
-            'apps' => [],
-            'databases' => [],
             'auth_keys' => []
         ];
     }
