@@ -14,6 +14,7 @@ use Laravel\Nova\Fields\MorphToMany;
 use App\Nova\Actions\ServerTestAction;
 use Laravel\Nova\Fields\BelongsToMany;
 use App\Nova\Actions\ServerProvisionAction;
+use App\Rules\ServerHostConfigRule;
 
 class ServerHost extends Resource
 {
@@ -114,7 +115,7 @@ class ServerHost extends Resource
                 ->displayUsingLabels(),
 
             Code::make('Host Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new ServerHostConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),

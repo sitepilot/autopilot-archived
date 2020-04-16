@@ -3,7 +3,7 @@
 namespace App\Nova;
 
 use App\Nova\ServerUser;
-use App\Rules\AppConfigRule;
+use App\Rules\ServerAppConfigRule;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -132,7 +132,7 @@ class ServerApp extends Resource
                 ->displayUsingLabels(),
 
             Code::make('App Configuration', 'vars')
-                ->rules(['required', new AppConfigRule])
+                ->rules(['required', new ServerAppConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),

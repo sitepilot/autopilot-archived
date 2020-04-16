@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use App\Nova\ServerHost;
+use App\Rules\ServerGroupConfigRule;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -90,7 +91,7 @@ class ServerGroup extends Resource
                 ->sortable(),
 
             Code::make('Group Configuration', 'vars')
-                ->rules(['required', 'json'])
+                ->rules(['required', new ServerGroupConfigRule])
                 ->json()
                 ->onlyOnForms()
                 ->hideWhenCreating(),
