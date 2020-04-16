@@ -13,6 +13,7 @@ use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Console\Command as ConsoleCommand;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Command extends ConsoleCommand
 {
@@ -38,11 +39,7 @@ class Command extends ConsoleCommand
             if ($this->hostModel) {
                 $this->host = $this->hostModel->name;
             }
-
-            return;
-        }
-
-        if (!$this->host) {
+        } else {
             $hosts = ServerHost::get();
             $options = [];
 
@@ -54,6 +51,10 @@ class Command extends ConsoleCommand
                 $this->host = $this->choice('Select a host', $options);
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
+        }
+
+        if (!$this->host) {
+            throw new Exception("Could not find host.");
         }
     }
 
@@ -72,11 +73,7 @@ class Command extends ConsoleCommand
                     $this->host = $this->hostModel->name;
                 }
             }
-
-            return;
-        }
-
-        if (!$this->user) {
+        } else {
             $users = ServerUser::get();
             $options = [];
             $hosts = [];
@@ -92,6 +89,10 @@ class Command extends ConsoleCommand
                 $this->host = $hosts[$this->user];
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
+        }
+
+        if (!$this->host || !$this->user) {
+            throw new Exception("Could not find user.");
         }
     }
 
@@ -115,11 +116,7 @@ class Command extends ConsoleCommand
                     }
                 }
             }
-
-            return;
-        }
-
-        if (!$this->app) {
+        } else {
             $apps = ServerApp::get();
             $options = [];
             $hosts = [];
@@ -139,6 +136,10 @@ class Command extends ConsoleCommand
                 $this->host = $hosts[$this->app];
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
+        }
+
+        if (!$this->host || !$this->user || !$this->app) {
+            throw new Exception("Could not find app.");
         }
     }
 
@@ -162,11 +163,7 @@ class Command extends ConsoleCommand
                     }
                 }
             }
-
-            return;
-        }
-
-        if (!$this->database) {
+        } else {
             $databases = ServerDatabase::get();
             $options = [];
             $hosts = [];
@@ -187,6 +184,10 @@ class Command extends ConsoleCommand
                 $this->hostModel = ServerHost::where('name', $this->host)->first();
             }
         }
+
+        if (!$this->host || !$this->user || !$this->database) {
+            throw new Exception("Could not find database.");
+        }
     }
 
     /**
@@ -200,7 +201,7 @@ class Command extends ConsoleCommand
             return false;
         }
 
-        return true;
+        return Process::isTtySupported();
     }
 
     /**
@@ -277,23 +278,33 @@ class Command extends ConsoleCommand
         // Prepare command
         $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), base_path("ansible/playbooks/$playbook"), "--extra-vars", json_encode($vars)];
 
+        // Add skip tags
+        if ($this->option('skip-tags')) {
+            $cmd = array_merge($cmd, ['--skip-tags', $this->option('skip-tags')]);
+        }
+
         // Run process
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
-        $process->run(function ($type, $buffer) use ($model, $failedMessage) {
-            if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
-                $model->setStateError();
 
-                self::addToProcessBuffer($buffer);
+        try {
+            $process->mustRun(function ($type, $buffer) use ($model, $failedMessage) {
+                if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
+                    $model->setStateError();
 
-                Notification::route('slack', env('SLACK_HOOK'))
-                    ->notify(new CommandFailed($failedMessage, self::getProcessBuffer()));
+                    self::addToProcessBuffer($buffer);
 
-                throw new Exception("$failedMessage\n" . self::getProcessBuffer());
-            } else {
-                self::addToProcessBuffer($buffer);
-            }
-        });
+                    Notification::route('slack', env('SLACK_HOOK'))
+                        ->notify(new CommandFailed($failedMessage, self::getProcessBuffer()));
+
+                    throw new Exception("$failedMessage\n" . self::getProcessBuffer());
+                } else {
+                    self::addToProcessBuffer($buffer);
+                }
+            });
+        } catch (ProcessFailedException $e) {
+            throw new Exception($failedMessage);
+        }
 
         // Update Nova batch status
         if ($this->option('nova-batch-id')) {
