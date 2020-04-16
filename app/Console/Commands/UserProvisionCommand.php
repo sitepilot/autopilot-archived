@@ -15,6 +15,7 @@ class UserProvisionCommand extends Command
      */
     protected $signature = 'user:provision 
         {--user= : The user name (optional)}
+        {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}

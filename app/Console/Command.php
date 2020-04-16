@@ -278,6 +278,11 @@ class Command extends ConsoleCommand
         // Prepare command
         $cmd = ['ansible-playbook', '-i', $this->getInventoryScript(), base_path("ansible/playbooks/$playbook"), "--extra-vars", json_encode($vars)];
 
+        // Add tags
+        if ($this->option('tags')) {
+            $cmd = array_merge($cmd, ['--tags', $this->option('tags')]);
+        }
+
         // Add skip tags
         if ($this->option('skip-tags')) {
             $cmd = array_merge($cmd, ['--skip-tags', $this->option('skip-tags')]);

@@ -14,6 +14,7 @@ class AppProvisionCommand extends Command
      */
     protected $signature = 'app:provision 
         {--app= : The app name (optional)}
+        {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}

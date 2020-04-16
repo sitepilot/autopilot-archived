@@ -2,12 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Exception;
-use Laravel\Nova\Nova;
 use App\Console\Command;
-use App\Notifications\CommandFailed;
-use Symfony\Component\Process\Process;
-use Illuminate\Support\Facades\Notification;
 
 class DatabaseProvisionCommand extends Command
 {
@@ -18,6 +13,7 @@ class DatabaseProvisionCommand extends Command
      */
     protected $signature = 'database:provision 
         {--database= : The database name (optional)}
+        {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}

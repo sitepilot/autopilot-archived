@@ -13,6 +13,7 @@ class ServerProvisionCommand extends Command
      */
     protected $signature = 'server:provision 
         {--host= : The host name (optional)}
+        {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
         {--disable-tty : Disable TTY}
