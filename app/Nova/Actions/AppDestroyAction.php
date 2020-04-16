@@ -20,7 +20,7 @@ class AppDestroyAction extends Action
      *
      * @var string
      */
-    public $name = 'Destroy App';
+    public $name = 'Destroy';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,7 +34,7 @@ class AppDestroyAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Destroy App';
+    public $confirmButtonText = 'Destroy';
 
     /**
      * The text to be used for the action's confirmation text.
