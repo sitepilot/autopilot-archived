@@ -66,27 +66,6 @@ class ServerInventoryCommand extends Command
                     chmod($hostvars['ansible_ssh_public_key_file'], 0600);
                 }
 
-                $hostvars['users'] = [];
-                foreach ($host->users as $user) {
-                    $uservars = $user->vars;
-                    $uservars['apps'] = [];
-                    foreach ($user->apps as $app) {
-                        $uservars['apps'][] = $app->vars;
-                    }
-
-                    $uservars['databases'] = [];
-                    foreach ($user->databases as $database) {
-                        $uservars['databases'][] = $database->vars;
-                    }
-
-                    $uservars['auth_keys'] = [];
-                    foreach ($user->authKeys as $key) {
-                        $uservars['auth_keys'][] = $key->vars;
-                    }
-
-                    $hostvars['users'][] = $uservars;
-                }
-
                 $hostvars['firewall'] = [];
                 foreach ($host->firewallRules as $rule) {
                     $hostvars['firewall'][] = $rule->vars;
