@@ -19,7 +19,7 @@ class AppWpUpdateAction extends Action
      *
      * @var string
      */
-    public $name = 'Update WordPress';
+    public $name = 'WordPress: Update';
 
     /**
      * Indicates if this action is available on the resource's table row.
