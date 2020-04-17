@@ -47,7 +47,7 @@ Ubuntu 18.04 is the only supported operating system (for the master and slave ho
 * `./autopilot app:wp:search-replace {search} {replace}`: Search and replace in WordPress database.
 * `./autopilot app:wp:login {username}`: Login to the WordPress dashboard.
 * `./autopilot app:wp:check-state`: Check WordPress for updates and installed plugins / themes.
-
+ 
 ## Server Configuration
 
 ### Packages & Services
