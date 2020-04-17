@@ -231,7 +231,7 @@ class Command extends ConsoleCommand
      * @param boolean $debug
      * @return void
      */
-    public function addToProcessBuffer($batchId, $message, $debug = true)
+    public function addToProcessBuffer($message, $debug = true)
     {
         if ($debug) {
             echo $message;
@@ -311,7 +311,7 @@ class Command extends ConsoleCommand
 
                     throw new Exception("$failedMessage\n" . $command->getProcessBuffer());
                 } else {
-                    $command->addToProcessBuffer($batchId, $buffer, empty($batchId));
+                    $command->addToProcessBuffer($buffer, empty($batchId));
                 }
             });
         } catch (ProcessFailedException $e) {
