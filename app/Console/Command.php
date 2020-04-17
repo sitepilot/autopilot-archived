@@ -17,16 +17,6 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Command extends ConsoleCommand
 {
-    protected $host = null;
-    protected $user = null;
-    protected $app = null;
-    protected $database = null;
-    protected $hostModel = null;
-    protected $userModel = null;
-    protected $appModel = null;
-    protected $databaseModel = null;
-    protected $buffer = null;
-
     /**
      * Ask for a host.
      *
@@ -35,27 +25,25 @@ class Command extends ConsoleCommand
     public function askHost()
     {
         if ($this->option('host')) {
-            $this->hostModel = $this->option('host') == '#first-item' ? ServerHost::first() : ServerHost::where('name', $this->option('host'))->first();
-            if ($this->hostModel) {
-                $this->host = $this->hostModel->name;
-            }
+            $host = $this->option('host') == '#first-item' ? ServerHost::first() : ServerHost::where('name', $this->option('host'))->first();
         } else {
             $hosts = ServerHost::get();
-            $options = [];
 
+            $options = [];
             foreach ($hosts as $host) {
                 $options[] = $host->name;
             }
 
             if (count($options) > 0) {
-                $this->host = $this->choice('Select a host', $options);
-                $this->hostModel = ServerHost::where('name', $this->host)->first();
+                $host = ServerHost::where('name', $this->choice('Select host', $options))->first();
             }
         }
 
-        if (!$this->host) {
-            throw new Exception("Could not find host.");
+        if ($host) {
+            return $host;
         }
+
+        throw new Exception("Could not find host.");
     }
 
     /**
@@ -66,34 +54,25 @@ class Command extends ConsoleCommand
     public function askUser()
     {
         if ($this->option('user')) {
-            $this->userModel = $this->option('user') == '#first-item' ? ServerUser::first() : ServerUser::where('name', $this->option('user'))->first();
-            if ($this->userModel) {
-                $this->user = $this->userModel->name;
-                if ($this->hostModel = $this->userModel->host) {
-                    $this->host = $this->hostModel->name;
-                }
-            }
+            $user = $this->option('user') == '#first-item' ? ServerUser::first() : ServerUser::where('name', $this->option('user'))->first();
         } else {
             $users = ServerUser::get();
-            $options = [];
-            $hosts = [];
 
+            $options = [];
             foreach ($users as $user) {
                 $options[] = $user->name;
-                $hosts[$user->name] = $user->host->name;
             }
 
             if (count($options) > 0) {
-                $this->user = $this->choice('Select a user', $options);
-                $this->userModel = ServerUser::where('name', $this->user)->first();
-                $this->host = $hosts[$this->user];
-                $this->hostModel = ServerHost::where('name', $this->host)->first();
+                $user = ServerUser::where('name', $this->choice('Select user', $options))->first();
             }
         }
 
-        if (!$this->host || !$this->user) {
-            throw new Exception("Could not find user.");
+        if ($user) {
+            return $user;
         }
+
+        throw new Exception("Could not find user.");
     }
 
     /**
@@ -104,43 +83,25 @@ class Command extends ConsoleCommand
     public function askApp()
     {
         if ($this->option('app')) {
-            $this->appModel = $this->option('app') == '#first-item' ? ServerApp::first() : ServerApp::where('name', $this->option('app'))->first();
-            if ($this->appModel) {
-                $this->app = $this->appModel->name;
-
-                if ($this->userModel = $this->appModel->user) {
-                    $this->user = $this->userModel->name;
-
-                    if ($this->hostModel = $this->userModel->host) {
-                        $this->host = $this->hostModel->name;
-                    }
-                }
-            }
+            $app = $this->option('app') == '#first-item' ? ServerApp::first() : ServerApp::where('name', $this->option('app'))->first();
         } else {
             $apps = ServerApp::get();
-            $options = [];
-            $hosts = [];
-            $users = [];
 
+            $options = [];
             foreach ($apps as $app) {
                 $options[] = $app->name;
-                $users[$app->name] = $app->user->name;
-                $hosts[$app->name] = $app->user->host->name;
             }
 
             if (count($options) > 0) {
-                $this->app = $this->choice('Select an app', $options);
-                $this->appModel = ServerApp::where('name', $this->app)->first();
-                $this->user = $users[$this->app];
-                $this->userModel = ServerUser::where('name', $this->user)->first();
-                $this->host = $hosts[$this->app];
-                $this->hostModel = ServerHost::where('name', $this->host)->first();
+                $app = ServerApp::where('name', $this->choice('Select app', $options))->first();
             }
         }
 
-        if (!$this->host || !$this->user || !$this->app) {
-            throw new Exception("Could not find app.");
+        if ($app) {
+            return $app;
         }
+
+        throw new Exception("Could not find app.");
     }
 
     /**
@@ -151,43 +112,25 @@ class Command extends ConsoleCommand
     public function askDatabase()
     {
         if ($this->option('database')) {
-            $this->databaseModel = $this->option('database') == '#first-item' ? ServerDatabase::first() : ServerDatabase::where('name', $this->option('database'))->first();
-            if ($this->databaseModel) {
-                $this->database = $this->databaseModel->name;
-
-                if ($this->userModel = $this->databaseModel->user) {
-                    $this->user = $this->userModel->name;
-
-                    if ($this->hostModel = $this->userModel->host) {
-                        $this->host = $this->hostModel->name;
-                    }
-                }
-            }
+            $database = $this->option('database') == '#first-item' ? ServerDatabase::first() : ServerDatabase::where('name', $this->option('database'))->first();
         } else {
             $databases = ServerDatabase::get();
-            $options = [];
-            $hosts = [];
-            $users = [];
 
+            $options = [];
             foreach ($databases as $database) {
                 $options[] = $database->name;
-                $users[$database->name] = $database->user->name;
-                $hosts[$database->name] = $database->user->host->name;
             }
 
             if (count($options) > 0) {
-                $this->database = $this->choice('Select a database', $options);
-                $this->databaseModel = ServerDatabase::where('name', $this->database)->first();
-                $this->user = $users[$this->database];
-                $this->userModel = ServerUser::where('name', $this->user)->first();
-                $this->host = $hosts[$this->database];
-                $this->hostModel = ServerHost::where('name', $this->host)->first();
+                $database = ServerDatabase::where('name', $this->choice('Select database', $options))->first();
             }
         }
 
-        if (!$this->host || !$this->user || !$this->database) {
-            throw new Exception("Could not find database.");
+        if ($database) {
+            return $database;
         }
+
+        throw new Exception("Could not find database.");
     }
 
     /**
@@ -225,35 +168,9 @@ class Command extends ConsoleCommand
     }
 
     /**
-     * Add line to the process buffer.
-     *
-     * @param string $message
-     * @param boolean $debug
-     * @return void
-     */
-    public function addToProcessBuffer($message, $debug = true)
-    {
-        if ($debug) {
-            echo $message;
-        }
-
-        $this->buffer .= $message;
-    }
-
-    /**
-     * Returns the process buffer.
-     *
-     * @return string
-     */
-    public function getProcessBuffer()
-    {
-        return $this->buffer;
-    }
-
-    /**
-     * Run app playbook.
+     * Run playbook.
      * 
-     * @return self
+     * @return string $processBuffer
      * @throws Exception
      */
     public function runPlaybook($model, $playbook, $vars = [], $validations = [], $failedMessage = '', $setErrorState = true)
@@ -297,21 +214,23 @@ class Command extends ConsoleCommand
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
         $batchId = $this->option('nova-batch-id');
-        $command = $this;
+        $processBuffer = '';
 
         try {
-            $process->mustRun(function ($type, $buffer) use ($command, $model, $failedMessage, $setErrorState, $batchId) {
+            $process->mustRun(function ($type, $buffer) use (&$processBuffer, $model, $failedMessage, $setErrorState, $batchId) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
                     if ($setErrorState) $model->setStateError();
 
-                    $command->addToProcessBuffer($buffer, empty($batchId));
+                    if (empty($batchId)) echo $buffer;
+                    $processBuffer .= $buffer;
 
                     Notification::route('slack', env('SLACK_HOOK'))
-                        ->notify(new CommandFailed($failedMessage, $command->getProcessBuffer()));
+                        ->notify(new CommandFailed($failedMessage, $processBuffer));
 
-                    throw new Exception("$failedMessage\n" . $command->getProcessBuffer());
+                    throw new Exception("$failedMessage\n" . $processBuffer);
                 } else {
-                    $command->addToProcessBuffer($buffer, empty($batchId));
+                    if (empty($batchId)) echo $buffer;
+                    $processBuffer .= $buffer;
                 }
             });
         } catch (ProcessFailedException $e) {
@@ -320,15 +239,15 @@ class Command extends ConsoleCommand
 
         // Update Nova batch status
         if ($batchId) {
-            $result =  $this->findBetween($command->getProcessBuffer(), '[autopilot-result]', '[/autopilot-result]');
+            $result =  $this->findBetween($processBuffer, '[autopilot-result]', '[/autopilot-result]');
             $event = Nova::actionEvent();
             $event::where('batch_id', $batchId)
                 ->where('model_type', $model->getMorphClass())
                 ->where('model_id', $model->getKey())
-                ->update(['exception' => !empty($result) ? $result : $command->getProcessBuffer()]);
+                ->update(['exception' => !empty($result) ? $result : $processBuffer]);
         }
 
-        return $command;
+        return $processBuffer;
     }
 
     /**

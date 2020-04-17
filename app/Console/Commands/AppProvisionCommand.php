@@ -44,16 +44,16 @@ class AppProvisionCommand extends Command
      */
     public function handle()
     {
-        $this->askApp();
+        $app = $this->askApp();
 
-        $this->appModel->setStateProvisioning();
+        $app->setStateProvisioning();
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "app" => $this->app,
-            "domain" => $this->appModel->getVar('domain'),
-            "aliases" => $this->appModel->getVar('aliases')
+            "host" => $app->host->name,
+            "user" => $app->user->name,
+            "app" => $app->name,
+            "domain" => $app->getVar('domain'),
+            "aliases" => $app->getVar('aliases')
         ];
 
         $validations = [
@@ -64,8 +64,8 @@ class AppProvisionCommand extends Command
             'aliases' => 'array',
         ];
 
-        $this->runPlaybook($this->appModel, 'app/provision.yml', $vars, $validations, "Failed to provision app.");
+        $this->runPlaybook($app, 'app/provision.yml', $vars, $validations, "Failed to provision app.");
 
-        $this->appModel->setStateProvisioned();
+        $app->setStateProvisioned();
     }
 }

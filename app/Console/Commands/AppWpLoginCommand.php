@@ -45,13 +45,13 @@ class AppWpLoginCommand extends Command
      */
     public function handle()
     {
-        $this->askApp();
+        $app = $this->askApp();
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "app" => $this->app,
-            "login" => $this->argument('login') ? $this->argument('login') : $this->appModel->getVar('wordpress.admin_user'),
+            "host" => $app->host->name,
+            "user" => $app->user->name,
+            "app" => $app->name,
+            "login" => $this->argument('login') ? $this->argument('login') : $app->getVar('wordpress.admin_user'),
         ];
 
         $validations = [
@@ -61,6 +61,6 @@ class AppWpLoginCommand extends Command
             'login' => 'required|min:3'
         ];
 
-        $this->runPlaybook($this->appModel, 'wordpress/login.yml', $vars, $validations, "Failed to login to WordPress.", false);
+        $this->runPlaybook($app, 'wordpress/login.yml', $vars, $validations, "Failed to login to WordPress.", false);
     }
 }

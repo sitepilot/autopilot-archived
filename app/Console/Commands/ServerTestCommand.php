@@ -44,17 +44,17 @@ class ServerTestCommand extends Command
      */
     public function handle()
     {
-        $this->askHost();
+        $host = $this->askHost();
 
         $authKeys = [];
-        foreach ($this->hostModel->authKeys as $key) {
+        foreach ($host->authKeys as $key) {
             $authKeys[] = $key->getVar('key');
         }
 
         $vars = [
-            "host" => $this->host,
-            "admin" => $this->hostModel->group->getVar('admin'),
-            "admin_pass" => $this->hostModel->getVar('admin_pass'),
+            "host" => $host->name,
+            "admin" => $host->group->getVar('admin'),
+            "admin_pass" => $host->getVar('admin_pass'),
             "auth_keys" => $authKeys
         ];
 
@@ -65,6 +65,6 @@ class ServerTestCommand extends Command
             'auth_keys' => 'array'
         ];
 
-        $this->runPlaybook($this->hostModel, 'server/test.yml', $vars, $validations, "Failed to test server.");
+        $this->runPlaybook($host, 'server/test.yml', $vars, $validations, "Failed to test server.");
     }
 }

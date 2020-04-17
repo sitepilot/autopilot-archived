@@ -10,6 +10,7 @@ use App\Traits\Encryptable;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Actionable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ServerDatabase extends Model
 {
@@ -74,7 +75,7 @@ class ServerDatabase extends Model
     /**
      * Returns the app user.
      *
-     * @return void
+     * @return BelongsTo
      */
     public function user()
     {
@@ -82,9 +83,19 @@ class ServerDatabase extends Model
     }
 
     /**
+     * Returns the database host.
+     *
+     * @return BelongsTo
+     */
+    public function host()
+    {
+        return $this->user->host();
+    }
+
+    /**
      * Returns the app database.
      *
-     * @return void
+     * @return BelongsTo
      */
     public function app()
     {

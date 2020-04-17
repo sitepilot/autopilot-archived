@@ -45,16 +45,16 @@ class AppWpUpdateCommand extends Command
      */
     public function handle()
     {
-        $this->askApp();
+        $app = $this->askApp();
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "app" => $this->app,
-            "update_core" => $this->appModel->getVar('wordpress.update_core'),
-            "update_plugins" => $this->appModel->getVar('wordpress.update_plugins'),
-            "update_themes" => $this->appModel->getVar('wordpress.update_themes'),
-            "update_exclude" => $this->appModel->getVar('wordpress.update_exclude', [])
+            "host" => $app->host->name,
+            "user" => $app->user->name,
+            "app" => $app->name,
+            "update_core" => $app->getVar('wordpress.update_core'),
+            "update_plugins" => $app->getVar('wordpress.update_plugins'),
+            "update_themes" => $app->getVar('wordpress.update_themes'),
+            "update_exclude" => $app->getVar('wordpress.update_exclude', [])
         ];
 
         $validations = [
@@ -67,10 +67,10 @@ class AppWpUpdateCommand extends Command
             'update_exclude' => 'array',
         ];
 
-        $this->runPlaybook($this->appModel, 'wordpress/update.yml', $vars, $validations, "Failed to update WordPress.", false);
+        $this->runPlaybook($app, 'wordpress/update.yml', $vars, $validations, "Failed to update WordPress.", false);
 
         Artisan::call('app:wp:check-state', [
-            '--app' => $this->appModel->name,
+            '--app' => $app->name,
             '--nova-batch-id' => $this->option('nova-batch-id')
         ]);
     }

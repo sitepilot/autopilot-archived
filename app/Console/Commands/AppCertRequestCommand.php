@@ -44,14 +44,14 @@ class AppCertRequestCommand extends Command
      */
     public function handle()
     {
-        $this->askApp();
+        $app = $this->askApp();
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "app" => $this->app,
-            "domain" => $this->appModel->getVar('domain'),
-            "aliases" => $this->appModel->getVar('aliases')
+            "host" => $app->host->name,
+            "user" => $app->user->name,
+            "app" => $app->name,
+            "domain" => $app->getVar('domain'),
+            "aliases" => $app->getVar('aliases')
         ];
 
         $validations = [
@@ -62,8 +62,8 @@ class AppCertRequestCommand extends Command
             'aliases' => 'array',
         ];
 
-        $this->runPlaybook($this->appModel, 'app/cert-request.yml', $vars, $validations, "Failed to provision app certificate.", false);
+        $this->runPlaybook($app, 'app/cert-request.yml', $vars, $validations, "Failed to provision app certificate.", false);
 
-        $this->appModel->setVar('ssl', true)->save();
+        $app->setVar('ssl', true)->save();
     }
 }

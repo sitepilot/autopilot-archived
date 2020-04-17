@@ -43,21 +43,21 @@ class DatabaseProvisionCommand extends Command
      */
     public function handle()
     {
-        $this->askDatabase();
+        $database = $this->askDatabase();
 
-        $this->databaseModel->setStateProvisioning();
+        $database->setStateProvisioning();
 
         $vars = [
-            "host" => $this->host,
-            "database" => $this->databaseModel->getVar('name'),
+            "host" => $database->host->name,
+            "database" => $database->getVar('name'),
         ];
 
         $validations = [
             'database' => 'required|exists:server_databases,name',
         ];
 
-        $this->runPlaybook($this->databaseModel, 'database/provision.yml', $vars, $validations, "Failed to provision database.");
+        $this->runPlaybook($database, 'database/provision.yml', $vars, $validations, "Failed to provision database.");
 
-        $this->databaseModel->setStateProvisioned();
+        $database->setStateProvisioned();
     }
 }

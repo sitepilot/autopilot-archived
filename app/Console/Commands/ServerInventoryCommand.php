@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Host;
 use App\ServerGroup;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
