@@ -56,7 +56,6 @@ class ServerTestAction extends Action
             try {
                 Artisan::call('server:test', [
                     '--host' => $host->name,
-                    '--skip-tags' => $fields->skip_tags,
                     '--nova-batch-id' => $this->batchId,
                     '--disable-tty' => true
                 ]);
@@ -73,9 +72,6 @@ class ServerTestAction extends Action
      */
     public function fields()
     {
-        return [
-            Text::make('Skip Tags', 'skip_tags')
-                ->help('Available tags: test-domains')
-        ];
+        return [];
     }
 }
