@@ -35,46 +35,46 @@ jobs:
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
       - name: Test server:provision command.
-        run: ./autopilot server:provision --host=test --skip-tags=upgrade --debug
+        run: ./autopilot server:provision --host="$(date +"%s")-test" --skip-tags=upgrade --debug
 
       - name: Test user:provision command.
-        run: ./autopilot user:provision --user=test --debug
+        run: ./autopilot user:provision --user="$(date +"%s")-test" --debug
 
       - name: Test app:provision command.
-        run: ./autopilot app:provision --app=test --debug
+        run: ./autopilot app:provision --app="$(date +"%s")-test" --debug
 
       - name: Test database:provision command.
-        run: ./autopilot database:provision --database=test --debug
+        run: ./autopilot database:provision --database="$(date +"%s")-test" --debug
 
       - name: Test server:test command.
-        run: ./autopilot server:test --host=test --debug
+        run: ./autopilot server:test --host="$(date +"%s")-test" --debug
 
       - name: Test server:cert:renew command.
-        run: ./autopilot server:cert:renew --host=test --debug
+        run: ./autopilot server:cert:renew --host="$(date +"%s")-test" --debug
 
       - name: Test user:test command.
-        run: ./autopilot user:test --user=test --skip-tags=test-domains --debug
+        run: ./autopilot user:test --user="$(date +"%s")-test" --skip-tags=test-domains --debug
 
       - name: Test app:wp:install command.
-        run: ./autopilot app:wp:install --app=test --debug
+        run: ./autopilot app:wp:install --app="$(date +"%s")-test" --debug
 
       - name: Test app:wp:update command.
-        run: ./autopilot app:wp:update --app=test --debug
+        run: ./autopilot app:wp:update --app="$(date +"%s")-test" --debug
 
       - name: Test app:wp:search-replace command.
-        run: ./autopilot app:wp:search-replace test123 test456 --app=test --debug
+        run: ./autopilot app:wp:search-replace test123 test456 --app="$(date +"%s")-test" --debug
 
       - name: Test app:wp:login command.
-        run: ./autopilot app:wp:login captain --app=test --debug
+        run: ./autopilot app:wp:login captain --app="$(date +"%s")-test" --debug
 
       - name: Test database:destroy command.
-        run: ./autopilot database:destroy --database=test --debug
+        run: ./autopilot database:destroy --database="$(date +"%s")-test" --debug
 
       - name: Test app:destroy command.
-        run: ./autopilot app:destroy --app=test --debug
+        run: ./autopilot app:destroy --app="$(date +"%s")-test" --debug
 
       - name: Test user:destroy command.
-        run: ./autopilot user:destroy --user=test --debug
+        run: ./autopilot user:destroy --user="$(date +"%s")-test" --debug
 
       - name: Deploy image to Docker hub.
         run: |
