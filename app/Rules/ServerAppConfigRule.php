@@ -18,7 +18,7 @@ class ServerAppConfigRule extends ConfigRule
         $this->validations = [
             'name' => 'required|min:3',
             'domain' => 'required',
-            'aliases' => 'required|array',
+            'aliases' => 'array',
             'ssl' => 'required|boolean',
             'wordpress.db_name' => 'exists:server_databases,name,state,' . HasState::getProvisionedIndex(),
             'wordpress.update_core' => 'boolean',

@@ -135,16 +135,6 @@ class ServerApp extends Model
     }
 
     /**
-     * Set the domain variable.
-     *
-     * @return void
-     */
-    public function setDomainAttribute($value)
-    {
-        $this->setVar('domain', $value, true, true);
-    }
-
-    /**
      * Returns a random name from space.
      * 
      * @return string $name

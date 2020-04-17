@@ -120,8 +120,8 @@ class ServerHost extends Model
             chmod($this->getPrivateKeyPath(false), 0600);
             chmod($this->getPublicKeyPath(false), 0600);
 
-            $this->setVar('ansible_ssh_private_key_file', $this->getPrivateKeyPath(), true, true);
-            $this->setVar('ansible_ssh_public_key_file', $this->getPublicKeyPath(), true, true);
+            $this->setVar('ansible_ssh_private_key_file', $this->getPrivateKeyPath())->save();
+            $this->setVar('ansible_ssh_public_key_file', $this->getPublicKeyPath())->save();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

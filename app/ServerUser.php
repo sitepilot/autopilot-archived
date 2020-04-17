@@ -121,25 +121,4 @@ class ServerUser extends Model
     {
         return $this->morphToMany(ServerAuthKey::class, 'keyable', 'server_auth_keyables', 'keyable_id', 'key_id');
     }
-
-    /**
-     * Returns the isolated var.
-     *
-     * @return boolean
-     */
-    public function getIsolatedAttribute()
-    {
-        return $this->getVar('isolated');
-    }
-
-    /**
-     * Set the isolated var.
-     *
-     * @param boolean $value
-     * @return void
-     */
-    public function setIsolatedAttribute($value)
-    {
-        $this->setVar('isolated', $value, true, true);
-    }
 }

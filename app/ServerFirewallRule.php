@@ -67,14 +67,4 @@ class ServerFirewallRule extends Model
     {
         return $this->getVar('port');
     }
-
-    /**
-     * Set the port variable.
-     *
-     * @return void
-     */
-    public function setPortAttribute($value)
-    {
-        $this->setVar('port', $value, true, true);
-    }
 }

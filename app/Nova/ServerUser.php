@@ -93,10 +93,7 @@ class ServerUser extends Resource
 
             BelongsTo::make('Host', 'host', ServerHost::class)
                 ->searchable()
-                ->sortable()
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                }),
+                ->sortable(),
 
             BelongsTo::make('Client', 'client', Client::class)
                 ->searchable()

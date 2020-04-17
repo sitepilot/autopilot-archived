@@ -52,13 +52,13 @@ class AppWpInstallCommand extends Command
             "app" => $this->app,
             "url" => 'https://' . $this->appModel->getVar('domain'),
             "title" => ucfirst($this->appModel->getVar('name')),
-            "admin_user" => $this->appModel->getVar('admin_user', 'wordpress'),
-            "admin_pass" => $this->appModel->getVar('admin_pass', 'wordpress'),
-            "admin_email" => $this->appModel->getVar('admin_email', 'wordpress'),
-            "db_name" => $this->appModel->getVar('db_name', 'wordpress'),
-            'db_user' => $this->appModel->getVar('db_user', 'wordpress', $this->appModel->user->getVar('name')),
-            'db_pass' => $this->appModel->getVar('db_pass', 'wordpress', $this->appModel->user->getVar('mysql_password')),
-            'db_host' => $this->appModel->getVar('db_host', 'wordpress', '127.0.0.1'),
+            "admin_user" => $this->appModel->getVar('wordpress.admin_user'),
+            "admin_pass" => $this->appModel->getVar('wordpress.admin_pass'),
+            "admin_email" => $this->appModel->getVar('wordpress.admin_email'),
+            "db_name" => $this->appModel->getVar('wordpress.db_name'),
+            'db_user' => $this->appModel->getVar('wordpress.db_user', $this->appModel->user->getVar('name')),
+            'db_pass' => $this->appModel->getVar('wordpress.db_pass', $this->appModel->user->getVar('mysql_password')),
+            'db_host' => $this->appModel->getVar('wordpress.db_host', '127.0.0.1'),
         ];
 
         $validations = [
