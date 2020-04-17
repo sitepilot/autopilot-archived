@@ -45,28 +45,28 @@ class UserProvisionCommand extends Command
      */
     public function handle()
     {
-        $this->askUser();
+        $user = $this->askUser();
 
-        $this->userModel->setStateProvisioning();
+        $user->setStateProvisioning();
 
         $authKeys = [];
-        foreach ($this->userModel->authKeys as $key) {
+        foreach ($user->authKeys as $key) {
             $authKeys[] = $key->vars;
         }
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "full_name" => $this->userModel->getVar('full_name'),
-            "email" => $this->userModel->getVar('email'),
-            "password" => $this->userModel->getVar('password'),
-            "mysql_password" => $this->userModel->getVar('mysql_password'),
-            "isolated" => $this->userModel->getVar('isolated'),
+            "host" => $user->host->name,
+            "user" => $user->user->name,
+            "full_name" => $user->getVar('full_name'),
+            "email" => $user->getVar('email'),
+            "password" => $user->getVar('password'),
+            "mysql_password" => $user->getVar('mysql_password'),
+            "isolated" => $user->getVar('isolated'),
             "auth_keys" => $authKeys
         ];
 
         $validations = [
-            #'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
+            'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
             'user' => 'required|exists:server_users,name',
             'full_name' => 'required|min:3',
             'email' => 'email',
@@ -78,17 +78,17 @@ class UserProvisionCommand extends Command
             'auth_keys.*.key' => 'required'
         ];
 
-        $this->runPlaybook($this->userModel, 'user/provision.yml', $vars, $validations, "Failed to provision user.");
+        $this->runPlaybook($user, 'user/provision.yml', $vars, $validations, "Failed to provision user.");
 
-        $this->userModel->setStateProvisioned();
+        $user->setStateProvisioned();
 
-        foreach ($this->userModel->apps as $app) {
+        foreach ($user->apps as $app) {
             Artisan::call('app:provision', [
                 '--app' => $app->name
             ]);
         }
 
-        foreach ($this->userModel->databases as $database) {
+        foreach ($user->databases as $database) {
             Artisan::call('database:provision', [
                 '--database' => $database->name
             ]);

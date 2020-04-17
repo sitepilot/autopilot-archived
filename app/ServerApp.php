@@ -101,6 +101,16 @@ class ServerApp extends Model
     }
 
     /**
+     * Returns the app host.
+     *
+     * @return void
+     */
+    public function host()
+    {
+        return $this->user->host();
+    }
+
+    /**
      * Returns the app databases.
      *
      * @return HasMany

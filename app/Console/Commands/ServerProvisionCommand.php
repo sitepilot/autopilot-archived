@@ -43,20 +43,20 @@ class ServerProvisionCommand extends Command
      */
     public function handle()
     {
-        $this->askHost();
+        $host = $this->askHost();
 
-        $this->hostModel->setStateProvisioning();
+        $host->setStateProvisioning();
 
         $vars = [
-            "host" => $this->host,
+            "host" => $host->name,
         ];
 
         $validations = [
             'host' => 'required|exists:server_hosts,name'
         ];
 
-        $this->runPlaybook($this->hostModel, 'server/provision.yml', $vars, $validations, "Failed to provision server.");
+        $this->runPlaybook($host, 'server/provision.yml', $vars, $validations, "Failed to provision server.");
 
-        $this->hostModel->setStateProvisioned();
+        $host->setStateProvisioned();
     }
 }

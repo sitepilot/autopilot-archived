@@ -43,21 +43,21 @@ class DatabaseDestroyCommand extends Command
      */
     public function handle()
     {
-        $this->askDatabase();
+        $database = $this->askDatabase();
 
-        $this->databaseModel->setStateDestroying();
+        $database->setStateDestroying();
 
         $vars = [
-            "host" => $this->host,
-            "database" => $this->databaseModel->getVar('name'),
+            "host" => $database->host->name,
+            "database" => $database->getVar('name'),
         ];
 
         $validations = [
             'database' => 'required|exists:server_databases,name',
         ];
 
-        $this->runPlaybook($this->databaseModel, 'database/destroy.yml', $vars, $validations, "Failed to destroy database.");
+        $this->runPlaybook($database, 'database/destroy.yml', $vars, $validations, "Failed to destroy database.");
 
-        $this->databaseModel->delete();
+        $database->delete();
     }
 }

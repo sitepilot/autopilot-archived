@@ -44,21 +44,21 @@ class AppWpInstallCommand extends Command
      */
     public function handle()
     {
-        $this->askApp();
+        $app = $this->askApp();
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "app" => $this->app,
-            "url" => 'https://' . $this->appModel->getVar('domain'),
-            "title" => ucfirst($this->appModel->getVar('name')),
-            "admin_user" => $this->appModel->getVar('wordpress.admin_user'),
-            "admin_pass" => $this->appModel->getVar('wordpress.admin_pass'),
-            "admin_email" => $this->appModel->getVar('wordpress.admin_email'),
-            "db_name" => $this->appModel->getVar('wordpress.db_name'),
-            'db_user' => $this->appModel->getVar('wordpress.db_user', $this->appModel->user->getVar('name')),
-            'db_pass' => $this->appModel->getVar('wordpress.db_pass', $this->appModel->user->getVar('mysql_password')),
-            'db_host' => $this->appModel->getVar('wordpress.db_host', '127.0.0.1'),
+            "host" => $app->host->name,
+            "user" => $app->user->name,
+            "app" => $app->name,
+            "url" => 'https://' . $app->getVar('domain'),
+            "title" => ucfirst($app->getVar('name')),
+            "admin_user" => $app->getVar('wordpress.admin_user'),
+            "admin_pass" => $app->getVar('wordpress.admin_pass'),
+            "admin_email" => $app->getVar('wordpress.admin_email'),
+            "db_name" => $app->getVar('wordpress.db_name'),
+            'db_user' => $app->getVar('wordpress.db_user', $app->user->getVar('name')),
+            'db_pass' => $app->getVar('wordpress.db_pass', $app->user->getVar('mysql_password')),
+            'db_host' => $app->getVar('wordpress.db_host', '127.0.0.1'),
         ];
 
         $validations = [
@@ -76,6 +76,6 @@ class AppWpInstallCommand extends Command
             'db_host' => 'required'
         ];
 
-        $this->runPlaybook($this->appModel, 'wordpress/install.yml', $vars, $validations, "Failed to install WordPress.", false);
+        $this->runPlaybook($app, 'wordpress/install.yml', $vars, $validations, "Failed to install WordPress.", false);
     }
 }

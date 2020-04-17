@@ -44,25 +44,25 @@ class UserDestroyCommand extends Command
      */
     public function handle()
     {
-        $this->askUser();
+        $user = $this->askUser();
 
-        $this->userModel->setStateDestroying();
+        $user->setStateDestroying();
 
-        foreach ($this->userModel->apps as $app) {
+        foreach ($user->apps as $app) {
             Artisan::call('app:destroy', [
                 '--app' => $app->name
             ]);
         }
 
-        foreach ($this->userModel->databases as $database) {
+        foreach ($user->databases as $database) {
             Artisan::call('database:destroy', [
                 '--database' => $database->name
             ]);
         }
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
+            "host" => $user->host->name,
+            "user" => $user->user->name,
         ];
 
         $validations = [
@@ -70,8 +70,8 @@ class UserDestroyCommand extends Command
             'user' => 'required|exists:server_users,name',
         ];
 
-        $this->runPlaybook($this->userModel, 'user/destroy.yml', $vars, $validations, "Failed to destroy user.");
+        $this->runPlaybook($$user, 'user/destroy.yml', $vars, $validations, "Failed to destroy user.");
 
-        $this->userModel->delete();
+        $user->delete();
     }
 }

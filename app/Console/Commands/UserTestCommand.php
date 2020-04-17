@@ -44,11 +44,11 @@ class UserTestCommand extends Command
      */
     public function handle()
     {
-        $this->askUser();
+        $user = $this->askUser();
 
         $apps = [];
         $domains = [];
-        foreach ($this->userModel->apps as $app) {
+        foreach ($user->apps as $app) {
             $apps[] = $app->getVar('name');
             $domains[] = $app->getVar('domain');
             $aliases = $app->getVar('aliases', '', []);
@@ -58,20 +58,20 @@ class UserTestCommand extends Command
         }
 
         $databases = [];
-        foreach ($this->userModel->databases as $database) {
+        foreach ($user->databases as $database) {
             $databases[] = $database->getVar('name');
         }
 
         $authKeys = [];
-        foreach ($this->userModel->authKeys as $key) {
+        foreach ($user->authKeys as $key) {
             $authKeys[] = $key->getVar('key');
         }
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "mysql_password" => $this->userModel->getVar('mysql_password'),
-            "isolated" => $this->userModel->getVar('isolated'),
+            "host" => $user->host->name,
+            "user" => $user->user->name,
+            "mysql_password" => $user->getVar('mysql_password'),
+            "isolated" => $user->getVar('isolated'),
             "apps" => $apps,
             "auth_keys" => $authKeys,
             "databases" => $databases,
@@ -89,6 +89,6 @@ class UserTestCommand extends Command
             'domains' => 'array',
         ];
 
-        $this->runPlaybook($this->userModel, 'user/test.yml', $vars, $validations, "Failed to test user.");
+        $this->runPlaybook($user, 'user/test.yml', $vars, $validations, "Failed to test user.");
     }
 }

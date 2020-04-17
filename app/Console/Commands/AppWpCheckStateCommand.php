@@ -44,12 +44,12 @@ class AppWpCheckStateCommand extends Command
      */
     public function handle()
     {
-        $this->askApp();
+        $app = $this->askApp();
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "app" => $this->app,
+            "host" => $app->host->name,
+            "user" => $app->user->name,
+            "app" => $app->name,
         ];
 
         $validations = [
@@ -58,19 +58,19 @@ class AppWpCheckStateCommand extends Command
             'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
         ];
 
-        $result = $this->runPlaybook($this->appModel, 'wordpress/check-state.yml', $vars, $validations, "Failed to check WordPress state.", false);
+        $result = $this->runPlaybook($app, 'wordpress/check-state.yml', $vars, $validations, "Failed to check WordPress state.", false);
 
-        if ('yes' == $this->findBetween($result->getProcessBuffer(), '[autopilot-has-update]', '[/autopilot-has-update]')) {
-            $this->appModel->setVar('wordpress.state.has_update', true)->save();
+        if ('yes' == $this->findBetween($result, '[autopilot-has-update]', '[/autopilot-has-update]')) {
+            $app->setVar('wordpress.state.has_update', true)->save();
         } else {
-            $this->appModel->setVar('wordpress.state.has_update', false)->save();
+            $app->setVar('wordpress.state.has_update', false)->save();
         }
 
-        if ($version = $this->findBetween($result->getProcessBuffer(), '[autopilot-core-version]', '[/autopilot-core-version]')) {
-            $this->appModel->setVar('wordpress.state.core_version', $version)->save();
+        if ($version = $this->findBetween($result, '[autopilot-core-version]', '[/autopilot-core-version]')) {
+            $app->setVar('wordpress.state.core_version', $version)->save();
         }
 
-        if ($plugins = $this->findBetween($result->getProcessBuffer(), '[autopilot-plugins]', '[/autopilot-plugins]')) {
+        if ($plugins = $this->findBetween($result, '[autopilot-plugins]', '[/autopilot-plugins]')) {
             $plugins = json_decode($plugins);
             if (is_array($plugins)) {
                 $savePlugins = [];
@@ -83,11 +83,11 @@ class AppWpCheckStateCommand extends Command
                     ];
                     $savePlugins[] = $plugin;
                 }
-                $this->appModel->setVar('wordpress.state.plugins', $savePlugins)->save();
+                $app->setVar('wordpress.state.plugins', $savePlugins)->save();
             }
         }
 
-        if ($themes = $this->findBetween($result->getProcessBuffer(), '[autopilot-themes]', '[/autopilot-themes]')) {
+        if ($themes = $this->findBetween($result, '[autopilot-themes]', '[/autopilot-themes]')) {
             $themes = json_decode($themes);
             if (is_array($themes)) {
                 $saveThemes = [];
@@ -100,7 +100,7 @@ class AppWpCheckStateCommand extends Command
                     ];
                     $saveThemes[] = $theme;
                 }
-                $this->appModel->setVar('wordpress.state.themes', $saveThemes)->save();
+                $app->setVar('wordpress.state.themes', $saveThemes)->save();
             }
         }
     }

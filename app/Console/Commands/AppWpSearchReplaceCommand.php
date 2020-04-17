@@ -46,12 +46,12 @@ class AppWpSearchReplaceCommand extends Command
      */
     public function handle()
     {
-        $this->askApp();
+        $app = $this->askApp();
 
         $vars = [
-            "host" => $this->host,
-            "user" => $this->user,
-            "app" => $this->app,
+            "host" => $app->host->name,
+            "user" => $app->user->name,
+            "app" => $app->name,
             "search" => $this->argument('search'),
             "replace" => $this->argument('replace')
         ];
@@ -64,6 +64,6 @@ class AppWpSearchReplaceCommand extends Command
             'replace' => 'required|min:3',
         ];
 
-        $this->runPlaybook($this->appModel, 'wordpress/search-replace.yml', $vars, $validations, "Failed to search and replace in WordPress database.", false);
+        $this->runPlaybook($app, 'wordpress/search-replace.yml', $vars, $validations, "Failed to search and replace in WordPress database.", false);
     }
 }
