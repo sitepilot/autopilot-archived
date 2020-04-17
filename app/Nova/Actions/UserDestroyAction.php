@@ -3,24 +3,26 @@
 namespace App\Nova\Actions;
 
 use Exception;
+use App\Traits\QueuedAction;
 use Illuminate\Bus\Queueable;
+use Laravel\Nova\Actions\Action;
+use App\Traits\DestructiveAction;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
-use Laravel\Nova\Actions\Action;
-use App\Traits\DestructiveAction;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UserDestroyAction extends Action
+class UserDestroyAction extends Action implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, DestructiveAction;
+    use InteractsWithQueue, Queueable, DestructiveAction, QueuedAction;
 
     /**
      * The displayable name of the action.
      *
      * @var string
      */
-    public $name = 'Destroy';
+    public $name = 'Destroy User';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,7 +36,7 @@ class UserDestroyAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Destroy';
+    public $confirmButtonText = 'Destroy User';
 
     /**
      * The text to be used for the action's confirmation text.

@@ -25,7 +25,7 @@ class Command extends ConsoleCommand
     protected $userModel = null;
     protected $appModel = null;
     protected $databaseModel = null;
-    protected static $buffer = null;
+    protected $buffer = null;
 
     /**
      * Ask for a host.
@@ -231,13 +231,13 @@ class Command extends ConsoleCommand
      * @param boolean $debug
      * @return void
      */
-    public static function addToProcessBuffer($message, $debug = true)
+    public function addToProcessBuffer($batchId, $message, $debug = true)
     {
         if ($debug) {
             echo $message;
         }
 
-        self::$buffer .= $message;
+        $this->buffer .= $message;
     }
 
     /**
@@ -245,15 +245,15 @@ class Command extends ConsoleCommand
      *
      * @return string
      */
-    public static function getProcessBuffer()
+    public function getProcessBuffer()
     {
-        return self::$buffer;
+        return $this->buffer;
     }
 
     /**
      * Run app playbook.
      * 
-     * @return void
+     * @return self
      * @throws Exception
      */
     public function runPlaybook($model, $playbook, $vars = [], $validations = [], $failedMessage = '', $setErrorState = true)
@@ -297,20 +297,21 @@ class Command extends ConsoleCommand
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
         $batchId = $this->option('nova-batch-id');
+        $command = $this;
 
         try {
-            $process->mustRun(function ($type, $buffer) use ($model, $failedMessage, $setErrorState, $batchId) {
+            $process->mustRun(function ($type, $buffer) use ($command, $model, $failedMessage, $setErrorState, $batchId) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
                     if ($setErrorState) $model->setStateError();
 
-                    self::addToProcessBuffer($buffer, empty($batchId));
+                    $command->addToProcessBuffer($buffer, empty($batchId));
 
                     Notification::route('slack', env('SLACK_HOOK'))
-                        ->notify(new CommandFailed($failedMessage, self::getProcessBuffer()));
+                        ->notify(new CommandFailed($failedMessage, $command->getProcessBuffer()));
 
-                    throw new Exception("$failedMessage\n" . self::getProcessBuffer());
+                    throw new Exception("$failedMessage\n" . $command->getProcessBuffer());
                 } else {
-                    self::addToProcessBuffer($buffer, empty($batchId));
+                    $command->addToProcessBuffer($batchId, $buffer, empty($batchId));
                 }
             });
         } catch (ProcessFailedException $e) {
@@ -319,13 +320,15 @@ class Command extends ConsoleCommand
 
         // Update Nova batch status
         if ($batchId) {
-            $result =  $this->findBetween(self::getProcessBuffer(), '[autopilot-result]', '[/autopilot-result]');
+            $result =  $this->findBetween($command->getProcessBuffer(), '[autopilot-result]', '[/autopilot-result]');
             $event = Nova::actionEvent();
             $event::where('batch_id', $batchId)
                 ->where('model_type', $model->getMorphClass())
                 ->where('model_id', $model->getKey())
-                ->update(['exception' => !empty($result) ? $result : self::getProcessBuffer()]);
+                ->update(['exception' => !empty($result) ? $result : $command->getProcessBuffer()]);
         }
+
+        return $command;
     }
 
     /**

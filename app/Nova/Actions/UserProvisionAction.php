@@ -3,23 +3,25 @@
 namespace App\Nova\Actions;
 
 use Exception;
+use App\Traits\QueuedAction;
 use Illuminate\Bus\Queueable;
 use Laravel\Nova\Actions\Action;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UserProvisionAction extends Action
+class UserProvisionAction extends Action implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue, Queueable, QueuedAction;
 
     /**
      * The displayable name of the action.
      *
      * @var string
      */
-    public $name = 'Provision';
+    public $name = 'Provision User';
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -33,7 +35,7 @@ class UserProvisionAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Provision';
+    public $confirmButtonText = 'Provision User';
 
     /**
      * The text to be used for the action's confirmation text.
