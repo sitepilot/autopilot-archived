@@ -56,7 +56,7 @@ class UserProvisionCommand extends Command
 
         $vars = [
             "host" => $user->host->name,
-            "user" => $user->user->name,
+            "user" => $user->name,
             "full_name" => $user->getVar('full_name'),
             "email" => $user->getVar('email'),
             "password" => $user->getVar('password'),

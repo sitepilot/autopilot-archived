@@ -62,7 +62,7 @@ class UserDestroyCommand extends Command
 
         $vars = [
             "host" => $user->host->name,
-            "user" => $user->user->name,
+            "user" => $user->name,
         ];
 
         $validations = [

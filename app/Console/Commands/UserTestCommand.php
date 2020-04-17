@@ -69,7 +69,7 @@ class UserTestCommand extends Command
 
         $vars = [
             "host" => $user->host->name,
-            "user" => $user->user->name,
+            "user" => $user->name,
             "mysql_password" => $user->getVar('mysql_password'),
             "isolated" => $user->getVar('isolated'),
             "apps" => $apps,
