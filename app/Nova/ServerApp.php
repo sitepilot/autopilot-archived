@@ -15,6 +15,7 @@ use App\Nova\Actions\AppWpUpdateAction;
 use App\Nova\Actions\AppProvisionAction;
 use App\Nova\Actions\AppWpInstallAction;
 use App\Nova\Actions\AppCertRequestAction;
+use App\Nova\Actions\AppWpCheckStateAction;
 use App\Nova\Actions\AppWpLoginAction;
 use App\Nova\Actions\AppWpSearchReplaceAction;
 
@@ -196,6 +197,7 @@ class ServerApp extends Resource
         return [
             new AppProvisionAction,
             new AppCertRequestAction,
+            new AppWpCheckStateAction,
             new AppWpInstallAction,
             new AppWpUpdateAction,
             (new AppWpLoginAction)->onlyOnDetail(),
