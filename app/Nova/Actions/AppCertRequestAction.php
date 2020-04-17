@@ -2,6 +2,7 @@
 
 namespace App\Nova\Actions;
 
+use App\Traits\QueuedAction;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Laravel\Nova\Actions\Action;
@@ -9,10 +10,11 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AppCertRequestAction extends Action
+class AppCertRequestAction extends Action implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue, Queueable, QueuedAction;
 
     /**
      * The displayable name of the action.

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Console\Command;
 use App\Traits\HasState;
+use Illuminate\Support\Facades\Artisan;
 
 class AppWpUpdateCommand extends Command
 {
@@ -67,5 +68,10 @@ class AppWpUpdateCommand extends Command
         ];
 
         $this->runPlaybook($this->appModel, 'wordpress/update.yml', $vars, $validations, "Failed to update WordPress.", false);
+
+        Artisan::call('app:wp:check-state', [
+            '--app' => $this->appModel->name,
+            '--nova-batch-id' => $this->option('nova-batch-id')
+        ]);
     }
 }

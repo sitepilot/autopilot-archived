@@ -18,6 +18,7 @@ use App\Nova\Actions\AppCertRequestAction;
 use App\Nova\Actions\AppWpCheckStateAction;
 use App\Nova\Actions\AppWpLoginAction;
 use App\Nova\Actions\AppWpSearchReplaceAction;
+use Laravel\Nova\Fields\Boolean;
 
 class ServerApp extends Resource
 {
@@ -131,6 +132,9 @@ class ServerApp extends Resource
             )
                 ->exceptOnForms()
                 ->displayUsingLabels(),
+            
+            Boolean::make('WordPress State', 'wordpress_state_ok')
+                ->exceptOnForms(),
 
             Code::make('App Configuration', 'vars')
                 ->rules(['required', new ServerAppConfigRule])

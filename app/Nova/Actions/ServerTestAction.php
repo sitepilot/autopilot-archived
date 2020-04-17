@@ -3,24 +3,25 @@
 namespace App\Nova\Actions;
 
 use Exception;
+use App\Traits\QueuedAction;
 use Illuminate\Bus\Queueable;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Actions\Action;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ServerTestAction extends Action
+class ServerTestAction extends Action implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue, Queueable, QueuedAction;
 
     /**
      * The displayable name of the action.
      *
      * @var string
      */
-    public $name = 'Test';  
+    public $name = 'Test Server';  
 
     /**
      * Indicates if this action is available on the resource's table row.
@@ -34,7 +35,7 @@ class ServerTestAction extends Action
      *
      * @var string
      */
-    public $confirmButtonText = 'Test';
+    public $confirmButtonText = 'Test Server';
 
     /**
      * The text to be used for the action's confirmation text.
@@ -56,7 +57,6 @@ class ServerTestAction extends Action
             try {
                 Artisan::call('server:test', [
                     '--host' => $host->name,
-                    '--skip-tags' => $fields->skip_tags,
                     '--nova-batch-id' => $this->batchId,
                     '--disable-tty' => true
                 ]);
@@ -73,9 +73,6 @@ class ServerTestAction extends Action
      */
     public function fields()
     {
-        return [
-            Text::make('Skip Tags', 'skip_tags')
-                ->help('Available tags: test-domains')
-        ];
+        return [];
     }
 }

@@ -135,6 +135,20 @@ class ServerApp extends Model
     }
 
     /**
+     * Returns the WordPress update state.
+     *
+     * @return boolean
+     */
+    public function getWordPressStateOkAttribute()
+    {
+        if($this->getVar('wordpress.state.has_update', false) == false) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Returns a random name from space.
      * 
      * @return string $name

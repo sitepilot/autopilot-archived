@@ -58,19 +58,19 @@ class AppWpCheckStateCommand extends Command
             'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
         ];
 
-        $this->runPlaybook($this->appModel, 'wordpress/check-state.yml', $vars, $validations, "Failed to check WordPress state.", false);
+        $result = $this->runPlaybook($this->appModel, 'wordpress/check-state.yml', $vars, $validations, "Failed to check WordPress state.", false);
 
-        if ('yes' == $this->findBetween(self::getProcessBuffer(), '[autopilot-has-update]', '[/autopilot-has-update]')) {
+        if ('yes' == $this->findBetween($result->getProcessBuffer(), '[autopilot-has-update]', '[/autopilot-has-update]')) {
             $this->appModel->setVar('wordpress.state.has_update', true)->save();
         } else {
             $this->appModel->setVar('wordpress.state.has_update', false)->save();
         }
 
-        if ($version = $this->findBetween(self::getProcessBuffer(), '[autopilot-core-version]', '[/autopilot-core-version]')) {
+        if ($version = $this->findBetween($result->getProcessBuffer(), '[autopilot-core-version]', '[/autopilot-core-version]')) {
             $this->appModel->setVar('wordpress.state.core_version', $version)->save();
         }
 
-        if ($plugins = $this->findBetween(self::getProcessBuffer(), '[autopilot-plugins]', '[/autopilot-plugins]')) {
+        if ($plugins = $this->findBetween($result->getProcessBuffer(), '[autopilot-plugins]', '[/autopilot-plugins]')) {
             $plugins = json_decode($plugins);
             if (is_array($plugins)) {
                 $savePlugins = [];
@@ -87,7 +87,7 @@ class AppWpCheckStateCommand extends Command
             }
         }
 
-        if ($themes = $this->findBetween(self::getProcessBuffer(), '[autopilot-themes]', '[/autopilot-themes]')) {
+        if ($themes = $this->findBetween($result->getProcessBuffer(), '[autopilot-themes]', '[/autopilot-themes]')) {
             $themes = json_decode($themes);
             if (is_array($themes)) {
                 $saveThemes = [];

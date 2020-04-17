@@ -4,6 +4,9 @@ namespace App\Console;
 
 use App\ServerApp;
 use App\ServerHost;
+use App\Jobs\ServerTestJob;
+use App\Jobs\AppWpCheckStateJob;
+use App\Jobs\ServerCertRenewJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -26,23 +29,18 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Renew SSL certificates on provisioned hosts
+        // Schedule host jobs
         $hosts = ServerHost::where('state', ServerHost::getProvisionedIndex())->get();
         foreach ($hosts as $host) {
-            $schedule->command("server:cert:renew --host=$host->name")->dailyAt('08:05');
+            $schedule->job(new ServerCertRenewJob($host))->dailyAt('08:05');
+            $schedule->job(new ServerTestJob($host))->dailyAt('10:05');
         }
 
-        // Test provisioned hosts
-        $hosts = ServerHost::where('state', ServerHost::getProvisionedIndex())->get();
-        foreach ($hosts as $host) {
-            $schedule->command("server:test --host=$host->name")->hourly();
-        }
-
-        // Check WordPress state
+        // Schedule app jobs
         $apps = ServerApp::where('state', ServerApp::getProvisionedIndex())->get();
         foreach ($apps as $app) {
             if ($app->getVar('wordpress')) {
-                $schedule->command("app:wp:check-state --app=$app->name")->dailyAt('10:17');
+                $schedule->job(new AppWpCheckStateJob($app))->twiceDaily('6', '12');
             }
         }
     }
