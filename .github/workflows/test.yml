@@ -67,6 +67,9 @@ jobs:
       - name: Test app:wp:login command.
         run: ./autopilot app:wp:login captain --app='#first-item' --debug
 
+      - name: Test app:wp:check-state command.
+        run: ./autopilot app:wp:check-state captain --app='#first-item' --debug
+
       - name: Test database:destroy command.
         run: ./autopilot database:destroy --database='#first-item' --debug
 
