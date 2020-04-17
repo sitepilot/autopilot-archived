@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Arr;
+
 trait HasVars
 {
     /**
@@ -12,17 +14,13 @@ trait HasVars
      * @param boolean $override
      * @return void
      */
-    public function setVar($key, $value, $override = false, $save = false)
+    public function setVar($key, $value)
     {
         $vars = $this->vars;
-        if (!isset($vars[$key]) || $override) {
-            $vars[$key] = $value;
-        }
-        $this->vars = $vars;
 
-        if ($save) {
-            $this->save();
-        }
+        Arr::set($vars, $key, $value);
+
+        $this->vars = $vars;
 
         return $this;
     }
@@ -33,21 +31,9 @@ trait HasVars
      * @param string $key
      * @return mixed
      */
-    public function getVar($key, $namespace = '', $default = null)
+    public function getVar($key, $default = null)
     {
-        $vars = $this->vars;
-
-        if (!empty($namespace) && isset($vars[$namespace])) {
-            $vars = $vars[$namespace];
-        }
-
-        if (is_array($vars) && isset($vars[$key])) {
-            return $vars[$key];
-        } elseif (is_object($vars) && isset($vars->$key)) {
-            return $vars->$key;
-        }
-
-        return $default;
+        return Arr::get($this->vars, $key, $default);
     }
 
     /**

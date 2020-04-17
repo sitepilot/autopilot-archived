@@ -51,7 +51,7 @@ class AppWpLoginCommand extends Command
             "host" => $this->host,
             "user" => $this->user,
             "app" => $this->app,
-            "login" => $this->argument('login') ? $this->argument('login') : $this->appModel->getVar('admin_user', 'wordpress'),
+            "login" => $this->argument('login') ? $this->argument('login') : $this->appModel->getVar('wordpress.admin_user'),
         ];
 
         $validations = [
