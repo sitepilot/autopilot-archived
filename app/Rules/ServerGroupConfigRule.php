@@ -18,6 +18,7 @@ class ServerGroupConfigRule extends ConfigRule
             'admin' => 'required|min:3',
             'admin_email' => 'required|email',
             'health_email' => 'required|email',
+            'cert_email' => 'required|email',
             'timezone' => 'required|min:3',
             'timezone_update' => 'required|boolean',
             'php_post_max_size' => 'required',

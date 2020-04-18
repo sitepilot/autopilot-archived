@@ -45,6 +45,7 @@ class ServerGroup extends Model
             'admin' => 'sitepilot',
             'admin_email' => 'support@sitepilot.io',
             'health_email' => 'health@sitepilot.io',
+            'cert_email' => 'letsencrypt@sitepilot.io',
             'timezone' => 'Europe/Amsterdam',
             'timezone_update' => true,
             'php_post_max_size' => '64M',

@@ -52,7 +52,7 @@ class AppCertRequestCommand extends Command
             "app" => $app->name,
             "domain" => $app->getVar('domain'),
             "aliases" => $app->getVar('aliases'),
-            "email" => $app->getVar('ssl_email', $app->host->group->getVar('admin_email'))
+            "email" => $app->host->group->getVar('cert_email')
         ];
 
         $validations = [
