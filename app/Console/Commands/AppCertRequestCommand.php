@@ -51,7 +51,8 @@ class AppCertRequestCommand extends Command
             "user" => $app->user->name,
             "app" => $app->name,
             "domain" => $app->getVar('domain'),
-            "aliases" => $app->getVar('aliases')
+            "aliases" => $app->getVar('aliases'),
+            "email" => $app->getVar('ssl_email', $app->host->group->getVar('admin_email'))
         ];
 
         $validations = [
@@ -60,6 +61,7 @@ class AppCertRequestCommand extends Command
             'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
             'domain' => 'required|min:3',
             'aliases' => 'array',
+            'email' => 'required|email'
         ];
 
         $this->runPlaybook($app, 'app/cert-request.yml', $vars, $validations, "Failed to provision app certificate for $app->name.", false);
