@@ -62,7 +62,7 @@ class AppCertRequestCommand extends Command
             'aliases' => 'array',
         ];
 
-        $this->runPlaybook($app, 'app/cert-request.yml', $vars, $validations, "Failed to provision app certificate.", false);
+        $this->runPlaybook($app, 'app/cert-request.yml', $vars, $validations, "Failed to provision app certificate for $app->name.", false);
 
         $app->setVar('ssl', true)->save();
     }

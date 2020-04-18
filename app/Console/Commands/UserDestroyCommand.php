@@ -70,7 +70,7 @@ class UserDestroyCommand extends Command
             'user' => 'required|exists:server_users,name',
         ];
 
-        $this->runPlaybook($user, 'user/destroy.yml', $vars, $validations, "Failed to destroy user.");
+        $this->runPlaybook($user, 'user/destroy.yml', $vars, $validations, "Failed to destroy user: $user->name.");
 
         $user->delete();
     }

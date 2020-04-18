@@ -48,8 +48,7 @@ class CommandFailed extends Notification
             ->error()
             ->content($this->title)
             ->attachment(function ($attachment) use ($title, $message) {
-                $attachment->title($title)
-                    ->content($message);
+                $attachment->content($message);
             });
     }
 

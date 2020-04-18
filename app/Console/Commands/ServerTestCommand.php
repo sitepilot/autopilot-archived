@@ -65,6 +65,6 @@ class ServerTestCommand extends Command
             'auth_keys' => 'array'
         ];
 
-        $this->runPlaybook($host, 'server/test.yml', $vars, $validations, "Failed to test server.");
+        $this->runPlaybook($host, 'server/test.yml', $vars, $validations, "Failed to test server: $host->name.");
     }
 }

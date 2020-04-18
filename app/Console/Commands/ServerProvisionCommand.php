@@ -55,7 +55,7 @@ class ServerProvisionCommand extends Command
             'host' => 'required|exists:server_hosts,name'
         ];
 
-        $this->runPlaybook($host, 'server/provision.yml', $vars, $validations, "Failed to provision server.");
+        $this->runPlaybook($host, 'server/provision.yml', $vars, $validations, "Failed to provision server: $host->name.");
 
         $host->setStateProvisioned();
     }

@@ -64,7 +64,7 @@ class AppProvisionCommand extends Command
             'aliases' => 'array',
         ];
 
-        $this->runPlaybook($app, 'app/provision.yml', $vars, $validations, "Failed to provision app.");
+        $this->runPlaybook($app, 'app/provision.yml', $vars, $validations, "Failed to provision app: $app->name.");
 
         $app->setStateProvisioned();
     }

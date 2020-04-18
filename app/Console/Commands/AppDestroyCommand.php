@@ -59,7 +59,7 @@ class AppDestroyCommand extends Command
             'app' => 'required|exists:server_apps,name'
         ];
 
-        $this->runPlaybook($app, 'app/destroy.yml', $vars, $validations, "Failed to destroy app.");
+        $this->runPlaybook($app, 'app/destroy.yml', $vars, $validations, "Failed to destroy app: $app->name.");
 
         $app->delete();
     }

@@ -89,6 +89,6 @@ class UserTestCommand extends Command
             'domains' => 'array',
         ];
 
-        $this->runPlaybook($user, 'user/test.yml', $vars, $validations, "Failed to test user.");
+        $this->runPlaybook($user, 'user/test.yml', $vars, $validations, "Failed to test user: $user->name.");
     }
 }

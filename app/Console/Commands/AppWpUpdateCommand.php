@@ -67,7 +67,7 @@ class AppWpUpdateCommand extends Command
             'update_exclude' => 'array',
         ];
 
-        $this->runPlaybook($app, 'wordpress/update.yml', $vars, $validations, "Failed to update WordPress.", false);
+        $this->runPlaybook($app, 'wordpress/update.yml', $vars, $validations, "Failed to update WordPress for app: $app->name.", false);
 
         Artisan::call('app:wp:check-state', [
             '--app' => $app->name,

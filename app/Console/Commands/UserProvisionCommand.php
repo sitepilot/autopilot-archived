@@ -78,7 +78,7 @@ class UserProvisionCommand extends Command
             'auth_keys.*.key' => 'required'
         ];
 
-        $this->runPlaybook($user, 'user/provision.yml', $vars, $validations, "Failed to provision user.");
+        $this->runPlaybook($user, 'user/provision.yml', $vars, $validations, "Failed to provision user: $user->name.");
 
         $user->setStateProvisioned();
 

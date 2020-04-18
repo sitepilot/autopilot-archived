@@ -61,6 +61,6 @@ class AppWpLoginCommand extends Command
             'login' => 'required|min:3'
         ];
 
-        $this->runPlaybook($app, 'wordpress/login.yml', $vars, $validations, "Failed to login to WordPress.", false);
+        $this->runPlaybook($app, 'wordpress/login.yml', $vars, $validations, "Failed to login to WordPress for app: $app->name.", false);
     }
 }

@@ -56,7 +56,7 @@ class DatabaseDestroyCommand extends Command
             'database' => 'required|exists:server_databases,name',
         ];
 
-        $this->runPlaybook($database, 'database/destroy.yml', $vars, $validations, "Failed to destroy database.");
+        $this->runPlaybook($database, 'database/destroy.yml', $vars, $validations, "Failed to destroy database: $database->name.");
 
         $database->delete();
     }

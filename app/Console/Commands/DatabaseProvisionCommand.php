@@ -56,7 +56,7 @@ class DatabaseProvisionCommand extends Command
             'database' => 'required|exists:server_databases,name',
         ];
 
-        $this->runPlaybook($database, 'database/provision.yml', $vars, $validations, "Failed to provision database.");
+        $this->runPlaybook($database, 'database/provision.yml', $vars, $validations, "Failed to provision database: $database->name.");
 
         $database->setStateProvisioned();
     }
