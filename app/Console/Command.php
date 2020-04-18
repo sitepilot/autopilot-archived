@@ -6,9 +6,9 @@ use Exception;
 use App\ServerApp;
 use App\ServerHost;
 use App\ServerUser;
-use Laravel\Nova\Nova;
 use App\ServerDatabase;
 use App\Notifications\CommandFailed;
+use Laravel\Nova\Actions\ActionEvent;
 use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
@@ -225,7 +225,7 @@ class Command extends ConsoleCommand
                     $processBuffer .= $buffer;
 
                     Notification::route('slack', env('SLACK_HOOK'))
-                        ->notify(new CommandFailed($failedMessage, $processBuffer));
+                        ->notify(new CommandFailed($failedMessage, url('/admin/resources/action-events')));
 
                     throw new Exception("$failedMessage\n" . $processBuffer);
                 } else {
@@ -240,11 +240,7 @@ class Command extends ConsoleCommand
         // Update Nova batch status
         if ($batchId) {
             $result =  $this->findBetween($processBuffer, '[autopilot-result]', '[/autopilot-result]');
-            $event = Nova::actionEvent();
-            $event::where('batch_id', $batchId)
-                ->where('model_type', $model->getMorphClass())
-                ->where('model_id', $model->getKey())
-                ->update(['exception' => !empty($result) ? $result : $processBuffer]);
+            ActionEvent::updateStatus($batchId, $model, 'finished', !empty($result) ? $result : $processBuffer);
         }
 
         return $processBuffer;
