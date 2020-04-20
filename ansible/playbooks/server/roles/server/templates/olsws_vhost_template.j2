@@ -22,7 +22,7 @@ virtualHostConfig  {
   }
 
   scripthandler  {
-    add                   lsapi:$VH_NAME-lsphp74 php
+    add                   lsapi:$VH_NAME-lsphp{{ php_version | default('74') }} php
   }
 
   phpIniOverride  {
@@ -34,9 +34,9 @@ virtualHostConfig  {
     php_admin_value memory_limit "{{ php_memory_limit }}"
   }
 
-  extprocessor $VH_NAME-lsphp74 {
+  extprocessor $VH_NAME-lsphp{{ php_version | default('74') }} {
     type                  lsapi
-    address               uds://opt/sitepilot/services/olsws/tmp/$VH_NAME-lsphp74.sock
+    address               uds://opt/sitepilot/services/olsws/tmp/$VH_NAME-lsphp{{ php_version | default('74') }}.sock
     maxConns              5
     env                   PHP_LSAPI_CHILDREN=5
     env                   LSAPI_AVOID_FORK=200M
@@ -44,7 +44,7 @@ virtualHostConfig  {
     retryTimeout          0
     respBuffer            1
     autoStart             2
-    path                  lsphp74/bin/lsphp
+    path                  lsphp{{ php_version | default('74') }}/bin/lsphp
     backlog               100
     instances             1
   }
@@ -74,7 +74,7 @@ virtualHostConfig  {
     autoLoadHtaccess      1
   }
 
-  {% if is_ssl is defined and is_ssl|bool %}  
+  {% if ssl is defined and ssl|bool %}  
   vhssl {
     keyFile               /etc/letsencrypt/live/$VH_NAME/privkey.pem
     certFile              /etc/letsencrypt/live/$VH_NAME/fullchain.pem

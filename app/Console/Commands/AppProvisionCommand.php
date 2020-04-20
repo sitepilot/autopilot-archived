@@ -53,7 +53,8 @@ class AppProvisionCommand extends Command
             "user" => $app->user->name,
             "app" => $app->name,
             "domain" => $app->getVar('domain'),
-            "aliases" => $app->getVar('aliases')
+            "aliases" => $app->getVar('aliases'),
+            'php_version' => $app->getVar('php.version', '74')
         ];
 
         $validations = [
@@ -62,6 +63,7 @@ class AppProvisionCommand extends Command
             'app' => 'required|exists:server_apps,name',
             'domain' => 'required|min:3',
             'aliases' => 'array',
+            'php_version' => 'in:74,73'
         ];
 
         $this->runPlaybook($app, 'app/provision.yml', $vars, $validations, "Failed to provision app: $app->name.");

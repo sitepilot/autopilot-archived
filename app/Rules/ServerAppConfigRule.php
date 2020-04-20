@@ -20,6 +20,7 @@ class ServerAppConfigRule extends ConfigRule
             'domain' => 'required',
             'aliases' => 'array',
             'ssl' => 'required|boolean',
+            'php.version' => 'in:74,73',
             'wordpress.db_name' => 'exists:server_databases,name,state,' . HasState::getProvisionedIndex(),
             'wordpress.update_core' => 'boolean',
             'wordpress.update_plugins' => 'boolean',

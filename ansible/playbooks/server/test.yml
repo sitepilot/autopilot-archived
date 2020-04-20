@@ -63,6 +63,18 @@
       become_user: "{{ admin }}"
       changed_when: false
 
+    - name: "server/test : PHP 7.4 is installed"
+      command: "php74 -v"
+      become: true
+      become_user: "{{ admin }}"
+      changed_when: false
+
+    - name: "server/test : PHP 7.3 is installed"
+      command: "php73 -v"
+      become: true
+      become_user: "{{ admin }}"
+      changed_when: false
+
     - name: "server/test : WPCLI is installed"
       command: "wp --version"
       become: true

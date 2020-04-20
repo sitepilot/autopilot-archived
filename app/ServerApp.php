@@ -77,6 +77,9 @@ class ServerApp extends Model
     {
         return array_merge($this->getDefaultVars(), [
             'aliases' => [],
+            'php' => [
+                'version' => '74'
+            ],
             'wordpress' => [
                 'db_name' => '',
                 'admin_user' => 'captain',
@@ -151,7 +154,7 @@ class ServerApp extends Model
      */
     public function getWordPressStateOkAttribute()
     {
-        if($this->getVar('wordpress.state.has_update', false) == false) {
+        if ($this->getVar('wordpress.state.has_update', false) == false) {
             return true;
         }
 

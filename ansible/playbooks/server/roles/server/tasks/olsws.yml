@@ -13,6 +13,17 @@
   apt:
     name: >
       openlitespeed,
+      lsphp73,
+      lsphp73-common,
+      lsphp73-json,
+      lsphp73-mysql,
+      lsphp73-opcache,
+      lsphp73-igbinary,
+      lsphp73-memcached,
+      lsphp73-redis,
+      lsphp73-imap,
+      lsphp73-curl,
+      lsphp73-ioncube,
       lsphp74,
       lsphp74-common,
       lsphp74-json,
@@ -105,23 +116,47 @@
 
 - name: "olsws : generate lsphp74 vhost template"
   template:
-    src: olsws_lsphp74_template.j2
+    src: olsws_vhost_template.j2
     dest: /usr/local/lsws/conf/templates/lsphp74.conf
     owner: lsadm
     group: lsadm
   notify: reload olsws
-
-- name: "olsws : set ssl variables"
-  set_fact:
-    is_ssl: true
+  vars:
+    php_version: "74"
+    ssl: false
 
 - name: "olsws : generate lsphp74-ssl vhost template"
   template:
-    src: olsws_lsphp74_template.j2
+    src: olsws_vhost_template.j2
     dest: /usr/local/lsws/conf/templates/lsphp74-ssl.conf
     owner: lsadm
     group: lsadm
   notify: reload olsws
+  vars:
+    php_version: "74"
+    ssl: true
+
+- name: "olsws : generate lsphp73 vhost template"
+  template:
+    src: olsws_vhost_template.j2
+    dest: /usr/local/lsws/conf/templates/lsphp73.conf
+    owner: lsadm
+    group: lsadm
+  notify: reload olsws
+  vars:
+    php_version: "73"
+    ssl: false
+
+- name: "olsws : generate lsphp73-ssl vhost template"
+  template:
+    src: olsws_vhost_template.j2
+    dest: /usr/local/lsws/conf/templates/lsphp73-ssl.conf
+    owner: lsadm
+    group: lsadm
+  notify: reload olsws
+  vars:
+    php_version: "73"
+    ssl: true
 
 - name: "olsws : generate admin password script"
   template:
