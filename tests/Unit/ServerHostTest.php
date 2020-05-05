@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\User;
 use Tests\TestCase;
-use App\ServerGroup;
 use Laravel\Sanctum\Sanctum;
 
 class ServerHostTest extends TestCase
