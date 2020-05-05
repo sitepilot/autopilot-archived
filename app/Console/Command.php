@@ -10,6 +10,7 @@ use App\ServerDatabase;
 use App\Notifications\CommandFailed;
 use Laravel\Nova\Actions\ActionEvent;
 use Symfony\Component\Process\Process;
+use Imtigger\LaravelJobStatus\JobStatus;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Console\Command as ConsoleCommand;
@@ -214,22 +215,39 @@ class Command extends ConsoleCommand
         $process = new Process($cmd);
         $process->setTty($this->getTTY())->setTimeout(3600);
         $batchId = $this->option('nova-batch-id');
+        $jobStatusId = $this->option('job-status-id');
         $processBuffer = '';
+        $jobStatus = null;
+
+        if ($jobStatusId) {
+            $jobStatus = JobStatus::find($jobStatusId);
+        }
 
         try {
-            $process->mustRun(function ($type, $buffer) use (&$processBuffer, $model, $failedMessage, $setErrorState, $batchId) {
+            $process->mustRun(function ($type, $buffer) use (&$processBuffer, $model, $failedMessage, $setErrorState, $batchId, $jobStatusId, $jobStatus) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
                     if ($setErrorState) $model->setStateError();
 
-                    if (empty($batchId)) echo $buffer;
+                    if (empty($batchId) && !$jobStatus) echo $buffer;
                     $processBuffer .= $buffer;
+
+                    if ($jobStatus) {
+                        $jobStatus->output = $jobStatus->output . $buffer;
+                        $jobStatus->save();
+                    }
 
                     Notification::route('slack', env('SLACK_HOOK'))
                         ->notify(new CommandFailed($failedMessage, url('/admin/resources/action-events')));
 
                     throw new Exception("$failedMessage\n" . $processBuffer);
                 } else {
-                    if (empty($batchId)) echo $buffer;
+                    if (empty($batchId) && !$jobStatus) echo $buffer;
+
+                    if ($jobStatus) {
+                        $jobStatus->output = $jobStatus->output . $buffer;
+                        $jobStatus->save();
+                    }
+
                     $processBuffer .= $buffer;
                 }
             });
@@ -237,10 +255,16 @@ class Command extends ConsoleCommand
             throw new Exception($failedMessage);
         }
 
+        $result =  $this->findBetween($processBuffer, '[autopilot-result]', '[/autopilot-result]');
+
         // Update Nova batch status
         if ($batchId) {
-            $result =  $this->findBetween($processBuffer, '[autopilot-result]', '[/autopilot-result]');
             ActionEvent::updateStatus($batchId, $model, 'finished', !empty($result) ? $result : $processBuffer);
+        }
+
+        if ($result) {
+            $jobStatus->output = $result;
+            $jobStatus->save();
         }
 
         return $processBuffer;
@@ -272,5 +296,19 @@ class Command extends ConsoleCommand
         }
 
         return '';
+    }
+
+    /**
+     * Set job to finished (use when deleting a resource).
+     *
+     * @return void
+     */
+    function jobFinished()
+    {
+        if ($this->option('job-status-id') && $jobStatus = JobStatus::find($this->option('job-status-id'))) {
+            $jobStatus->finished_at = time();
+            $jobStatus->status = 'finished';
+            $jobStatus->save();
+        }
     }
 }
