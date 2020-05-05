@@ -34,50 +34,8 @@ jobs:
       - name: Run Autopilot installer.
         run: ./autopilot install-test ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
 
-      - name: Test server:provision command.
-        run: ./autopilot server:provision --host='#first-item' --skip-tags=upgrade --debug
-
-      - name: Test user:provision command.
-        run: ./autopilot user:provision --user='#first-item' --debug
-
-      - name: Test app:provision command.
-        run: ./autopilot app:provision --app='#first-item' --debug
-
-      - name: Test database:provision command.
-        run: ./autopilot database:provision --database='#first-item' --debug
-
-      - name: Test server:test command.
-        run: ./autopilot server:test --host='#first-item' --debug
-
-      - name: Test server:cert:renew command.
-        run: ./autopilot server:cert:renew --host='#first-item' --debug
-
-      - name: Test user:test command.
-        run: ./autopilot user:test --user='#first-item' --skip-tags=test-domains --debug
-
-      - name: Test app:wp:install command.
-        run: ./autopilot app:wp:install --app='#first-item' --debug
-
-      - name: Test app:wp:update command.
-        run: ./autopilot app:wp:update --app='#first-item' --debug
-
-      - name: Test app:wp:search-replace command.
-        run: ./autopilot app:wp:search-replace test123 test456 --app='#first-item' --debug
-
-      - name: Test app:wp:login command.
-        run: ./autopilot app:wp:login captain --app='#first-item' --debug
-
-      - name: Test app:wp:check-state command.
-        run: ./autopilot app:wp:check-state --app='#first-item' --debug
-
-      - name: Test database:destroy command.
-        run: ./autopilot database:destroy --database='#first-item' --debug
-
-      - name: Test app:destroy command.
-        run: ./autopilot app:destroy --app='#first-item' --debug
-
-      - name: Test user:destroy command.
-        run: ./autopilot user:destroy --user='#first-item' --debug
+      - name: Run unit tests.
+        run: ./autopilot test
 
       - name: Deploy image to Docker hub.
         run: |
@@ -85,24 +43,3 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker tag sitepilot/autopilot:${GITHUB_SHA} sitepilot/autopilot:$DOCKER_TAG
           docker push sitepilot/autopilot:$DOCKER_TAG
-
-      - name: "Failure: autopilot container logs."
-        if: failure()
-        run: |
-          docker logs autopilot_test
-
-      - name: "Failure: autopilot-mysql container logs."
-        if: failure()
-        run: |
-          docker logs autopilot-mysql
-
-      - name: "Failure: mysql-1 dind container logs."
-        if: failure()
-        run: |
-          docker exec autopilot-dind docker exec -w /etc/mysql mysql-1 ls -l
-          docker exec autopilot-dind docker logs mysql-1
-
-      - name: "Failure: redis-1 dind container logs."
-        if: failure()
-        run: |
-          docker exec autopilot-dind docker logs redis-1
