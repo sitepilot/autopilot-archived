@@ -10,6 +10,7 @@
             <file>./tests/Unit/ServerUserTest.php</file>
             <file>./tests/Unit/ServerDatabaseTest.php</file>
             <file>./tests/Unit/ServerAppTest.php</file>
+            <file>./tests/Unit/DestroyTest.php</file>
         </testsuite>
 
         <testsuite name="Feature">
