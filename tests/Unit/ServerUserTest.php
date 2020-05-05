@@ -104,20 +104,6 @@ class ServerUserTest extends TestCase
     }
 
     /**
-     * Test user can provision a user.
-     *
-     * @return void
-     */
-    public function test_user_can_provision_a_user()
-    {
-        $user = $this->getLastResource();
-
-        $response = $this->json('POST', $this->endpoint . $user->id . '/provision');
-
-        $this->waitForJob($response);
-    }
-
-    /**
      * Test user can test a user.
      *
      * @return void
