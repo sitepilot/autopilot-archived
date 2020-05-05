@@ -43,11 +43,11 @@ class ServerHostTest extends TestCase
             'ansible_ssh_host' => 'autopilot-test'
         ];
 
-        $response = $this->json('POST', $this->endpoint, array_merge($data, ["config" => $config]));
+        $this->response = $this->json('POST', $this->endpoint, array_merge($data, ["config" => $config]));
 
-        $response->assertCreated();
-        $response->assertJsonFragment($data);
-        $response->assertJsonFragment($config);
+        $this->response->assertCreated();
+        $this->response->assertJsonFragment($data);
+        $this->response->assertJsonFragment($config);
     }
 
     /**
@@ -57,10 +57,10 @@ class ServerHostTest extends TestCase
      */
     public function test_user_can_list_hosts()
     {
-        $response = $this->json('GET', $this->endpoint);
-        $response->assertStatus(200);
+        $this->response = $this->json('GET', $this->endpoint);
+        $this->response->assertStatus(200);
 
-        $response->assertJsonStructure(
+        $this->response->assertJsonStructure(
             [
                 "data" =>
                 [
@@ -98,10 +98,10 @@ class ServerHostTest extends TestCase
             "admin_pass" => "supersecret123"
         ];
 
-        $response = $this->json('PATCH', $this->endpoint . $host->id, array_merge($data, ["config" => $config]));
-        $response->assertStatus(200);
-        $response->assertJsonFragment($data);
-        $response->assertJsonFragment($config);
+        $this->response = $this->json('PATCH', $this->endpoint . $host->id, array_merge($data, ["config" => $config]));
+        $this->response->assertStatus(200);
+        $this->response->assertJsonFragment($data);
+        $this->response->assertJsonFragment($config);
     }
 
     /**
@@ -113,9 +113,9 @@ class ServerHostTest extends TestCase
     {
         $host = $this->getFirstResource();
 
-        $response = $this->json('POST', $this->endpoint . $host->id . '/provision');
+        $this->response = $this->json('POST', $this->endpoint . $host->id . '/provision');
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -127,9 +127,9 @@ class ServerHostTest extends TestCase
     {
         $host = $this->getFirstResource();
 
-        $response = $this->json('POST', $this->endpoint . $host->id . '/test');
+        $this->response = $this->json('POST', $this->endpoint . $host->id . '/test');
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -141,8 +141,8 @@ class ServerHostTest extends TestCase
     {
         $host = $this->getFirstResource();
 
-        $response = $this->json('POST', $this->endpoint . $host->id . '/cert-renew');
+        $this->response = $this->json('POST', $this->endpoint . $host->id . '/cert-renew');
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 }

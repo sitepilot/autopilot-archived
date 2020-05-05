@@ -32,9 +32,9 @@ class DestroyTest extends TestCase
     {
         $app = $this->getLastResource($this->appsEndpoint);
 
-        $response = $this->json('DELETE', $this->appsEndpoint . $app->id);
+        $this->response = $this->json('DELETE', $this->appsEndpoint . $app->id);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -46,9 +46,9 @@ class DestroyTest extends TestCase
     {
         $database = $this->getLastResource($this->databasesEndpoint);
 
-        $response = $this->json('DELETE', $this->databasesEndpoint . $database->id);
+        $this->response = $this->json('DELETE', $this->databasesEndpoint . $database->id);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -60,9 +60,9 @@ class DestroyTest extends TestCase
     {
         $user = $this->getLastResource($this->usersEndpoint);
 
-        $response = $this->json('DELETE', $this->usersEndpoint . $user->id);
+        $this->response = $this->json('DELETE', $this->usersEndpoint . $user->id);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -74,9 +74,9 @@ class DestroyTest extends TestCase
     {
         $host = $this->getLastResource($this->hostsEndpoint);
 
-        $response = $this->json('DELETE', $this->hostsEndpoint . $host->id);
+        $this->response = $this->json('DELETE', $this->hostsEndpoint . $host->id);
 
-        $response->assertStatus(204);
+        $this->response->assertStatus(204);
     }
 
     /**
@@ -88,8 +88,8 @@ class DestroyTest extends TestCase
     {
         $host = $this->getLastResource($this->groupsEndpoint);
 
-        $response = $this->json('DELETE', $this->groupsEndpoint . $host->id);
+        $this->response = $this->json('DELETE', $this->groupsEndpoint . $host->id);
 
-        $response->assertStatus(204);
+        $this->response->assertStatus(204);
     }
 }

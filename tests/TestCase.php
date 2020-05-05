@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Throwable;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
@@ -9,6 +10,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected TestResponse $response;
     protected $appsEndpoint = "/api/v1/apps/";
     protected $hostsEndpoint = "/api/v1/hosts/";
     protected $usersEndpoint = "/api/v1/users/";
@@ -61,14 +63,28 @@ abstract class TestCase extends BaseTestCase
     {
         $response->assertJsonStructure(["job" => ["id"]]);
 
-        $response = $this->json('GET', '/api/v1/jobs/' . $response->getData()->job->id);
-        $response->assertStatus(200);
+        $this->response = $this->json('GET', '/api/v1/jobs/' . $response->getData()->job->id);
+        $this->response->assertStatus(200);
 
-        if ($response->getData()->job->status == 'queued' || $response->getData()->job->status == 'executing') {
+        if ($this->response->getData()->job->status == 'queued' || $this->response->getData()->job->status == 'executing') {
             sleep(2);
             $this->waitForJob($response);
         } else {
-            $response->assertJsonFragment(["status" => "finished"]);
+            $this->response->assertJsonFragment(["status" => "finished"]);
         }
+    }
+
+    /**
+     * This method is called when a test method did not execute successfully.
+     *
+     * @throws Throwable
+     */
+    protected function onNotSuccessfulTest(Throwable $t): void
+    {
+        if ($this->response) {
+            fwrite(STDERR, print_r($this->response->getData(), true));           
+        }
+
+        parent::onNotSuccessfulTest($t);
     }
 }

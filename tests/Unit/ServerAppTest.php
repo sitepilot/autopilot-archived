@@ -45,13 +45,13 @@ class ServerAppTest extends TestCase
             'aliases' => ['test-domain.com']
         ];
 
-        $response = $this->json('POST', $this->endpoint, array_merge($data, ["config" => $config]));
+        $this->response = $this->json('POST', $this->endpoint, array_merge($data, ["config" => $config]));
 
-        $response->assertCreated();
-        $response->assertJsonFragment($data);
-        $response->assertJsonFragment($config);
+        $this->response->assertCreated();
+        $this->response->assertJsonFragment($data);
+        $this->response->assertJsonFragment($config);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -61,10 +61,10 @@ class ServerAppTest extends TestCase
      */
     public function test_user_can_list_apps()
     {
-        $response = $this->json('GET', $this->endpoint);
-        $response->assertStatus(200);
+        $this->response = $this->json('GET', $this->endpoint);
+        $this->response->assertStatus(200);
 
-        $response->assertJsonStructure(
+        $this->response->assertJsonStructure(
             [
                 "data" =>
                 [
@@ -100,13 +100,13 @@ class ServerAppTest extends TestCase
             "aliases" => ["test-domain2.com"]
         ];
 
-        $response = $this->json('PATCH', $this->endpoint . $app->id, array_merge($data, ["config" => $config]));
+        $this->response = $this->json('PATCH', $this->endpoint . $app->id, array_merge($data, ["config" => $config]));
 
-        $response->assertStatus(200);
-        $response->assertJsonFragment($data);
-        $response->assertJsonFragment($config);
+        $this->response->assertStatus(200);
+        $this->response->assertJsonFragment($data);
+        $this->response->assertJsonFragment($config);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -126,9 +126,9 @@ class ServerAppTest extends TestCase
             'admin_email' => 'website@sitepilot.io'
         ];
 
-        $response = $this->json('POST', $this->endpoint . $app->id . '/wp/install', $data);
+        $this->response = $this->json('POST', $this->endpoint . $app->id . '/wp/install', $data);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -140,9 +140,9 @@ class ServerAppTest extends TestCase
     {
         $app = $this->getLastResource();
 
-        $response = $this->json('POST', $this->endpoint . $app->id . '/wp/check-state');
+        $this->response = $this->json('POST', $this->endpoint . $app->id . '/wp/check-state');
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -154,9 +154,9 @@ class ServerAppTest extends TestCase
     {
         $app = $this->getLastResource();
 
-        $response = $this->json('POST', $this->endpoint . $app->id . '/wp/login');
+        $this->response = $this->json('POST', $this->endpoint . $app->id . '/wp/login');
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -168,12 +168,12 @@ class ServerAppTest extends TestCase
     {
         $app = $this->getLastResource();
 
-        $response = $this->json('POST', $this->endpoint . $app->id . '/wp/search-replace', [
+        $this->response = $this->json('POST', $this->endpoint . $app->id . '/wp/search-replace', [
             "search" => "random-test-string-" . time(),
             "replace" => "random-test-string-" . (time() + 1000),
         ]);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -185,8 +185,8 @@ class ServerAppTest extends TestCase
     {
         $app = $this->getLastResource();
 
-        $response = $this->json('POST', $this->endpoint . $app->id . '/wp/update');
+        $this->response = $this->json('POST', $this->endpoint . $app->id . '/wp/update');
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 }

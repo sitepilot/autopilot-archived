@@ -37,10 +37,10 @@ class ServerGroupTest extends TestCase
             'description' => 'Test group.'
         ];
 
-        $response = $this->json('POST', $this->endpoint, $data);
+        $this->response = $this->json('POST', $this->endpoint, $data);
 
-        $response->assertCreated();
-        $response->assertJsonFragment($data);
+        $this->response->assertCreated();
+        $this->response->assertJsonFragment($data);
     }
 
     /**
@@ -50,10 +50,10 @@ class ServerGroupTest extends TestCase
      */
     public function test_user_can_list_groups()
     {
-        $response = $this->json('GET', $this->endpoint);
-        $response->assertStatus(200);
+        $this->response = $this->json('GET', $this->endpoint);
+        $this->response->assertStatus(200);
 
-        $response->assertJsonStructure(
+        $this->response->assertJsonStructure(
             [
                 "data" =>
                 [
@@ -87,10 +87,10 @@ class ServerGroupTest extends TestCase
             "php_post_max_size" => "128M"
         ];
 
-        $response = $this->json('PATCH', $this->endpoint . $group->id, array_merge($data, ["config" => $config]));
+        $this->response = $this->json('PATCH', $this->endpoint . $group->id, array_merge($data, ["config" => $config]));
 
-        $response->assertStatus(200);
-        $response->assertJsonFragment($data);
-        $response->assertJsonFragment($config);
+        $this->response->assertStatus(200);
+        $this->response->assertJsonFragment($data);
+        $this->response->assertJsonFragment($config);
     }
 }

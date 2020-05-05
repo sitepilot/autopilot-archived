@@ -44,13 +44,13 @@ class ServerDatabaseTest extends TestCase
             //
         ];
 
-        $response = $this->json('POST', $this->endpoint, array_merge($data, ["config" => $config]));
+        $this->response = $this->json('POST', $this->endpoint, array_merge($data, ["config" => $config]));
 
-        $response->assertCreated();
-        $response->assertJsonFragment($data);
-        $response->assertJsonFragment($config);
+        $this->response->assertCreated();
+        $this->response->assertJsonFragment($data);
+        $this->response->assertJsonFragment($config);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 
     /**
@@ -60,10 +60,10 @@ class ServerDatabaseTest extends TestCase
      */
     public function test_user_can_list_databases()
     {
-        $response = $this->json('GET', $this->endpoint);
-        $response->assertStatus(200);
+        $this->response = $this->json('GET', $this->endpoint);
+        $this->response->assertStatus(200);
 
-        $response->assertJsonStructure(
+        $this->response->assertJsonStructure(
             [
                 "data" =>
                 [
@@ -100,12 +100,12 @@ class ServerDatabaseTest extends TestCase
             //
         ];
 
-        $response = $this->json('PATCH', $this->endpoint . $database->id, array_merge($data, ["config" => $config]));
+        $this->response = $this->json('PATCH', $this->endpoint . $database->id, array_merge($data, ["config" => $config]));
 
-        $response->assertStatus(200);
-        $response->assertJsonFragment($data);
-        $response->assertJsonFragment($config);
+        $this->response->assertStatus(200);
+        $this->response->assertJsonFragment($data);
+        $this->response->assertJsonFragment($config);
 
-        $this->waitForJob($response);
+        $this->waitForJob($this->response);
     }
 }
