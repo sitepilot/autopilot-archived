@@ -77,7 +77,7 @@ class ServerGroupTest extends TestCase
      */
     public function test_user_can_update_a_group()
     {
-        $host = $this->getLastResource();
+        $group = $this->getLastResource();
 
         $data = [
             "description" => "Group description update.",
@@ -87,7 +87,7 @@ class ServerGroupTest extends TestCase
             "php_post_max_size" => "128M"
         ];
 
-        $response = $this->json('PATCH', $this->endpoint . $host->id, array_merge($data, ["config" => $config]));
+        $response = $this->json('PATCH', $this->endpoint . $group->id, array_merge($data, ["config" => $config]));
 
         $response->assertStatus(200);
         $response->assertJsonFragment($data);
