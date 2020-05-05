@@ -7,12 +7,13 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Queue\InteractsWithQueue;
+use Imtigger\LaravelJobStatus\Trackable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 class ServerCertRenewJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
 
     private $host;
 
@@ -23,6 +24,7 @@ class ServerCertRenewJob implements ShouldQueue
      */
     public function __construct(ServerHost $host)
     {
+        $this->prepareStatus();
         $this->host = $host;
     }
 
@@ -34,7 +36,9 @@ class ServerCertRenewJob implements ShouldQueue
     public function handle()
     {
         Artisan::call('server:cert:renew', [
-            '--host' => $this->host->name
+            '--host' => $this->host->name,
+            '--job-status-id' => $this->getJobStatusId(),
+            '--disable-tty' => true
         ]);
     }
 }

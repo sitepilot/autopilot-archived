@@ -11,11 +11,18 @@ use Imtigger\LaravelJobStatus\Trackable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class AppWpCheckStateJob implements ShouldQueue
+class AppDestroyJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
 
     private $app;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 1800;
 
     /**
      * Create a new job instance.
@@ -35,7 +42,7 @@ class AppWpCheckStateJob implements ShouldQueue
      */
     public function handle()
     {
-        Artisan::call('app:wp:check-state', [
+        Artisan::call('app:destroy', [
             '--app' => $this->app->name,
             '--job-status-id' => $this->getJobStatusId(),
             '--disable-tty' => true

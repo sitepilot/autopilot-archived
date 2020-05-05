@@ -11,7 +11,7 @@ use Imtigger\LaravelJobStatus\Trackable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class AppWpCheckStateJob implements ShouldQueue
+class AppWpLoginJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
 
@@ -35,7 +35,7 @@ class AppWpCheckStateJob implements ShouldQueue
      */
     public function handle()
     {
-        Artisan::call('app:wp:check-state', [
+        Artisan::call('app:wp:login', [
             '--app' => $this->app->name,
             '--job-status-id' => $this->getJobStatusId(),
             '--disable-tty' => true

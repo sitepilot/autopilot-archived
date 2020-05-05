@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\ServerApp;
+use App\ServerUser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
@@ -11,21 +11,28 @@ use Imtigger\LaravelJobStatus\Trackable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class AppWpCheckStateJob implements ShouldQueue
+class UserTestJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
 
-    private $app;
+    private $user;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 1800;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(ServerApp $app)
+    public function __construct(ServerUser $user)
     {
         $this->prepareStatus();
-        $this->app = $app;
+        $this->user = $user;
     }
 
     /**
@@ -35,8 +42,8 @@ class AppWpCheckStateJob implements ShouldQueue
      */
     public function handle()
     {
-        Artisan::call('app:wp:check-state', [
-            '--app' => $this->app->name,
+        Artisan::call('user:test', [
+            '--user' => $this->user->name,
             '--job-status-id' => $this->getJobStatusId(),
             '--disable-tty' => true
         ]);

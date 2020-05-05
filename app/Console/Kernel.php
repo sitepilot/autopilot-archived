@@ -29,20 +29,31 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Schedule host jobs
-        $hosts = ServerHost::where('state', ServerHost::getProvisionedIndex())->get();
-        foreach ($hosts as $host) {
-            $schedule->job(new ServerCertRenewJob($host))->dailyAt('08:05');
-            $schedule->job(new ServerTestJob($host))->dailyAt('10:05');
-        }
-
-        // Schedule app jobs
-        $apps = ServerApp::where('state', ServerApp::getProvisionedIndex())->get();
-        foreach ($apps as $app) {
-            if ($app->getVar('wordpress')) {
-                $schedule->job(new AppWpCheckStateJob($app))->twiceDaily('6', '12');
+        // Renew certificates
+        $schedule->call(function () {
+            $hosts = ServerHost::where('state', ServerHost::getProvisionedIndex())->get();
+            foreach ($hosts as $host) {
+                ServerCertRenewJob::dispatch($host);
             }
-        }
+        })->dailyAt('08:05');
+
+        // Test servers
+        $schedule->call(function () {
+            $hosts = ServerHost::where('state', ServerHost::getProvisionedIndex())->get();
+            foreach ($hosts as $host) {
+                ServerTestJob::dispatch($host);
+            }
+        })->dailyAt('10:05');
+
+        // Check WordPress state
+        $schedule->call(function () {
+            $apps = ServerApp::where('state', ServerApp::getProvisionedIndex())->get();
+            foreach ($apps as $app) {
+                if ($app->getVar('wordpress')) {
+                    AppWpCheckStateJob::dispatch($app);
+                }
+            }
+        })->twiceDaily('6', '12');
     }
 
     /**
