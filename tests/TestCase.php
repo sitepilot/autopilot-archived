@@ -23,7 +23,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getFirstResource($endpoint = null)
     {
-        if ($endpoint) {
+        if (!$endpoint) {
             $endpoint = $this->endpoint;
         }
 
@@ -41,7 +41,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getLastResource($endpoint = null)
     {
-        if ($endpoint) {
+        if (!$endpoint) {
             $endpoint = $this->endpoint;
         }
 
