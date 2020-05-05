@@ -19,9 +19,17 @@ class ServerHost extends Model
 {
     use HasVars;
     use HasState;
-    use SoftDeletes;
     use Actionable;
     use Encryptable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'group_id', 'client_id', 'description'
+    ];
 
     /**
      * The attributes that should be encrypted.
@@ -52,7 +60,7 @@ class ServerHost extends Model
 
         self::creating(function (ServerHost $host) {
             $count = $host->where('group_id', $host->group_id)->count();
-            $host->name = $host->group->name . ($count + 10);
+            $host->name = $host->group->name . ($count + 11);
         });
 
         self::created(function (ServerHost $host) {

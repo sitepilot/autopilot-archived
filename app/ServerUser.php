@@ -21,6 +21,15 @@ class ServerUser extends Model
     use Encryptable;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'host_id', 'description'
+    ];
+
+    /**
      * The attributes that should be encrypted.
      *
      * @var array

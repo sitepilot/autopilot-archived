@@ -16,6 +16,15 @@ class ServerGroup extends Model
     use Encryptable;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'description'
+    ];
+
+    /**
      * The attributes that should be encrypted.
      *
      * @var array

@@ -20,6 +20,16 @@ class ServerApp extends Model
     use Encryptable;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'user_id', 'description'
+    ];
+
+
+    /**
      * The attributes that should be encrypted.
      *
      * @var array
@@ -62,7 +72,7 @@ class ServerApp extends Model
     {
         return [
             'name' => $this->name,
-            'domain' => $this->name . '.' . env('APP_DEFAULT_DOMAIN'),
+            'domain' => $this->name . '.' . config('autopilot.default_domain'),
             'aliases' => [],
             "ssl" => false
         ];
