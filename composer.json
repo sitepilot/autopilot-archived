@@ -16,8 +16,10 @@
         "fzaninotto/faker": "^1.9.1",
         "gregoriohc/laravel-nova-theme-responsive": "^0.8.1",
         "guzzlehttp/guzzle": "^6.3",
+        "imtigger/laravel-job-status": "^1.1",
         "laravel/framework": "^7.0",
         "laravel/nova": "~3.0",
+        "laravel/sanctum": "^2.2",
         "laravel/slack-notification-channel": "^2.0",
         "laravel/tinker": "^2.0",
         "phpseclib/phpseclib": "^2.0"

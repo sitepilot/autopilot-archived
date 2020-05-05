@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1de8bfa4ab7ba998d76a7c19b7318a1e",
+    "content-hash": "7b2c56edba5dc88d88acc98ca74a95f6",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1141,6 +1141,66 @@
             "time": "2019-07-01T23:21:34+00:00"
         },
         {
+            "name": "imtigger/laravel-job-status",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/imTigger/laravel-job-status.git",
+                "reference": "cf64ee95cee0e6a99bdd48148cc6bb20a42d8fd1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/imTigger/laravel-job-status/zipball/cf64ee95cee0e6a99bdd48148cc6bb20a42d8fd1",
+                "reference": "cf64ee95cee0e6a99bdd48148cc6bb20a42d8fd1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/contracts": ">=5.5",
+                "illuminate/database": ">=5.5",
+                "illuminate/queue": ">=5.5",
+                "illuminate/support": ">=5.5",
+                "nesbot/carbon": ">=1.21",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.11",
+                "orchestra/database": ">=3.5",
+                "orchestra/testbench": ">=3.5",
+                "phpunit/phpunit": ">=5.7"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Imtigger\\LaravelJobStatus\\LaravelJobStatusServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Imtigger\\LaravelJobStatus\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tiger",
+                    "email": "tiger@tiger-workshop.com"
+                }
+            ],
+            "description": "Laravel Job Status",
+            "keywords": [
+                "job",
+                "laravel",
+                "queue"
+            ],
+            "time": "2020-03-26T10:44:22+00:00"
+        },
+        {
             "name": "jakub-onderka/php-console-color",
             "version": "v0.2",
             "source": {
@@ -1180,6 +1240,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -1226,6 +1287,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -1452,6 +1514,66 @@
                 "laravel"
             ],
             "time": "2020-03-17T18:33:18+00:00"
+        },
+        {
+            "name": "laravel/sanctum",
+            "version": "v2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/sanctum.git",
+                "reference": "51e401ef99fd5698e489cc090e873ecb4437793e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/sanctum/zipball/51e401ef99fd5698e489cc090e873ecb4437793e",
+                "reference": "51e401ef99fd5698e489cc090e873ecb4437793e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/contracts": "^6.9|^7.0",
+                "illuminate/database": "^6.9|^7.0",
+                "illuminate/support": "^6.9|^7.0",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^4.0|^5.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Sanctum\\SanctumServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Sanctum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel Sanctum provides a featherweight authentication system for SPAs and simple APIs.",
+            "keywords": [
+                "auth",
+                "laravel",
+                "sanctum"
+            ],
+            "time": "2020-04-21T19:28:48+00:00"
         },
         {
             "name": "laravel/slack-notification-channel",
@@ -4636,6 +4758,12 @@
                 "flare",
                 "reporting"
             ],
+            "funding": [
+                {
+                    "url": "https://www.patreon.com/spatie",
+                    "type": "patreon"
+                }
+            ],
             "time": "2020-03-02T15:52:04+00:00"
         },
         {
@@ -5042,6 +5170,20 @@
                 "laravel-zero",
                 "php",
                 "symfony"
+            ],
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66BYDWAT92N6L",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/nunomaduro",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/nunomaduro",
+                    "type": "patreon"
+                }
             ],
             "time": "2020-03-07T12:46:00+00:00"
         },
@@ -5694,6 +5836,16 @@
                 "testing",
                 "xunit"
             ],
+            "funding": [
+                {
+                    "url": "https://phpunit.de/donate.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
             "time": "2020-03-31T08:52:04+00:00"
         },
         {
@@ -5762,6 +5914,12 @@
                 "highlight.js",
                 "highlight.php",
                 "syntax"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/allejo",
+                    "type": "github"
+                }
             ],
             "time": "2020-03-02T05:59:21+00:00"
         },
@@ -6477,5 +6635,6 @@
     "platform": {
         "php": "^7.2.5"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
