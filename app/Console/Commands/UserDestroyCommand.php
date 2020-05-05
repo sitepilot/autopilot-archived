@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Imtigger\LaravelJobStatus\JobStatus;
 
 class UserDestroyCommand extends Command
 {
@@ -17,6 +18,7 @@ class UserDestroyCommand extends Command
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
+        {--job-status-id= : The job status id (optional)}
         {--disable-tty : Disable TTY}
         {--debug : Show debug info}';
 
@@ -73,5 +75,7 @@ class UserDestroyCommand extends Command
         $this->runPlaybook($user, 'user/destroy.yml', $vars, $validations, "Failed to destroy user: $user->name.");
 
         $user->delete();
+        
+        $this->jobFinished();
     }
 }

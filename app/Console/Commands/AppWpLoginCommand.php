@@ -18,6 +18,7 @@ class AppWpLoginCommand extends Command
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
+        {--job-status-id= : The job status id (optional)}
         {--disable-tty : Disable TTY}
         {--debug : Show debug info}';
 

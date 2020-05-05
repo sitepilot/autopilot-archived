@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Console\Command;
 use App\Traits\HasState;
 
@@ -17,6 +18,7 @@ class AppWpInstallCommand extends Command
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
+        {--job-status-id= : The job status id (optional)}
         {--disable-tty : Disable TTY}
         {--debug : Show debug info}';
 
@@ -45,6 +47,10 @@ class AppWpInstallCommand extends Command
     public function handle()
     {
         $app = $this->askApp();
+
+        if ($app->getVar('wordpress.installed')) {
+            throw new Exception("WordPress is already installed for app: $app->name.");
+        }
 
         $vars = [
             "host" => $app->host->name,
@@ -77,5 +83,7 @@ class AppWpInstallCommand extends Command
         ];
 
         $this->runPlaybook($app, 'wordpress/install.yml', $vars, $validations, "Failed to install WordPress for app: $app->name.", false);
+
+        $app->setVar('wordpress.installed', true);
     }
 }

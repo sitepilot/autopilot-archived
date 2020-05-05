@@ -16,6 +16,7 @@ class DatabaseDestroyCommand extends Command
         {--tags= : Comma separated list of tags (optional)}
         {--skip-tags= : Comma separated list of skipped tags (optional)}
         {--nova-batch-id= : The nova batch id (optional)}
+        {--job-status-id= : The job status id (optional)}
         {--disable-tty : Disable TTY}
         {--debug : Show debug info}';
 
@@ -59,5 +60,7 @@ class DatabaseDestroyCommand extends Command
         $this->runPlaybook($database, 'database/destroy.yml', $vars, $validations, "Failed to destroy database: $database->name.");
 
         $database->delete();
+
+        $this->jobFinished();
     }
 }
