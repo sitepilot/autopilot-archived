@@ -52,9 +52,9 @@ class AppWpUpdateCommand extends Command
             "host" => $app->host->name,
             "user" => $app->user->name,
             "app" => $app->name,
-            "update_core" => $app->getVar('wordpress.update_core'),
-            "update_plugins" => $app->getVar('wordpress.update_plugins'),
-            "update_themes" => $app->getVar('wordpress.update_themes'),
+            "update_core" => $app->getVar('wordpress.update_core', true),
+            "update_plugins" => $app->getVar('wordpress.update_plugins', true),
+            "update_themes" => $app->getVar('wordpress.update_themes', true),
             "update_exclude" => $app->getVar('wordpress.update_exclude', [])
         ];
 
