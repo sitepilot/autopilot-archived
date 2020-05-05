@@ -33,7 +33,7 @@ class ServerGroupTest extends TestCase
     public function test_user_can_create_a_group()
     {
         $data = [
-            'name' => time() . '-test-web',
+            'name' => 'test-web',
             'description' => 'Test group.'
         ];
 
