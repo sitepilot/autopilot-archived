@@ -34,8 +34,10 @@ class ServerAppTest extends TestCase
      */
     public function test_user_can_create_an_app()
     {
+        $user = $this->getLastResource($this->usersEndpoint);
+
         $data = [
-            'user_id' => ServerUser::first()->id,
+            'user_id' => $user->id,
             'description' => 'Test app.'
         ];
 
@@ -114,10 +116,11 @@ class ServerAppTest extends TestCase
      */
     public function test_user_can_install_wordpress()
     {
-        $app = $this->getFirstResource();
+        $app = $this->getLastResource();
+        $database = $this->getLastResource($this->databasesEndpoint);
 
         $data = [
-            'database_id' => ServerDatabase::first()->id,
+            'database_id' => $database->id,
             'admin_user' => 'captain',
             'admin_pass' => 'supersecret',
             'admin_email' => 'website@sitepilot.io'
@@ -135,7 +138,7 @@ class ServerAppTest extends TestCase
      */
     public function test_user_can_check_wordpress_state()
     {
-        $app = $this->getFirstResource();
+        $app = $this->getLastResource();
 
         $response = $this->json('POST', $this->endpoint . $app->id . '/wp/check-state');
 
@@ -149,7 +152,7 @@ class ServerAppTest extends TestCase
      */
     public function test_user_can_generate_wordpress_login_link()
     {
-        $app = $this->getFirstResource();
+        $app = $this->getLastResource();
 
         $response = $this->json('POST', $this->endpoint . $app->id . '/wp/login');
 
@@ -163,7 +166,7 @@ class ServerAppTest extends TestCase
      */
     public function test_user_can_search_replace_wordpress_database()
     {
-        $app = $this->getFirstResource();
+        $app = $this->getLastResource();
 
         $response = $this->json('POST', $this->endpoint . $app->id . '/wp/search-replace', [
             "search" => "random-test-string-" . time(),
@@ -180,23 +183,9 @@ class ServerAppTest extends TestCase
      */
     public function test_user_can_update_wordpress()
     {
-        $app = $this->getFirstResource();
-
-        $response = $this->json('POST', $this->endpoint . $app->id . '/wp/update');
-
-        $this->waitForJob($response);
-    }
-
-    /**
-     * Test user can delete an app.
-     *
-     * @return void
-     */
-    public function test_user_can_delete_an_app()
-    {
         $app = $this->getLastResource();
 
-        $response = $this->json('DELETE', $this->endpoint . $app->id);
+        $response = $this->json('POST', $this->endpoint . $app->id . '/wp/update');
 
         $this->waitForJob($response);
     }

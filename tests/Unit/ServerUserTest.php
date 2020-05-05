@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\User;
-use App\ServerHost;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 
@@ -33,8 +32,10 @@ class ServerUserTest extends TestCase
      */
     public function test_user_can_create_a_user()
     {
+        $host = $this->getFirstResource($this->hostsEndpoint);
+
         $data = [
-            'host_id' => ServerHost::first()->id,
+            'host_id' => $host->id,
             'description' => 'Test user.'
         ];
 
@@ -113,20 +114,6 @@ class ServerUserTest extends TestCase
         $user = $this->getLastResource();
 
         $response = $this->json('POST', $this->endpoint . $user->id . '/test');
-
-        $this->waitForJob($response);
-    }
-
-    /**
-     * Test user can delete a user.
-     *
-     * @return void
-     */
-    public function test_user_can_delete_a_user()
-    {
-        $user = $this->getLastResource();
-
-        $response = $this->json('DELETE', $this->endpoint . $user->id);
 
         $this->waitForJob($response);
     }

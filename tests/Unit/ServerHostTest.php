@@ -33,8 +33,10 @@ class ServerHostTest extends TestCase
      */
     public function test_user_can_create_a_host()
     {
+        $group = $this->getLastResource($this->groupsEndpoint);
+
         $data = [
-            'group_id' => ServerGroup::first()->id,
+            'group_id' => $group->id,
             'description' => 'Test server.'
         ];
 
@@ -143,17 +145,5 @@ class ServerHostTest extends TestCase
         $response = $this->json('POST', $this->endpoint . $host->id . '/cert-renew');
 
         $this->waitForJob($response);
-    }
-
-    /**
-     * Test user can delete a host.
-     *
-     * @return void
-     */
-    public function test_user_can_delete_a_host()
-    {
-        $host = $this->getLastResource();
-        $response = $this->json('DELETE', $this->endpoint . $host->id);
-        $response->assertStatus(204);
     }
 }

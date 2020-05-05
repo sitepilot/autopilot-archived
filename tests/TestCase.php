@@ -9,14 +9,25 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected $appsEndpoint = "/api/v1/apps/";
+    protected $hostsEndpoint = "/api/v1/hosts/";
+    protected $usersEndpoint = "/api/v1/users/";
+    protected $groupsEndpoint = "/api/v1/groups/";
+    protected $databasesEndpoint = "/api/v1/databases/";
+
     /**
      * Returns the first resource from the API.
      * 
+     * @param string $endpoint
      * @return object $resource
      */
-    protected function getFirstResource()
+    protected function getFirstResource($endpoint = null)
     {
-        $response = $this->json('GET', $this->endpoint);
+        if ($endpoint) {
+            $endpoint = $this->endpoint;
+        }
+
+        $response = $this->json('GET', $endpoint);
         $response->assertStatus(200);
 
         return $response->getData()->data[0];
@@ -25,11 +36,16 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns the last resource from the API.
      * 
+     * @param string $endpoint
      * @return object $resource
      */
-    protected function getLastResource()
+    protected function getLastResource($endpoint = null)
     {
-        $response = $this->json('GET', $this->endpoint);
+        if ($endpoint) {
+            $endpoint = $this->endpoint;
+        }
+
+        $response = $this->json('GET', $endpoint);
         $response->assertStatus(200);
 
         return end($response->getData()->data);

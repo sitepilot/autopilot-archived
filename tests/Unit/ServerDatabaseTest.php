@@ -33,8 +33,10 @@ class ServerDatabaseTest extends TestCase
      */
     public function test_user_can_create_a_database()
     {
+        $user = $this->getLastResource($this->usersEndpoint);
+
         $data = [
-            'user_id' => ServerUser::first()->id,
+            'user_id' => $user->id,
             'description' => 'Test database.'
         ];
 
@@ -103,20 +105,6 @@ class ServerDatabaseTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonFragment($data);
         $response->assertJsonFragment($config);
-
-        $this->waitForJob($response);
-    }
-
-    /**
-     * Test user can delete a database.
-     *
-     * @return void
-     */
-    public function test_user_can_delete_a_database()
-    {
-        $database = $this->getLastResource();
-
-        $response = $this->json('DELETE', $this->endpoint . $database->id);
 
         $this->waitForJob($response);
     }

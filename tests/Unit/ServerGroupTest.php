@@ -93,16 +93,4 @@ class ServerGroupTest extends TestCase
         $response->assertJsonFragment($data);
         $response->assertJsonFragment($config);
     }
-
-    /**
-     * Test user can delete a group.
-     *
-     * @return void
-     */
-    public function test_user_can_delete_a_group()
-    {
-        $host = $this->getLastResource();
-        $response = $this->json('DELETE', $this->endpoint . $host->id);
-        $response->assertStatus(204);
-    }
 }
