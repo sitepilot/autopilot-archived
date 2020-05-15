@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
@@ -44,7 +45,7 @@ class ConfigRule implements Rule
         ]);
 
         foreach ($validator->errors()->all() as $msg) {
-            $this->message .= "<br />$msg";
+            $this->message .= (empty($this->message) ? '' : ', ') . rtrim(strtolower($msg), '.');
         }
 
         return !$validator->fails();
