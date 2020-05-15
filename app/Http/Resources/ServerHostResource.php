@@ -23,6 +23,7 @@ class ServerHostResource extends JsonResource
             'group_id' => $this->group_id,
             'client_id' => $this->client_id,
             'state' => $this->state,
+            'state_text' => $this->getStateText(),
             'config' => $this->vars,
             'public_key' => $pubKey,
             'created_at' => $this->created_at,

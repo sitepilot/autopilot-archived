@@ -59,6 +59,7 @@ class JobStatusResource extends JsonResource
     {
         return [
             'data' => $this->modelResource,
+            'message' => isset($this->output['message']) ? $this->output['message'] : '',
             'links' => [
                 'status' => url('/api/v1/job/' . $this->id),
             ],

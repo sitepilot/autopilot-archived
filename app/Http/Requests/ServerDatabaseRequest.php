@@ -27,8 +27,8 @@ class ServerDatabaseRequest extends FormRequest
         $rules = [];
         if ($this->method() == 'POST') {
             $rules = [
-                'user_id' => 'required_without:app_id|exists:server_users,id,state,' . HasState::getProvisionedIndex(),
-                'app_id' => 'required_without:user_id|exists:server_apps,id,state,' . HasState::getProvisionedIndex()
+                'user_id' => 'required_without:app_id|exists:server_users,id',
+                'app_id' => 'required_without:user_id|exists:server_apps,id'
             ];
         }
 

@@ -21,6 +21,7 @@ class ServerDatabaseResource extends JsonResource
             'app_id' => $this->app_id,
             'user_id' => $this->user_id,
             'state' => $this->state,
+            'state_text' => $this->getStateText(),
             'config' => $this->vars,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

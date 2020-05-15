@@ -27,7 +27,7 @@ class ServerUserRequest extends FormRequest
         $rules = [];
         if ($this->method() == 'POST') {
             $rules = [
-                'host_id' => 'required|exists:server_hosts,id,state,' . HasState::getProvisionedIndex(),
+                'host_id' => 'required|exists:server_hosts,id',
             ];
         }
 
