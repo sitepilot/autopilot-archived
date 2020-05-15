@@ -47,8 +47,6 @@ class AppProvisionCommand extends Command
     {
         $app = $this->askApp();
 
-        $app->setStateProvisioning();
-
         $vars = [
             "host" => $app->host->name,
             "user" => $app->user->name,
@@ -67,8 +65,8 @@ class AppProvisionCommand extends Command
             'php_version' => 'in:74,73'
         ];
 
-        $this->runPlaybook($app, 'app/provision.yml', $vars, $validations, "Failed to provision app: $app->name.");
+        $app->setStateProvisioning();
 
-        $app->setStateProvisioned();
+        $this->runPlaybook($app, 'app/provision.yml', $vars, $validations, "Failed to provision app: $app->name.");
     }
 }

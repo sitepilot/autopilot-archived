@@ -60,10 +60,12 @@ class AppWpSearchReplaceCommand extends Command
         $validations = [
             'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
             'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
-            'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
+            'app' => 'required|exists:server_apps,name',
             'search' => 'required|min:3',
             'replace' => 'required|min:3',
         ];
+
+        $app->setStateSearchReplaceWp();
 
         $this->runPlaybook($app, 'wordpress/search-replace.yml', $vars, $validations, "Failed to search and replace in WordPress database for app: $app->name.", false);
     }

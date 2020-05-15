@@ -52,9 +52,11 @@ class ServerCertRenewCommand extends Command
         ];
 
         $validations = [
-            'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex()
+            'host' => 'required|exists:server_hosts,name'
         ];
 
-        $this->runPlaybook($host, 'server/cert-renew.yml', $vars, $validations, "Failed to renew server certificates on server: $host->name.", false);
+        $host->setStateRenewingCert();
+
+        $this->runPlaybook($host, 'server/cert-renew.yml', $vars, $validations, "Failed to renew server certificates on server: $host->name.");
     }
 }

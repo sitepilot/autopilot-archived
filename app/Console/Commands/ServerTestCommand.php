@@ -60,11 +60,13 @@ class ServerTestCommand extends Command
         ];
 
         $validations = [
-            'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
+            'host' => 'required|exists:server_hosts,name',
             'admin' => 'required',
             'admin_pass' => 'required',
             'auth_keys' => 'array'
         ];
+
+        $host->setStateTesting();
 
         $this->runPlaybook($host, 'server/test.yml', $vars, $validations, "Failed to test server: $host->name.");
     }

@@ -58,7 +58,7 @@ class AppWpLoginCommand extends Command
         $validations = [
             'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
             'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
-            'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
+            'app' => 'required|exists:server_apps,name',
             'login' => 'required|min:3'
         ];
 

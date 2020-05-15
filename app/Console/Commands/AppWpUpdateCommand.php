@@ -61,12 +61,14 @@ class AppWpUpdateCommand extends Command
         $validations = [
             'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
             'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
-            'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
+            'app' => 'required|exists:server_apps,name',
             'update_core' => 'required|boolean',
             'update_plugins' => 'required|boolean',
             'update_themes' => 'required|boolean',
             'update_exclude' => 'array',
         ];
+
+        $app->setStateUpdatingWp();
 
         $this->runPlaybook($app, 'wordpress/update.yml', $vars, $validations, "Failed to update WordPress for app: $app->name.", false);
 

@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Imtigger\LaravelJobStatus\JobStatus;
 
 class UserDestroyCommand extends Command
 {
@@ -48,8 +47,6 @@ class UserDestroyCommand extends Command
     {
         $user = $this->askUser();
 
-        $user->setStateDestroying();
-
         foreach ($user->apps as $app) {
             Artisan::call('app:destroy', [
                 '--app' => $app->name
@@ -71,6 +68,8 @@ class UserDestroyCommand extends Command
             'host' => 'required|exists:server_hosts,name',
             'user' => 'required|exists:server_users,name',
         ];
+
+        $user->setStateDestroying();
 
         $this->runPlaybook($user, 'user/destroy.yml', $vars, $validations, "Failed to destroy user: $user->name.");
 

@@ -81,7 +81,7 @@ class UserTestCommand extends Command
 
         $validations = [
             'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
-            'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
+            'user' => 'required|exists:server_users,name',
             'mysql_password' => 'required|min:6',
             'isolated' => 'required|boolean',
             'apps' => 'array',
@@ -89,6 +89,8 @@ class UserTestCommand extends Command
             'databases' => 'array',
             'domains' => 'array',
         ];
+
+        $user->setStateTesting();
 
         $this->runPlaybook($user, 'user/test.yml', $vars, $validations, "Failed to test user: $user->name.");
     }

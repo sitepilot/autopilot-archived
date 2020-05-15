@@ -47,8 +47,6 @@ class AppDestroyCommand extends Command
     {
         $app = $this->askApp();
 
-        $app->setStateDestroying();
-
         $vars = [
             "host" => $app->host->name,
             "user" => $app->user->name,
@@ -60,6 +58,8 @@ class AppDestroyCommand extends Command
             'user' => 'required|exists:server_users,name',
             'app' => 'required|exists:server_apps,name'
         ];
+
+        $app->setStateDestroying();
 
         $this->runPlaybook($app, 'app/destroy.yml', $vars, $validations, "Failed to destroy app: $app->name.");
 

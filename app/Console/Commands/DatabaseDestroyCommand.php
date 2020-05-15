@@ -46,8 +46,6 @@ class DatabaseDestroyCommand extends Command
     {
         $database = $this->askDatabase();
 
-        $database->setStateDestroying();
-
         $vars = [
             "host" => $database->host->name,
             "database" => $database->getVar('name'),
@@ -56,6 +54,8 @@ class DatabaseDestroyCommand extends Command
         $validations = [
             'database' => 'required|exists:server_databases,name',
         ];
+
+        $database->setStateDestroying();
 
         $this->runPlaybook($database, 'database/destroy.yml', $vars, $validations, "Failed to destroy database: $database->name.");
 

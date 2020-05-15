@@ -48,8 +48,6 @@ class UserProvisionCommand extends Command
     {
         $user = $this->askUser();
 
-        $user->setStateProvisioning();
-
         $authKeys = [];
         foreach ($user->authKeys as $key) {
             $authKeys[] = $key->vars;
@@ -79,9 +77,9 @@ class UserProvisionCommand extends Command
             'auth_keys.*.key' => 'required'
         ];
 
-        $this->runPlaybook($user, 'user/provision.yml', $vars, $validations, "Failed to provision user: $user->name.");
+        $user->setStateProvisioning();
 
-        $user->setStateProvisioned();
+        $this->runPlaybook($user, 'user/provision.yml', $vars, $validations, "Failed to provision user: $user->name.");
 
         foreach ($user->apps as $app) {
             Artisan::call('app:provision', [

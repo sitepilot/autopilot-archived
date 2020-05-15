@@ -70,7 +70,7 @@ class AppWpInstallCommand extends Command
         $validations = [
             'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
             'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
-            'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
+            'app' => 'required|exists:server_apps,name',
             'db_name' => 'required|exists:server_databases,name,state,' . HasState::getProvisionedIndex(),
             'db_user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
             'url' => 'required|url',
@@ -82,7 +82,9 @@ class AppWpInstallCommand extends Command
             'db_host' => 'required'
         ];
 
-        $this->runPlaybook($app, 'wordpress/install.yml', $vars, $validations, "Failed to install WordPress for app: $app->name.", false);
+        $app->setStateInstallingWp();
+
+        $this->runPlaybook($app, 'wordpress/install.yml', $vars, $validations, "Failed to install WordPress for app: $app->name.");
 
         $app->setVar('wordpress.installed', true);
     }

@@ -56,10 +56,12 @@ class AppWpCheckStateCommand extends Command
         $validations = [
             'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
             'user' => 'required|exists:server_users,name,state,' . HasState::getProvisionedIndex(),
-            'app' => 'required|exists:server_apps,name,state,' . HasState::getProvisionedIndex(),
+            'app' => 'required|exists:server_apps,name',
         ];
 
-        $result = $this->runPlaybook($app, 'wordpress/check-state.yml', $vars, $validations, "Failed to check WordPress state for app: $app->name.", false);
+        $app->setStateCheckingWp();
+
+        $result = $this->runPlaybook($app, 'wordpress/check-state.yml', $vars, $validations, "Failed to check WordPress state for app: $app->name.");
 
         if ('yes' == $this->findBetween($result, '[autopilot-has-update]', '[/autopilot-has-update]')) {
             $app->setVar('wordpress.state.has_update', true)->save();

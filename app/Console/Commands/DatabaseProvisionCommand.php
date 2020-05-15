@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Console\Command;
+use App\Traits\HasState;
 
 class DatabaseProvisionCommand extends Command
 {
@@ -46,19 +47,18 @@ class DatabaseProvisionCommand extends Command
     {
         $database = $this->askDatabase();
 
-        $database->setStateProvisioning();
-
         $vars = [
             "host" => $database->host->name,
             "database" => $database->getVar('name'),
         ];
 
         $validations = [
+            'host' => 'required|exists:server_hosts,name,state,' . HasState::getProvisionedIndex(),
             'database' => 'required|exists:server_databases,name',
         ];
 
-        $this->runPlaybook($database, 'database/provision.yml', $vars, $validations, "Failed to provision database: $database->name.");
+        $database->setStateProvisioning();
 
-        $database->setStateProvisioned();
+        $this->runPlaybook($database, 'database/provision.yml', $vars, $validations, "Failed to provision database: $database->name.");
     }
 }
