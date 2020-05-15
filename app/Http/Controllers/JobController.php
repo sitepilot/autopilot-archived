@@ -17,6 +17,10 @@ class JobController extends Controller
      */
     public function show(JobStatus $job)
     {
-        return new JobStatusResource($job, null);
+        $statusCode = in_array($job->status, ['retrying', 'failed']) ? 500 : 200;
+
+        return (new JobStatusResource($job, null))
+            ->response()
+            ->setStatusCode($statusCode);
     }
 }

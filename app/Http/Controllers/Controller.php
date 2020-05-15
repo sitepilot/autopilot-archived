@@ -59,11 +59,14 @@ class Controller extends BaseController
             }
         }
 
+        $jobStatus = JobStatus::find($job->getJobStatusId());
+        $statusCode = in_array($jobStatus->status, ['retrying', 'failed']) ? 500 : $status;
+
         return (new JobStatusResource(
-            JobStatus::find($job->getJobStatusId()),
+            $jobStatus,
             new $resourceClass($model),
         ))
             ->response()
-            ->setStatusCode($status);
+            ->setStatusCode($statusCode);
     }
 }
