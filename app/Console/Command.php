@@ -183,11 +183,19 @@ class Command extends ConsoleCommand
         ]);
 
         if ($validator->fails()) {
-            $validationErrors = "";
+            if ($setErrorState) $model->setStateError();
+
+            $errors = "";
             foreach ($validator->errors()->all() as $msg) {
-                $validationErrors .= "\n$msg";
+                $errors .= (empty($errors) ? '' : ', ') . rtrim(strtolower($msg), '.');
             }
-            throw new Exception("$failedMessage\n$validationErrors");
+
+            $message = "$failedMessage Errors: $errors.";
+
+            Notification::route('slack', env('SLACK_HOOK'))
+                ->notify(new CommandFailed($failedMessage, $message));
+
+            throw new Exception($message);
         }
 
         // Add sitepilot_managed var
@@ -224,22 +232,18 @@ class Command extends ConsoleCommand
         }
 
         try {
-            $process->mustRun(function ($type, $buffer) use (&$processBuffer, $model, $failedMessage, $setErrorState, $batchId, $jobStatusId, $jobStatus) {
+            $process->mustRun(function ($type, $buffer) use (&$processBuffer, $model, $failedMessage, $setErrorState, $batchId, $jobStatus) {
                 if (Process::ERR === $type || preg_match("/failed=[1-9]\d*/", $buffer) || preg_match("/unreachable=[1-9]\d*/", $buffer)) {
                     if ($setErrorState) $model->setStateError();
 
                     if (empty($batchId) && !$jobStatus) echo $buffer;
+
                     $processBuffer .= $buffer;
 
-                    if ($jobStatus) {
-                        $jobStatus->output = $jobStatus->output . $buffer;
-                        $jobStatus->save();
-                    }
-
                     Notification::route('slack', env('SLACK_HOOK'))
-                        ->notify(new CommandFailed($failedMessage, url('/admin/resources/action-events')));
+                        ->notify(new CommandFailed($failedMessage, $processBuffer));
 
-                    throw new Exception("$failedMessage\n" . $processBuffer);
+                    throw new Exception($failedMessage);
                 } else {
                     if (empty($batchId) && !$jobStatus) echo $buffer;
 
@@ -266,6 +270,8 @@ class Command extends ConsoleCommand
             $jobStatus->output = $result;
             $jobStatus->save();
         }
+
+        if ($setErrorState) $model->setStateProvisioned();
 
         return $processBuffer;
     }
